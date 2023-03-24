@@ -1,0 +1,24 @@
+-Functions (Cột trái):
+	+ Phân quyền
+
+	+ Tạo đơn (gồm 3 giai đoạn: bấm tạo đơn, chọn món ăn, xuất bill)
+
+	+ Phiếu nhập
+
+	+ Món (bao gồm công thức)
+
+	+ Nguyên liệu
+
+	+Nhân viên
+
+	+ Nhà cung cấp
+
+- Tasks (deadline: 31/03/2023):
+	+Giao diện:	
+		@ Huy: Giai đoạn 2-3 của tạo đơn, phiếu nhập.
+		@ Trang: Giai đoạn 1 của tạo đơn
+		@ PhSg: - Món, nguyên liệu, nhân viên, nhà cung cấp (giao diện 4 cái này như nhau, làm xong 1 cái thì copy rồi đổi tên tittle)
+			  - Làm giao diện xuất danh sách món và giao diện thêm món, tương tự 3 cái còn lại
+		@ Khôi: phân quyền
+	+Back End:
+		@ Khôi: Config database,  JDBC, Hibernate, Query
