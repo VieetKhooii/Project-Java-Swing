@@ -21,4 +21,4 @@
 			  - Làm giao diện xuất danh sách món và giao diện thêm món, tương tự 3 cái còn lại
 		@ Khôi: phân quyền
 	+Back End:
-		@ Khôi: Config database,  JDBC, Hibernate, Query
+		@ Khôi: JDBC, Hibernate, Query
