@@ -7,9 +7,6 @@ CREATE TABLE functions(
 	description varchar(50),
 	PRIMARY KEY(func_id)
 );
-ALTER TABLE functions add role_id INT, add FOREIGN KEY (role_id) REFERENCES roles(role_id);
--- INSERT INTO functions(func_id,func_name,description,role_id) VALUES(1,N'All Access',N'',1);
--- INSERT INTO roles(role_id,role_name,description,func_id) values(1,N'Admin',N'Highest',1);
 
 CREATE TABLE roles(
 	role_id INT NOT NULL,
@@ -17,7 +14,6 @@ CREATE TABLE roles(
     description varchar(50),
     PRIMARY KEY(role_id)
 );
-ALTER TABLE roles ADD func_id int, ADD FOREIGN KEY (func_id) REFERENCES functions(func_id);
 
 CREATE TABLE role_func(
 	role_id INT NOT NULL,
