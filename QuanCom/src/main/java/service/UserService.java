@@ -39,4 +39,27 @@ public class UserService {
         UserRepository userRepository = new UserRepository();
         return userRepository.deleteUser(id) >= 1;
     }
+
+    public boolean modifyUser(
+            int id,
+            String userName,
+            String fullName,
+            String email,
+            String password,
+            String address,
+            String phone,
+            int roleId
+    ){
+        UserRepository userRepository = new UserRepository();
+        return  userRepository.modifyUser(
+                id,
+                userName,
+                fullName,
+                email,
+                password,
+                address,
+                phone,
+                roleId
+        ) >= 1;
+    }
 }

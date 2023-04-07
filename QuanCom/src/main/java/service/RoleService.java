@@ -11,4 +11,19 @@ public class RoleService {
         List<Roles> list = roleRepository.getAllRole();
         return list;
     }
+
+    public boolean addRole(String roleName, String description){
+        RoleRepository repository = new RoleRepository();
+        return repository.addRole(roleName,description) >= 1;
+    }
+
+    public boolean roleDete(int id){
+        RoleRepository repository = new RoleRepository();
+        return repository.deleteRole(id) >= 1;
+    }
+
+    public boolean roleModify(int id, String roleName, String description){
+        RoleRepository repository = new RoleRepository();
+        return repository.modifyRole(id, roleName, description) >= 1;
+    }
 }

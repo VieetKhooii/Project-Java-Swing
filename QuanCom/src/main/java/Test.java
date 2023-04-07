@@ -8,11 +8,24 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        UserService service = new UserService();
-        System.out.println("Enter id to delete: ");
+        System.out.print("Enter user name: ");
+        String userName = scan.nextLine();
+        System.out.println("Enter password: ");
+        String password = scan.nextLine();
+        System.out.println("Enter full name: ");
+        String fullName = scan.nextLine();
+        System.out.println("Enter email: ");
+        String email = scan.nextLine();
+        System.out.println("Enter address: ");
+        String address = scan.nextLine();
+        System.out.println("Enter phone number: ");
+        String phone = scan.nextLine();
+        System.out.println("Enter role ID: ");
         int id = Integer.parseInt(scan.nextLine());
-        boolean xoa = service.deleteUser(id);
-        if (xoa) System.out.println("Successfully!");
-        else System.out.println("Failed!");
+
+        UserService userService = new UserService();
+        boolean check = userService.modifyUser(3,userName, password, fullName, email, address, phone, id);
+        if (check) System.out.println("Sc");
+        else System.out.println("failed!");
     }
 }

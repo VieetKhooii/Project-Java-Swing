@@ -103,7 +103,8 @@ public class UserRepository {
             int roleId){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "update users set email = ? , password = ? , fullname = ? , role_id = ? where id=?";
+        String query = "update users set username = ?, password = ?, " +
+                "fullname = ?, email = ?, address = ?, phonenumber = ?, role_id = ? where user_id=?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
@@ -113,9 +114,10 @@ public class UserRepository {
             preparedStatement.setString(5,address);
             preparedStatement.setString(6,phone);
             preparedStatement.setInt(7,roleId);
+            preparedStatement.setInt(8,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add user "+e.getMessage());
+            System.out.println("Error while modify user "+e.getMessage());
         }
         return isSuccess;
     }

@@ -131,21 +131,14 @@ CREATE TABLE chitietphieuNhap(
 	FOREIGN KEY(material_id) REFERENCES materials(material_id),
 	FOREIGN KEY(phieu_id) REFERENCES phieuNhap(phieu_id)
 );
-create table congthuc(
-	congthuc_id int not null,
-	product_id int,
-	name_ct nvarchar(50),
-	description nvarchar(50),
-	PRIMARY KEY(congthuc_id),
-	FOREIGN KEY(product_id) REFERENCES products(product_id)
-);
 
 create table chitietcongthuc(
-	congthuc_id int not null,
+	product_id int,
 	material_id int,
-	name_material nvarchar(50),
+	name_material varchar(50),
 	gia int,
 	soluong int,
-	PRIMARY KEY(congthuc_id, material_id),
-	FOREIGN KEY(material_id) REFERENCES materials(material_id)
+	PRIMARY KEY(product_id, material_id),
+	FOREIGN KEY(material_id) REFERENCES materials(material_id),
+    FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
