@@ -1,15 +1,22 @@
 package main.java.GUI;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 
@@ -24,16 +31,25 @@ public class GiaoDien extends JFrame {
     private JPanel mainContent;
     static CardLayout cardLayout;
     static JPanel switchPanel;
-	JPanel functionPanel1;
-    JPanel functionPanel2;
-    JPanel functionPanel3;
-    JPanel functionPanel4;
-    JPanel functionPanel5;
-    JPanel functionPanel6;
-    JPanel functionPanel7;
-    JPanel functionPanel8;
-    
+	static JPanel functionPanel1;
+    static JPanel functionPanel2;
+    static JPanel functionPanel3;
+    static JPanel functionPanel4;
+    static JPanel functionPanel5;
+    static JPanel functionPanel6;
+    static JPanel functionPanel7;
+    static DetailOrdersGUI taoDon;
+    static ReceivingGUI phieuNhap;
+    static DetailReceivingGUI taoPhieu;
+    static SupplierGUI supplier;
+    static StaffsGUI staffs;
+    static AccountAndRoleGUI accounts;
     public GiaoDien() {
+    	try {
+    		FlatGradiantoDeepOceanIJTheme.setup();
+    	} catch( Exception ex ) {
+    	    System.err.println( "Failed to initialize LaF" );
+    	}
         init();
         this.setVisible(true);
     }
@@ -69,47 +85,60 @@ public class GiaoDien extends JFrame {
         switchPanel = new JPanel(cardLayout);
         switchPanel.setPreferredSize(new Dimension(1080, 700));
         mainContent.add(switchPanel);
-        //chức năng 1
+        //Tạo đơn
         functionPanel1 = new JPanel(null);
-        functionPanel1.setPreferredSize(new Dimension(1080, 700));
-        switchPanel.add(functionPanel1, "func1");
-        DetailOrdersGUI taoDon = new DetailOrdersGUI();
+        functionPanel1.setPreferredSize(new Dimension(1080, 700));      
+        taoDon = new DetailOrdersGUI();
         taoDon.setBounds(0, 0, 1080, 700);
         functionPanel1.add(taoDon);
-        //Chức năng 2
+        switchPanel.add(functionPanel1, "func1");
+        
+        //Tạo phiếu nhập
         functionPanel2 = new JPanel(null);
         functionPanel2.setPreferredSize(new Dimension(1080, 700));
-        DetailReceivingGUI taoPhieu = new DetailReceivingGUI();
+        phieuNhap = new ReceivingGUI();      
+        phieuNhap.setBounds(0, 0, 1080, 700);
+        functionPanel2.add(phieuNhap);     
+        taoPhieu = new DetailReceivingGUI();
         taoPhieu.setBounds(0, 0, 1080, 700);
-        functionPanel2.add(taoPhieu);
+        functionPanel2.add(GiaoDien.taoPhieu);
+        taoPhieu.setVisible(false);   
         switchPanel.add(functionPanel2, "func2");   
+        
+        
         //chức năng 3
         functionPanel3 = new JPanel(null);
         functionPanel3.setPreferredSize(new Dimension(1080, 700));
+        
         switchPanel.add(functionPanel3, "func3");
+        
         //chức năng 4
         functionPanel4 = new JPanel(null);
         switchPanel.add(functionPanel4, "fun4");
-        //chức năng 5
+        
+        //Tài khoản và phân quyền
         functionPanel5 = new JPanel(null);
+        functionPanel5.setPreferredSize(new Dimension(1080, 700));
+        accounts = new AccountAndRoleGUI();
+        accounts.setBounds(0, 0, 1080, 700);
+        functionPanel5.add(accounts);
         switchPanel.add(functionPanel5, "func5");
-        //chức năng 6
+        
+        //Nhân viên
         functionPanel6 = new JPanel(null);
+        functionPanel6.setPreferredSize(new Dimension(1080, 700));
+        staffs = new StaffsGUI();
+        staffs.setBounds(0, 0, 1080, 700);
+        functionPanel6.add(staffs);
         switchPanel.add(functionPanel6, "func6");
-        //chức năng 7
+        
+        //Nhà cung cấp
         functionPanel7 = new JPanel(null);
         functionPanel7.setPreferredSize(new Dimension(1080, 700));
-        StaffsGUI staffs = new StaffsGUI();
-        staffs.setBounds(0, 0, 1080, 700);
-        functionPanel7.add(staffs);
-        switchPanel.add(functionPanel7, "func7");
-        //chức năng 8
-        functionPanel8 = new JPanel(null);
-        functionPanel8.setPreferredSize(new Dimension(1080, 700));
-        SupplierGUI supplier = new SupplierGUI();
+        supplier = new SupplierGUI();
         supplier.setBounds(0, 0, 1080, 700);
-        functionPanel8.add(supplier);
-        switchPanel.add(functionPanel8, "func8");
+        functionPanel7.add(supplier);
+        switchPanel.add(functionPanel7, "func7");
         
         
         //---------------------------------------------------------------
@@ -132,7 +161,7 @@ public class GiaoDien extends JFrame {
     
     public static void main(String[] args) {
     	try {
-    		FlatSolarizedLightIJTheme.setup();
+    		FlatMacLightLaf.setup();
     	} catch( Exception ex ) {
     	    System.err.println( "Failed to initialize LaF" );
     	}

@@ -33,16 +33,20 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
 	private DefaultTableCellRenderer centerRenderer;
 	private JPanel searchPanel;
 	private JLabel lblNewLabel;
-	private JTextField IdSupplierTxt;
+	private JTextField idSupplierTxt;
 	private JTextField nameSupplierTxt;
 	private JTextField addressSupplierTxt;
 	private JTextField phoneNumbTxt;
-	private JTextField textField;
-	private JButton searchButton;
 	private JPanel staffInfoPanel;
 	private JButton addSupplierBtn;
 	private JButton fixSupplierBtn;
 	private JButton delSupplierBtn;
+	private JComboBox<String> searchCbB;
+	private JTextField textField;
+	private JLabel lblSpXp;
+	private JComboBox<String> sortCbB;
+	private JLabel lblTmKim;
+	private JButton searchButton;
 	/**
 	 * Create the panel.
 	 */
@@ -107,11 +111,11 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         idSupplierLabel.setBounds(60, 50, 70, 30);
         staffInfoPanel.add(idSupplierLabel);
         
-        IdSupplierTxt = new JTextField();
-        IdSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
-        IdSupplierTxt.setColumns(10);
-        IdSupplierTxt.setBounds(143, 50, 167, 30);
-        staffInfoPanel.add(IdSupplierTxt);
+        idSupplierTxt = new JTextField();
+        idSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        idSupplierTxt.setColumns(10);
+        idSupplierTxt.setBounds(143, 50, 167, 30);
+        staffInfoPanel.add(idSupplierTxt);
         
         nameSupplierTxt = new JTextField();
         nameSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -149,7 +153,7 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         addSupplierBtn = new JButton("Thêm");      
         addSupplierBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		if(IdSupplierTxt.getText().equals("") || nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
+        		if(idSupplierTxt.getText().equals("") || nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
         			JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
         		}
         		else {
@@ -198,21 +202,37 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
         
-        JLabel lblTmKim = new JLabel("Tìm kiếm");
-        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTmKim.setFont(new Font("Arial", Font.BOLD, 15));
-        lblTmKim.setBounds(180, 80, 120, 40);
-        searchPanel.add(lblTmKim);
+        searchCbB = new JComboBox<String>();
+        searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên quyền"}));
+        searchCbB.setBounds(130, 75, 101, 40);
+        searchPanel.add(searchCbB);
         
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
         textField.setColumns(10);
-        textField.setBounds(156, 140, 167, 30);
+        textField.setBounds(241, 75, 149, 40);
         searchPanel.add(textField);
+        
+        lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
+        lblSpXp.setBounds(130, 145, 80, 40);
+        searchPanel.add(lblSpXp);
+        
+        sortCbB = new JComboBox<String>();
+        sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        sortCbB.setBounds(241, 145, 100, 40);
+        searchPanel.add(sortCbB);
+        
+        lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTmKim.setBounds(185, 11, 120, 40);
+        searchPanel.add(lblTmKim);
         
         searchButton = new JButton("OK");
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(190, 190, 100, 30);
+        searchButton.setBounds(192, 229, 100, 50);
         searchPanel.add(searchButton);
 		//End
 		

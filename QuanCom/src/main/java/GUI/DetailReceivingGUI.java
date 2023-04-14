@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.awt.event.ActionEvent;
 
 public class DetailReceivingGUI extends JPanel implements MouseListener, ActionListener{
@@ -30,8 +31,8 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 	private static final long serialVersionUID = 1L;
 	private JPanel category;
 	private JPanel btnField;
-	private JButton preBtn;
-	private JButton nextBtn;
+	static JButton preBtn;
+	static JButton nextBtn;
 	private JPanel contentField;
 	private JTextField nameFindText;
 	private JTextField priceFrom;
@@ -41,7 +42,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 	private JTextField idStaffCreatePNTxt;
 	private JTextField totalPricePNTxt;
 	private JDateChooser datePNChooser;
-	private JComboBox sortCbb;
+	private JComboBox<String> sortCbb;
 	private JPanel deltailOrderPanel;
 	private JTable ctPNTable;
 	private DefaultTableModel detailTableModel;
@@ -59,6 +60,9 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 	private JButton addReceivingBtn;
 	private JButton updateReceivingBtn;
 	private JButton delReceivingBtn;
+	Component[] components1;
+	Component[] components2;
+	Component[] totalComponents;
 	/**
 	 * Create the panel.
 	 */
@@ -102,7 +106,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 		category.add(sortProducts);
 		sortProducts.setFont(new Font("Arial", Font.BOLD, 13));
 		
-		sortCbb = new JComboBox();
+		sortCbb = new JComboBox<String>();
 		sortCbb.setBounds(522, 10, 120, 30);
 		category.add(sortCbb);
 		sortCbb.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -143,12 +147,12 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 		MutualCategoryLabel.setBounds(160, 59, 100, 30);
 		category.add(MutualCategoryLabel);
 		
-		JComboBox MutualCategoryCbb = new JComboBox();
+		JComboBox<String> MutualCategoryCbb = new JComboBox<String>();
 		MutualCategoryCbb.setFont(new Font("Arial", Font.PLAIN, 13));
 		MutualCategoryCbb.setBounds(290, 59, 120, 30);
 		category.add(MutualCategoryCbb);
 		
-		JComboBox categoryCbb = new JComboBox();
+		JComboBox<String> categoryCbb = new JComboBox<String>();
 		categoryCbb.setFont(new Font("Arial", Font.PLAIN, 13));
 		categoryCbb.setBounds(522, 59, 120, 30);
 		category.add(categoryCbb);
@@ -174,7 +178,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
         detailTableModel = new DefaultTableModel(new Object[]{"Mã nguyên liệu", "Tên nguyên liệu", "Số lượng nhập", "Giá"}, 0);		
         ctPNTable = new JTable(detailTableModel);
         ctPNTable.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+              
         detailTableModel.addRow(new Object[]{"C1", "Cơm sườn", 10, 30000});
                
         ListSelectionModel listSelectionModel = ctPNTable.getSelectionModel();
@@ -385,9 +389,26 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 		this.add(btnField, BorderLayout.SOUTH);
 		
 		preBtn = new JButton("Quay lại");
+		preBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(!idPNTxt.getText().equals("") || !idNCCTxt.getText().equals("") || !totalPricePNTxt.getText().equals("")
+						|| !idStaffCreatePNTxt.getText().equals("")) {
+					int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);						
+					if(decide==0) {
+						GiaoDien.phieuNhap.setVisible(true);
+						GiaoDien.taoPhieu.setVisible(false);
+					}
+				}
+				else {
+					GiaoDien.phieuNhap.setVisible(true);
+					GiaoDien.taoPhieu.setVisible(false);
+				}
+			}	
+		});
 		preBtn.setFont(new Font("Arial", Font.BOLD, 17));
 		preBtn.setBounds(70, 10, 100, 50);	
-		preBtn.addActionListener(this);
 		btnField.add(preBtn);
 		
 		nextBtn = new JButton("Tiếp");		
@@ -401,22 +422,13 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 		btnField.add(separator);
 		//End
 		
-		
-		
+		//Mảng lấy các component
+		components1 = contentField.getComponents();
+		components2 = infoDetailOrderPanel.getComponents();
+		totalComponents = Arrays.copyOf(components1, components1.length + components2.length);
+		System.arraycopy(components2, 0, totalComponents, components1.length, components2.length);
 	}
 	
-	 class CheckboxRenderer extends JCheckBox implements TableCellRenderer {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-	            setSelected((value != null && ((Boolean) value).booleanValue()));
-	            return this;
-	        }
-	  }
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -454,12 +466,15 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 				JOptionPane.showMessageDialog(null, "Tao phieu nhap thanh cong!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-		if(e.getSource() == preBtn) {
-			if(!idPNTxt.getText().equals("") || !idNCCTxt.getText().equals("") || !totalPricePNTxt.getText().equals("")
-					|| !idStaffCreatePNTxt.getText().equals("") || !soLuongNhapTxt.getText().equals("")) {
-				int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);
-				
-			}
+	}
+	//Hàm reset dl các component
+	void resetComponent() {				
+		for (Component component : totalComponents) {
+		    if (component instanceof JTextField) {
+		    	
+		        ((JTextField) component).setText(""); // reset giá trị trên JTextField
+		    }
+		    // Thêm các trường hợp khác tương tự nếu cần thiết
 		}
 	}
 }

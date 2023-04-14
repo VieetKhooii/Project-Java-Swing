@@ -67,9 +67,10 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	private JButton turnToSelectedItemTableBtn;
 	private JButton backToDetailOrderTableBtn;
 	private DefaultTableCellRenderer centerRenderer;
-	private JCheckBox selection;
 	private JComboBox<String> MutualCategoryCbb;
 	private JComboBox<String> categoryCbb;
+	private JButton selectProductBtn;
+	private JButton unselectedBtn;
 	/**
 	 * Create the panel.
 	 */
@@ -220,8 +221,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         turnToSelectedItemTableBtn.setForeground(new Color(0, 0, 0));
         turnToSelectedItemTableBtn.setBorder(BorderFactory.createLineBorder(Color.black));
         turnToSelectedItemTableBtn.setFocusPainted(false);
-        //turnToSelectedItemTableBtn.setBackground(Color.LIGHT_GRAY);
-       //turnToSelectedItemTableBtn.addMouseListener(this);
         
         detailOrderScrollPane.setRowHeaderView(turnToSelectedItemTableBtn);
         turnToSelectedItemTableBtn.addActionListener(new ActionListener() {
@@ -295,7 +294,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         selectItemPanel = new JPanel(new BorderLayout());
         switchPanel.add(selectItemPanel, "hello1");
               
-        model = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng còn lại", "Giá", "Chọn"}, 0);	
+        model = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng còn lại", "Giá", "Số lượng mua"}, 0);	
         
         ordersSelectedTable = new JTable(model);   
         ordersSelectedTable.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -306,21 +305,32 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
             @Override
             public void valueChanged(ListSelectionEvent e) {
             	int row = ordersSelectedTable.getSelectedRow();
+            	
         		idItemSelectedTxt.setText(model.getValueAt(row, 0).toString());
         		nameItemSelectedTxt.setText(model.getValueAt(row, 1).toString());
         		remainItemSelectedTxt.setText(model.getValueAt(row, 2).toString());
         		priceItemSelectedTxt.setText(model.getValueAt(row, 3).toString());
+        		amountInputItemSelectedTxt.setText(model.getValueAt(row, 4).toString());
         		
+        		
+        		selectProductBtn.setEnabled(true);
+        		
+        		if(!amountInputItemSelectedTxt.getText().equals("0")) {
+        			unselectedBtn.setEnabled(true);
+        		}
+        		else {
+        			unselectedBtn.setEnabled(false);
+        		}
             }          
         });
         
 	    ordersSelectedTable.setDefaultRenderer(String.class, centerRenderer);
         ordersSelectedTable.setRowHeight(30);
         
-        model.addRow(new Object[]{"C1", "Cơm sườn", 10, 30000, false});
-	    model.addRow(new Object[]{"C2", "Cơm gà", 1, 30000, false});
-	    model.addRow(new Object[]{"C3", "Cơm chiên", 1, 30000, false});
-	    model.addRow(new Object[]{"C4", "Cơm trộn", 1, 30000, false});
+        model.addRow(new Object[]{"C1", "Cơm sườn", 10, 30000, 0});
+	    model.addRow(new Object[]{"C2", "Cơm gà", 1, 30000, 0});
+	    model.addRow(new Object[]{"C3", "Cơm chiên", 1, 30000, 0});
+	    model.addRow(new Object[]{"C4", "Cơm trộn", 1, 30000, 0});
 	    for(int i = 0; i < 5; i++) {
 	    	if(i == 1) {
 	    		ordersSelectedTable.getColumnModel().getColumn(i).setPreferredWidth(300);
@@ -332,14 +342,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	    	}
 	    }
     
-	    
-        TableColumn selectColumn = ordersSelectedTable.getColumnModel().getColumn(4);
-        selection = new JCheckBox();
-    	selection.addItemListener(this);
-    	selectColumn.setCellEditor(new DefaultCellEditor(selection));
-        selectColumn.setCellRenderer(new CheckboxRenderer());
-        
-        
+	        
         
         itemSelectedScrollPane = new JScrollPane(ordersSelectedTable);
         itemSelectedScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -352,8 +355,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         backToDetailOrderTableBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         backToDetailOrderTableBtn.setForeground(new Color(0, 0, 0));
         backToDetailOrderTableBtn.setBorder(BorderFactory.createLineBorder(Color.black));       
-        //backToDetailOrderTableBtn.setBackground(Color.LIGHT_GRAY);
-        //backToDetailOrderTableBtn.addMouseListener(this);
         backToDetailOrderTableBtn.setFocusPainted(false);
         backToDetailOrderTableBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -368,56 +369,56 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         
         JLabel idItemSelectedLabel = new JLabel("Mã món");
         idItemSelectedLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idItemSelectedLabel.setBounds(10, 80, 73, 30);
+        idItemSelectedLabel.setBounds(10, 50, 73, 30);
         infoItemSeclected.add(idItemSelectedLabel);
         
         idItemSelectedTxt = new JTextField();
         idItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idItemSelectedTxt.setColumns(10);
-        idItemSelectedTxt.setBounds(93, 80, 167, 30);
+        idItemSelectedTxt.setBounds(93, 50, 167, 30);
         infoItemSeclected.add(idItemSelectedTxt);
         
         JLabel nameItemSelectedLabel = new JLabel("Tên món");
         nameItemSelectedLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameItemSelectedLabel.setBounds(10, 132, 73, 30);
+        nameItemSelectedLabel.setBounds(10, 102, 73, 30);
         infoItemSeclected.add(nameItemSelectedLabel);
         
         nameItemSelectedTxt = new JTextField();
         nameItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameItemSelectedTxt.setColumns(10);
-        nameItemSelectedTxt.setBounds(93, 132, 167, 30);
+        nameItemSelectedTxt.setBounds(93, 102, 167, 30);
         infoItemSeclected.add(nameItemSelectedTxt);
         
         JLabel remainItemSelectedLabel = new JLabel("Số lượng còn lại");
         remainItemSelectedLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        remainItemSelectedLabel.setBounds(10, 184, 140, 30);
+        remainItemSelectedLabel.setBounds(10, 154, 140, 30);
         infoItemSeclected.add(remainItemSelectedLabel);
         
         remainItemSelectedTxt = new JTextField();
         remainItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         remainItemSelectedTxt.setColumns(10);
-        remainItemSelectedTxt.setBounds(210, 184, 50, 30);
+        remainItemSelectedTxt.setBounds(170, 154, 90, 30);
         infoItemSeclected.add(remainItemSelectedTxt);
         
         JLabel amountInputItemSelectedLabel = new JLabel("Số lượng mua");
         amountInputItemSelectedLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        amountInputItemSelectedLabel.setBounds(10, 239, 140, 30);
+        amountInputItemSelectedLabel.setBounds(10, 209, 140, 30);
         infoItemSeclected.add(amountInputItemSelectedLabel);
         
         amountInputItemSelectedTxt = new JTextField();
         amountInputItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         amountInputItemSelectedTxt.setColumns(10);
-        amountInputItemSelectedTxt.setBounds(210, 239, 50, 30);
+        amountInputItemSelectedTxt.setBounds(170, 209, 90, 30);
         amountInputItemSelectedTxt.setEnabled(false);
         infoItemSeclected.add(amountInputItemSelectedTxt);
         
         JLabel priceItemSelectedLabel = new JLabel("Giá");
-        priceItemSelectedLabel.setBounds(10, 292, 73, 30);
+        priceItemSelectedLabel.setBounds(10, 262, 73, 30);
         infoItemSeclected.add(priceItemSelectedLabel);
         priceItemSelectedLabel.setFont(new Font("Arial", Font.BOLD, 13));
         
         priceItemSelectedTxt = new JTextField();
-        priceItemSelectedTxt.setBounds(93, 292, 167, 30);
+        priceItemSelectedTxt.setBounds(93, 262, 167, 30);
         infoItemSeclected.add(priceItemSelectedTxt);
         priceItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         priceItemSelectedTxt.setColumns(10);
@@ -425,12 +426,26 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         thongtinHDLabel = new JLabel("THÔNG TIN MÓN");
         thongtinHDLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 14));
         thongtinHDLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        thongtinHDLabel.setBounds(80, 21, 126, 30);
+        thongtinHDLabel.setBounds(84, 9, 126, 30);
         infoItemSeclected.add(thongtinHDLabel);
         
         separator_1 = new JSeparator();
         separator_1.setBounds(0, 359, 280, 1);
         infoItemSeclected.add(separator_1);
+        
+        selectProductBtn = new JButton("Chọn");
+        selectProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        selectProductBtn.setBounds(50, 310, 90, 35);
+        selectProductBtn.addActionListener(this);
+        selectProductBtn.setEnabled(false);
+        infoItemSeclected.add(selectProductBtn);
+        
+        unselectedBtn = new JButton("Bỏ chọn");
+        unselectedBtn.addActionListener(this);
+        unselectedBtn.setEnabled(false);
+        unselectedBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        unselectedBtn.setBounds(140, 310, 90, 35);
+        infoItemSeclected.add(unselectedBtn);
         //End
         
        
@@ -530,18 +545,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		
 	}
 	
-	class CheckboxRenderer extends JCheckBox implements TableCellRenderer {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-	            setSelected((value != null && ((Boolean) value).booleanValue()));
-	            return this;
-	        }
-			
-	 }
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -573,6 +576,9 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		int selectedRow = ordersSelectedTable.getSelectedRow(); // Lấy chỉ mục của hàng được chọn
+		int modelRow = ordersSelectedTable.convertRowIndexToModel(selectedRow); // Chuyển đổi chỉ mục hàng sang chỉ mục hàng tương ứng trong mô hình dữ liệu
+		//////////////////
 		if(e.getSource() == nextBtn) {
 			if(idOrderTxt.getText().equals("") || unknownTxt.getText().equals("") || totalPriceOrderTxt.getText().equals("") 
 					|| idStaffCreateOrderTxt.getText().equals("")) {
@@ -588,24 +594,32 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 				int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);
 			}
 		}
+		if(e.getSource() == selectProductBtn) {
+			
+			String input;
+			do {
+				input = JOptionPane.showInputDialog("Nhập số lượng món");							
+				if(input == null) {
+					input = "0";
+					break;
+				}				
+			}while(input.equals(""));
+			
+			amountInputItemSelectedTxt.setText(input);
+			ordersSelectedTable.setValueAt(input, modelRow, 4);
+			
+			
+		}
+		if(e.getSource() == unselectedBtn) {
+			amountInputItemSelectedTxt.setText("0");
+			ordersSelectedTable.setValueAt("0", modelRow, 4);
+		}
 		
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource() == selection && selection.isSelected()) {
-			String input;
-			do {
-				input = JOptionPane.showInputDialog("Nhap so luong mon");							
-				if(input == null) {
-					selection.setSelected(false);	
-					break;
-				}
-			}while(input.equals(""));	
-			amountInputItemSelectedTxt.setText(input);
-		}
-		else {				
-			amountInputItemSelectedTxt.setText("");
-		}		
+		
+
 	}
 }

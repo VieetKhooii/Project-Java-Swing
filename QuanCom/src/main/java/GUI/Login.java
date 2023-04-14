@@ -12,6 +12,8 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
 public class Login extends JFrame implements ActionListener{
 
 	/**
@@ -126,6 +128,9 @@ public class Login extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				
+				GiaoDien a = new GiaoDien();
+				a.setVisible(true);
+				dispose();
 			}
 		});
 		loginBtn.addMouseListener(new MouseAdapter() {
@@ -231,5 +236,9 @@ class RoundedBorderPasswordField extends JPasswordField {
         Shape shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 14, 14);
         return shape.contains(x, y);
     }
+    
+    public static void main(String[] args) {
+    	Login log = new Login(); 	
+	}
 }
 
