@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.Date;
+
 public class Staff {
     private int id;
 
@@ -39,5 +41,36 @@ public class Staff {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    private String gender;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    private Date birthDate;
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Staff() {
+    }
+
+    public Staff(String name, String address, String phone,Date birthDate, String gender) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.gender = gender;
+        this.birthDate = birthDate;
     }
 }

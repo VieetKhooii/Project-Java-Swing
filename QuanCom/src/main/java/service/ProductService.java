@@ -18,7 +18,7 @@ public class ProductService {
 
     public boolean deleteProduct(int id){
         ProductRepository repository = new ProductRepository();
-        return  repository.deleteId(id) >=1 ;
+        return  repository.deleteProduct(id) >=1 ;
     }
 
     public boolean modifyProduct(

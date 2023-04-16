@@ -2,7 +2,6 @@ package bus;
 
 import config.MySqlConfig;
 import model.Product;
-import model.Roles;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,7 +51,7 @@ public class ProductRepository {
         return isSuccess;
     }
 
-    public int deleteId(int id){
+    public int deleteProduct(int id){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "delete from products p where p.product_id = ?";

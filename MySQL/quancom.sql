@@ -14,7 +14,7 @@ CREATE TABLE roles(
     description varchar(50),
     PRIMARY KEY(role_id)
 );
-
+select * from orders;
 CREATE TABLE role_func(
 	role_id INT NOT NULL,
 	func_id INT NOT NULL,
@@ -54,13 +54,18 @@ CREATE TABLE users(
 CREATE TABLE staffs(
 	staff_id INT NOT NULL,
     name nvarchar(50),
+    date_of_birth datetime,
+    gender varchar(4),
     address nvarchar(50),
 	phonenumber varchar(50),
 	primary key(staff_id)
 );
+alter table staffs add column gender varchar(4);
+select * from staffs;
+
 CREATE TABLE orders(
 	order_id INT NOT NULL,
-    order_status varchar(50),
+    order_status varchar(10) constraint check(order_status = 'Incomplete' or order_status = 'Complete'),
 	order_date datetime,
     tonggia int,
     user_id int,
@@ -69,6 +74,8 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
+update orders o set o.order_status = 'Complete' where o.order_id = 2;
+select * from orders o where o.order_status = 'Incomplete';
 CREATE TABLE products(
 	product_id INT NOT NULL,
     product_name varchar(50),
@@ -99,9 +106,8 @@ CREATE TABLE supplier(
 );
 
 
-
 CREATE TABLE phieuNhap(
-	phieu_id INT NOT NULL,
+	phieu_id INT NOT NULL auto_increment,
     staff_id int,
     sup_id int,
 	tonggia int,
@@ -113,7 +119,7 @@ CREATE TABLE phieuNhap(
 
 
 CREATE TABLE materials(
-	material_id INT NOT NULL,
+	material_id INT NOT NULL auto_increment,
     name nvarchar(50),
 	donvitnh nvarchar(20),
 	gia int,
