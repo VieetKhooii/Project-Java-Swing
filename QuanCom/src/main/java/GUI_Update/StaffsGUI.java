@@ -200,6 +200,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     
         
         maleRadioBtn = new JRadioButton("Nam");
+        maleRadioBtn.setSelected(true);
         buttonGroup.add(maleRadioBtn);
         maleRadioBtn.setBounds(341, 120, 60, 30);
         staffInfoPanel.add(maleRadioBtn);

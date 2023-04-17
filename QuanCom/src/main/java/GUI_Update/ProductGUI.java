@@ -40,6 +40,10 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
 	private JComboBox<String> categoryProductCbB;
 	private JTextField priceFrom;
 	private JTextField PriceTo;
+	private JButton addProductBtn;
+	private JButton fixProductBtn;
+	private JButton delProductBtn;
+	private JButton browsePhoto;
 	/**
 	 * Create the panel.
 	 */
@@ -213,22 +217,42 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         lblThngTinMn.setBounds(306, 0, 150, 40);
         staffInfoPanel.add(lblThngTinMn);
         
-        JButton addProductBtn = new JButton("Thêm");
+        addProductBtn = new JButton("Thêm");
+        addProductBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(idProductTxt.getText().equals("") || nameProductTxt.getText().equals("") || priceProductTxt.getText().equals("") || soLuongProductTxt.getText().equals("")) {
+        			JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        		}
+        		else {
+        			JOptionPane.showMessageDialog(null, "Đã thêm món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        		}
+        	}
+        });
         addProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         addProductBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addProductBtn);
         
-        JButton fixProductBtn = new JButton("Cập nhật");
+        fixProductBtn = new JButton("Cập nhật");
         fixProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixProductBtn.setBounds(358, 280, 90, 35);
         staffInfoPanel.add(fixProductBtn);
         
-        JButton delProductBtn = new JButton("Xóa");
+        delProductBtn = new JButton("Xóa");
+        delProductBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+        		//xoa o day
+        		if(decide == 0) {
+        			
+        			JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        		}
+        	}
+        });
         delProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         delProductBtn.setBounds(445, 280, 90, 35);
         staffInfoPanel.add(delProductBtn);
         
-        JButton browsePhoto = new JButton("Chọn");
+        browsePhoto = new JButton("Chọn");
         browsePhoto.setBounds(71, 220, 80, 30);
         staffInfoPanel.add(browsePhoto);
         

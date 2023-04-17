@@ -35,12 +35,15 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
 	private JComboBox<String> categoryMaterialCbB;
 	private JPanel materialInfoPanel;
 	private JComboBox<String> searchCbB;
-	private JTextField textField;
+	private JTextField searchTxt;
 	private JLabel lblSpXp;
 	private JComboBox<String> sortCbB;
 	private JLabel lblTmKim;
 	private JButton searchButton;
 	private JTextField soluongMaterialTxt;
+	private JButton addMaterialBtn;
+	private JButton fixMaterialBtn;
+	private JButton delMaterialBtn;
 	/**
 	 * Create the panel.
 	 */
@@ -190,17 +193,37 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         soluongMaterialTxt.setBounds(127, 151, 167, 30);
         materialInfoPanel.add(soluongMaterialTxt);
         
-        JButton addMaterialBtn = new JButton("Thêm");
+        addMaterialBtn = new JButton("Thêm");
+        addMaterialBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(idMaterialTxt.getText().equals("") || nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("") || soluongMaterialTxt.getText().equals("")) {
+        			JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        		}
+        		else {
+        			JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        		}
+        	}
+        });
         addMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         addMaterialBtn.setBounds(162, 244, 90, 35);
         materialInfoPanel.add(addMaterialBtn);
         
-        JButton fixMaterialBtn = new JButton("Cập nhật");
+        fixMaterialBtn = new JButton("Cập nhật");
         fixMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixMaterialBtn.setBounds(250, 244, 90, 35);
         materialInfoPanel.add(fixMaterialBtn);
         
-        JButton delMaterialBtn = new JButton("Xóa");
+        delMaterialBtn = new JButton("Xóa");
+        delMaterialBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+        		//xoa o day
+        		if(decide == 0) {
+        			
+        			JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        		}
+        	}
+        });
         delMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         delMaterialBtn.setBounds(337, 244, 90, 35);
         materialInfoPanel.add(delMaterialBtn);
@@ -229,11 +252,11 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         searchCbB.setBounds(130, 75, 101, 40);
         searchPanel.add(searchCbB);
         
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(241, 75, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(241, 75, 149, 40);
+        searchPanel.add(searchTxt);
         
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));

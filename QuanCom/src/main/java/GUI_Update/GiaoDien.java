@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme;
@@ -49,7 +50,7 @@ public class GiaoDien extends JFrame {
     static ProductAndRecipeGUI product;
     public GiaoDien() {
     	try {
-    		FlatSolarizedLightIJTheme.setup();
+    		FlatGradiantoDarkFuchsiaIJTheme.setup();
     	} catch( Exception ex ) {
     	    System.err.println( "Failed to initialize LaF" );
     	}
