@@ -521,14 +521,14 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if((idOrderTxt.getText().equals("") && !idStaffCreateOrderTxt.getText().equals("")) ||(!idOrderTxt.getText().equals("") && idStaffCreateOrderTxt.getText().equals(""))) {
+				if(!idOrderTxt.getText().equals("") || !idStaffCreateOrderTxt.getText().equals("") ) {
 					int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);						
 					if(decide==0) {
 						GiaoDien.hoaDon.setVisible(true);
 						GiaoDien.taoDon.setVisible(false);
 					}
 				}
-				else if(!idOrderTxt.getText().equals("") && !idStaffCreateOrderTxt.getText().equals("")){
+				else {
 					GiaoDien.hoaDon.setVisible(true);
 					GiaoDien.taoDon.setVisible(false);
 				}

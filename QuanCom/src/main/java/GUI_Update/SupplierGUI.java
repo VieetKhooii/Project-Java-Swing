@@ -2,26 +2,16 @@ package main.java.GUI;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
 import java.awt.*;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.json.ParseException;
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.awt.event.ActionEvent;
 
 public class SupplierGUI extends JPanel implements MouseListener, ActionListener{
