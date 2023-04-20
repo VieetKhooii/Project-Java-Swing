@@ -77,18 +77,17 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         
         contentField.add(accListPanel);
         
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập", "Mật khẩu", "Trạng thái", "Ngày tạo", "Quyền"}, 0);		
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập", "Mật khẩu", "Trạng thái", "Ngày tạo", "Email", "Quyền"}, 0);		
         accTable = new JTable(detailTableModel);
         accTable.setFont(new Font("Arial", Font.PLAIN, 14));
         accTable.setDefaultRenderer(String.class, centerRenderer);
 	    accTable.setRowHeight(30);
-	    for(int i = 0; i < 6; i++) {
-	    	if(i == 1 || i == 4) {
+	    for(int i = 0; i < 7; i++) {
+	    	if(i == 1 || i == 5) {
 	    		accTable.getColumnModel().getColumn(i).setPreferredWidth(150);
 	    		accTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    	else {
-	    		//staffTable.getColumnModel().getColumn(i).setPreferredWidth(125);
 	    		accTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    }
@@ -117,16 +116,17 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
             	    e1.printStackTrace();
             	}
             	dateChooser.setDate(date);
+            	emailTxt.setText(detailTableModel.getValueAt(row, 5).toString());
             	for(int i = 0; i < positioncbB.getItemCount(); i++) {
-            		if(detailTableModel.getValueAt(row, 5).toString().equals(positioncbB.getItemAt(i).toString())) {
+            		if(detailTableModel.getValueAt(row, 6).toString().equals(positioncbB.getItemAt(i).toString())) {
             			positioncbB.setSelectedIndex(i);
             			break;
             		}
-            	}
+            	}          	
             }          
         });
 	    
-        detailTableModel.addRow(new Object[] {"1", "huy123", "123456", "Khóa", "4/3/2023", "Nhân viên"});
+        detailTableModel.addRow(new Object[] {"1", "huy123", "123456", "Khóa", "4/3/2023", "123@gmail.com", "Nhân viên"});
         
         accScrollPane = new JScrollPane(accTable);
         accScrollPane.setBounds(5, 5, 1070, 280);
