@@ -49,6 +49,7 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
 	private JComboBox<String> sortCbB;
 	private JButton searchButton;
 	private JComboBox<String> positioncbB;
+	private JTextField emailTxt;
 	/**
 	 * Create the panel.
 	 */
@@ -145,35 +146,35 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         
         JLabel idAccLabel = new JLabel("Mã TK");
         idAccLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idAccLabel.setBounds(141, 90, 70, 30);
+        idAccLabel.setBounds(140, 60, 70, 30);
         staffInfoPanel.add(idAccLabel);
         
         idAccTxt = new JTextField();
         idAccTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idAccTxt.setColumns(10);
-        idAccTxt.setBounds(211, 90, 170, 30);
+        idAccTxt.setBounds(210, 60, 170, 30);
         staffInfoPanel.add(idAccTxt);
         
         nameAccTxt = new JTextField();
         nameAccTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameAccTxt.setColumns(10);
-        nameAccTxt.setBounds(471, 90, 170, 30);
+        nameAccTxt.setBounds(470, 60, 170, 30);
         staffInfoPanel.add(nameAccTxt);
         
         JLabel nameAccLabel = new JLabel("Tên TK");
         nameAccLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameAccLabel.setBounds(401, 90, 70, 30);
+        nameAccLabel.setBounds(400, 60, 70, 30);
         staffInfoPanel.add(nameAccLabel);
         
         JLabel passLabel = new JLabel("Mật khẩu");
         passLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        passLabel.setBounds(401, 140, 70, 30);
+        passLabel.setBounds(400, 110, 70, 30);
         staffInfoPanel.add(passLabel);
         
         passTxt = new JTextField();
         passTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         passTxt.setColumns(10);
-        passTxt.setBounds(471, 140, 170, 30);
+        passTxt.setBounds(470, 110, 170, 30);
         staffInfoPanel.add(passTxt);
         
         addAccBtn = new JButton("Thêm");      
@@ -212,39 +213,50 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         
         JLabel lblGiiTnh = new JLabel("Trạng thái");
         lblGiiTnh.setFont(new Font("Arial", Font.BOLD, 13));
-        lblGiiTnh.setBounds(141, 140, 70, 30);
+        lblGiiTnh.setBounds(140, 110, 70, 30);
         staffInfoPanel.add(lblGiiTnh);
         
         blockedStatusRadioBtn = new JRadioButton("Khóa");
         buttonGroup.add(blockedStatusRadioBtn);
-        blockedStatusRadioBtn.setBounds(211, 140, 60, 30);
+        blockedStatusRadioBtn.setBounds(210, 110, 60, 30);
         staffInfoPanel.add(blockedStatusRadioBtn);
         
         noneStatusRadioBtn = new JRadioButton("None");
         noneStatusRadioBtn.setSelected(true);
         buttonGroup.add(noneStatusRadioBtn);
-        noneStatusRadioBtn.setBounds(271, 140, 60, 30);
+        noneStatusRadioBtn.setBounds(270, 110, 60, 30);
         staffInfoPanel.add(noneStatusRadioBtn);
         
         JLabel staffDateLabel = new JLabel("Ngày tạo");
         staffDateLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        staffDateLabel.setBounds(141, 190, 70, 30);
+        staffDateLabel.setBounds(140, 160, 70, 30);
         staffInfoPanel.add(staffDateLabel);
         
         positioncbB = new JComboBox<>();
         positioncbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Admin", "Quản lí", "Nhân viên"}));
-        positioncbB.setBounds(471, 190, 90, 30);
+        positioncbB.setBounds(210, 210, 90, 30);
         staffInfoPanel.add(positioncbB);
         
         JLabel lblChcV = new JLabel("Quyền");
         lblChcV.setFont(new Font("Arial", Font.BOLD, 13));
-        lblChcV.setBounds(401, 190, 70, 30);
+        lblChcV.setBounds(140, 210, 70, 30);
         staffInfoPanel.add(lblChcV);
         
         dateChooser = new JDateChooser();
-        dateChooser.setBounds(211, 190, 170, 30);
+        dateChooser.setBounds(210, 160, 170, 30);
         dateChooser.setFont(new Font("Arial", Font.PLAIN, 13));
         staffInfoPanel.add(dateChooser);
+        
+        JLabel lblEmail = new JLabel("Email");
+        lblEmail.setFont(new Font("Arial", Font.BOLD, 13));
+        lblEmail.setBounds(400, 160, 70, 30);
+        staffInfoPanel.add(lblEmail);
+        
+        emailTxt = new JTextField();
+        emailTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        emailTxt.setColumns(10);
+        emailTxt.setBounds(470, 160, 170, 30);
+        staffInfoPanel.add(emailTxt);
         
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
