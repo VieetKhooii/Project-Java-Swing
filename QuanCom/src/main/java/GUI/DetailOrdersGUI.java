@@ -1,4 +1,4 @@
-package main.java.GUI;
+package GUI;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -16,6 +16,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 
@@ -36,13 +37,12 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	private JTextField nameFindText;
 	private JTextField priceFrom;
 	private JTextField priceTo;
-	private JTextField idOrderTxt;
-	private JTextField unknownTxt;
-	private JTextField idStaffCreateOrderTxt;
-	private JTextField totalPriceOrderTxt;
+	public JTextField idOrderTxt;
+	public JTextField idStaffCreateOrderTxt;
+	public JTextField totalPriceOrderTxt;
+	public JDateChooser orderDateChooser;
 	private JPanel switchPanel;
-	private JPanel selectItemPanel;
-	private JDateChooser orderDateChooser;
+	private JPanel selectItemPanel;	
 	private JTextField idItemSelectedTxt;
 	private JTextField nameItemSelectedTxt;
 	private JTextField remainItemSelectedTxt;
@@ -71,6 +71,9 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	private JComboBox<String> categoryCbb;
 	private JButton selectProductBtn;
 	private JButton unselectedBtn;
+	Component[] components1;
+	Component[] components2;
+	Component[] totalComponents;
 	/**
 	 * Create the panel.
 	 */
@@ -186,7 +189,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         deltailOrderPanel = new JPanel(null);
 		switchPanel.add(deltailOrderPanel, "hello2");
         
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng mua", "Giá"}, 0);		
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng mua", " Giá"}, 0);		
         detailOrdersTable = new JTable(detailTableModel);
         detailOrdersTable.setFont(new Font("Arial", Font.PLAIN, 14));
 	    detailOrdersTable.setDefaultRenderer(String.class, centerRenderer);
@@ -337,7 +340,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 	    		ordersSelectedTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    	else {
-	    		ordersSelectedTable.getColumnModel().getColumn(i).setPreferredWidth(125);
 	    		ordersSelectedTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    }
@@ -483,17 +485,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		orderDateChooser.setBounds(160, 473, 178, 30);
 		contentField.add(orderDateChooser);
 		
-		JLabel unkownLabel = new JLabel("Mã hóa đơn");
-		unkownLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		unkownLabel.setBounds(370, 421, 120, 30);
-		contentField.add(unkownLabel);
-		
-		unknownTxt = new JTextField();
-		unknownTxt.setFont(new Font("Arial", Font.PLAIN, 13));
-		unknownTxt.setColumns(10);
-		unknownTxt.setBounds(532, 421, 178, 30);
-		contentField.add(unknownTxt);
-		
 		JLabel idStaffCreateOrderLabel = new JLabel("Mã nhân viên tạo đơn");
 		idStaffCreateOrderLabel.setFont(new Font("Arial", Font.BOLD, 13));
 		idStaffCreateOrderLabel.setBounds(370, 473, 150, 30);
@@ -507,13 +498,13 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		
 		JLabel totalPriceLabel = new JLabel("Tổng tiền");
 		totalPriceLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		totalPriceLabel.setBounds(758, 421, 102, 30);
+		totalPriceLabel.setBounds(370, 421, 150, 30);
 		contentField.add(totalPriceLabel);
 		
 		totalPriceOrderTxt = new JTextField();
 		totalPriceOrderTxt.setFont(new Font("Arial", Font.PLAIN, 13));
 		totalPriceOrderTxt.setColumns(10);
-		totalPriceOrderTxt.setBounds(870, 421, 178, 30);
+		totalPriceOrderTxt.setBounds(530, 421, 180, 30);
 		contentField.add(totalPriceOrderTxt);
         
         
@@ -522,11 +513,27 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		btnField.setPreferredSize(new Dimension(1080, 70));
 		btnField.setLayout(null);
 		this.add(btnField, BorderLayout.SOUTH);		
+		
 		preBtn = new JButton("Quay lại");		
 		preBtn.setFont(new Font("Arial", Font.BOLD, 17));
-		preBtn.setBounds(70, 10, 100, 50);
-		//preBtn.addMouseListener(this);
-		preBtn.addActionListener(this);
+		preBtn.setBounds(70, 10, 100, 50);	
+		preBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(!idOrderTxt.getText().equals("") || !idStaffCreateOrderTxt.getText().equals("") ) {
+					int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);						
+					if(decide==0) {
+						GiaoDien.hoaDon.setVisible(true);
+						GiaoDien.taoDon.setVisible(false);
+					}
+				}
+				else {
+					GiaoDien.hoaDon.setVisible(true);
+					GiaoDien.taoDon.setVisible(false);
+				}
+			}	
+		});
 		btnField.add(preBtn);
 		
 		nextBtn = new JButton("Tiếp");
@@ -542,7 +549,11 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		//End
 		
 		
-		
+		//Mảng lấy các component
+		components1 = contentField.getComponents();
+		components2 = infoDetailOrderPanel.getComponents();
+		totalComponents = Arrays.copyOf(components1, components1.length + components2.length);
+		System.arraycopy(components2, 0, totalComponents, components1.length, components2.length);
 	}
 	
 
@@ -580,18 +591,12 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		int modelRow = ordersSelectedTable.convertRowIndexToModel(selectedRow); // Chuyển đổi chỉ mục hàng sang chỉ mục hàng tương ứng trong mô hình dữ liệu
 		//////////////////
 		if(e.getSource() == nextBtn) {
-			if(idOrderTxt.getText().equals("") || unknownTxt.getText().equals("") || totalPriceOrderTxt.getText().equals("") 
+			if(idOrderTxt.getText().equals("") || totalPriceOrderTxt.getText().equals("") 
 					|| idStaffCreateOrderTxt.getText().equals("")) {
 				JOptionPane.showMessageDialog(null, "Thong tin chua day du!!!", "Thông báo", JOptionPane.WARNING_MESSAGE);
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Tao don thanh cong!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-			}
-		}
-		if(e.getSource() == preBtn) {
-			if(!idOrderTxt.getText().equals("") || !unknownTxt.getText().equals("") || !totalPriceOrderTxt.getText().equals("")
-					|| !idStaffCreateOrderTxt.getText().equals("")) {
-				int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);
 			}
 		}
 		if(e.getSource() == selectProductBtn) {
@@ -621,5 +626,15 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 		// TODO Auto-generated method stub
 		
 
+	}
+	//Hàm reset dl các component
+	void resetComponent() {				
+		for (Component component : totalComponents) {
+		    if (component instanceof JTextField) {
+		    	
+		        ((JTextField) component).setText(""); // reset giá trị trên JTextField
+		    }
+		    // Thêm các trường hợp khác tương tự nếu cần thiết
+		}
 	}
 }

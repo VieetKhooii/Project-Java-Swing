@@ -1,4 +1,4 @@
-package main.java.GUI;
+package GUI;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -31,8 +31,6 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
 	private JTextField nameStaffTxt;
 	private JTextField addressStaffTxt;
 	private JTextField phoneNumbTxt;
-	private JTextField textField;
-	private JButton searchButton;
 	private JPanel staffInfoPanel;
 	private JButton addStaffBtn;
 	private JButton fixStaffBtn;
@@ -41,6 +39,9 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
 	private JRadioButton maleRadioBtn;
 	private JRadioButton femaleRadioBtn;
 	private JDateChooser dateChooser;
+	private JTextField textField;
+	private JComboBox<String> searchCbB;
+	private JComboBox<String> sortCbB;
 	/**
 	 * Create the panel.
 	 */
@@ -68,12 +69,12 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         
         contentField.add(staffListPanel);
         
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã nhân viên", "Tên nhân viên", "Giới tính", "Ngày sinh", "Số điện thoại", "Địa chỉ", "Chức vụ"}, 0);		
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã nhân viên", "Tên nhân viên", "Giới tính", "Ngày sinh", "Số điện thoại", "Địa chỉ"}, 0);		
         staffTable = new JTable(detailTableModel);
         staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
         staffTable.setDefaultRenderer(String.class, centerRenderer);
 	    staffTable.setRowHeight(30);
-	    for(int i = 0; i < 7; i++) {
+	    for(int i = 0; i < 6; i++) {
 	    	if(i == 1 || i == 5) {
 	    		staffTable.getColumnModel().getColumn(i).setPreferredWidth(150);
 	    		staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -199,6 +200,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     
         
         maleRadioBtn = new JRadioButton("Nam");
+        maleRadioBtn.setSelected(true);
         buttonGroup.add(maleRadioBtn);
         maleRadioBtn.setBounds(341, 120, 60, 30);
         staffInfoPanel.add(maleRadioBtn);
@@ -237,22 +239,39 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
         
-        JLabel lblTmKim = new JLabel("Tìm kiếm");
-        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTmKim.setFont(new Font("Arial", Font.BOLD, 15));
-        lblTmKim.setBounds(80, 80, 120, 40);
-        searchPanel.add(lblTmKim);
+        searchCbB = new JComboBox<String>();
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nhân viên", "Tên nhân viên"}));
+        searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        searchCbB.setBounds(10, 64, 101, 40);
+        searchPanel.add(searchCbB);
         
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
         textField.setColumns(10);
-        textField.setBounds(55, 131, 170, 30);
+        textField.setBounds(121, 64, 149, 40);
         searchPanel.add(textField);
         
-        searchButton = new JButton("OK");
+        JLabel lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
+        lblSpXp.setBounds(10, 134, 80, 40);
+        searchPanel.add(lblSpXp);
+        
+        sortCbB = new JComboBox<String>();
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nhân viên", "Tên nhân viên"}));
+        sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        sortCbB.setBounds(121, 134, 149, 40);
+        searchPanel.add(sortCbB);
+        
+        JButton searchButton = new JButton("OK");
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(90, 180, 100, 30);
+        searchButton.setBounds(97, 224, 100, 50);
         searchPanel.add(searchButton);
+        
+        JLabel lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTmKim.setBounds(85, 0, 120, 40);
+        searchPanel.add(lblTmKim);
 		//End
 		
 		

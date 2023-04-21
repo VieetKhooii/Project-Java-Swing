@@ -1,23 +1,16 @@
-
-
-package main.java.GUI;
+package GUI;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
 import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -37,11 +30,11 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 	private JTextField nameFindText;
 	private JTextField priceFrom;
 	private JTextField priceTo;
-	private JTextField idPNTxt;
-	private JTextField idNCCTxt;
-	private JTextField idStaffCreatePNTxt;
-	private JTextField totalPricePNTxt;
-	private JDateChooser datePNChooser;
+	public JTextField idPNTxt;
+	public JTextField idNCCTxt;
+	public JTextField idStaffCreatePNTxt;
+	public JTextField totalPricePNTxt;
+	public JDateChooser datePNChooser;
 	private JComboBox<String> sortCbb;
 	private JPanel deltailOrderPanel;
 	private JTable ctPNTable;
@@ -393,8 +386,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(!idPNTxt.getText().equals("") || !idNCCTxt.getText().equals("") || !totalPricePNTxt.getText().equals("")
-						|| !idStaffCreatePNTxt.getText().equals("")) {
+				if(!idPNTxt.getText().equals("") || !idNCCTxt.getText().equals("") || !idStaffCreatePNTxt.getText().equals("")) {
 					int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);						
 					if(decide==0) {
 						GiaoDien.phieuNhap.setVisible(true);

@@ -1,40 +1,36 @@
-package main.java.GUI;
+package GUI;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+
+import com.formdev.flatlaf.json.ParseException;
 
 import java.awt.*;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.json.ParseException;
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 
-public class ReceivingGUI extends JPanel implements MouseListener, ActionListener{
+public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentField;
-	private JPanel receivingListPanel;
-	private JTable receivingTable;
+	private JPanel ordersListPanel;
+	private JTable ordersTable;
 	private DefaultTableModel detailTableModel;
-	private JScrollPane receivingScrollPane;
+	private JScrollPane ordersScrollPane;
 	private DefaultTableCellRenderer centerRenderer;
 	private JPanel searchPanel;
 	private JTextField searchTxt;
@@ -48,12 +44,12 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 	private JTextField priceFrom;
 	private JTextField priceTo;
 	private JComboBox<String> sortCbB;
-	private JComboBox<String> searchCbB;
 	private JLabel lblSpXp;
+	private JComboBox<String> searchCbB;
 	/**
 	 * Create the panel.
 	 */
-	public ReceivingGUI() {
+	public OrdersGUI() {
 		init();
 	}
 	private void init() {
@@ -71,58 +67,58 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 		this.add(contentField, BorderLayout.CENTER);
 	   
         //Panel table nhan vien
-        receivingListPanel = new JPanel(null);
-        receivingListPanel.setBackground(new Color(30, 144, 255));
-        receivingListPanel.setBounds(0, 50, 800, 650);
+        ordersListPanel = new JPanel(null);
+        ordersListPanel.setBackground(new Color(30, 144, 255));
+        ordersListPanel.setBounds(0, 50, 800, 650);
         
-        contentField.add(receivingListPanel);
+        contentField.add(ordersListPanel);
         
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo", "Tổng tiền"}, 0);		
-        receivingTable = new JTable(detailTableModel);
-        receivingTable.setFont(new Font("Arial", Font.PLAIN, 14));
-        receivingTable.setDefaultRenderer(String.class, centerRenderer);
-	    receivingTable.setRowHeight(30);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã hóa đơn", "Mã nhân viên", "Ngày tạo", "Tổng tiền"}, 0);		
+        ordersTable = new JTable(detailTableModel);
+        ordersTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        ordersTable.setDefaultRenderer(String.class, centerRenderer);
+	    ordersTable.setRowHeight(30);
 	    
-	    detailTableModel.addRow(new Object[] {"PN123", "NV123", "NCC12", "12/29/2023", 10000000});
+	    detailTableModel.addRow(new Object[] {"123", "NV123", "12/29/2023", 10000000});
+	    detailTableModel.addRow(new Object[] {"124", "NV123", "11/29/2023", 20000000});
 	    
 	    for(int i = 0; i < 4; i++) {
-	    	receivingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	    	ordersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    }
 	    
-	    ListSelectionModel listSelectionModel = receivingTable.getSelectionModel();
+	    ListSelectionModel listSelectionModel = ordersTable.getSelectionModel();
         listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listSelectionModel.addListSelectionListener(new ListSelectionListener(){      	
             @Override
             public void valueChanged(ListSelectionEvent e) {
-            	int row = receivingTable.getSelectedRow();   
+            	int row = ordersTable.getSelectedRow();   
             	viewBtn.setEnabled(true);           		   		    		        
             	viewBtn.addActionListener(new ActionListener() {
                  	public void actionPerformed(ActionEvent e) {
-                 		GiaoDien.phieuNhap.setVisible(false);
-         		        GiaoDien.taoPhieu.setVisible(true);
+                 		GiaoDien.hoaDon.setVisible(false);
+         		        GiaoDien.taoDon.setVisible(true);
                  	}
                 });
             	
-            	GiaoDien.taoPhieu.idPNTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-            	GiaoDien.taoPhieu.idStaffCreatePNTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-            	GiaoDien.taoPhieu.idNCCTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+            	GiaoDien.taoDon.idOrderTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+            	GiaoDien.taoDon.idStaffCreateOrderTxt.setText(detailTableModel.getValueAt(row, 1).toString());
             	
             	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
             	Date date = null;
             	try {
-            	    date = dateFormat.parse(detailTableModel.getValueAt(row, 3).toString());
+            	    date = dateFormat.parse(detailTableModel.getValueAt(row, 2).toString());
             	} catch (ParseException | java.text.ParseException e1) {
             	    e1.printStackTrace();
             	}
-            	GiaoDien.taoPhieu.datePNChooser.setDate(date);
+            	GiaoDien.taoDon.orderDateChooser.setDate(date);
             	
-            	GiaoDien.taoPhieu.totalPricePNTxt.setText(detailTableModel.getValueAt(row, 4).toString());
+            	GiaoDien.taoDon.totalPriceOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());
             }          
         });
 	    
-        receivingScrollPane = new JScrollPane(receivingTable);
-        receivingScrollPane.setBounds(5, 5, 790, 640);
-        receivingListPanel.add(receivingScrollPane);
+        ordersScrollPane = new JScrollPane(ordersTable);
+        ordersScrollPane.setBounds(5, 5, 790, 640);
+        ordersListPanel.add(ordersScrollPane);
         
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -130,7 +126,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
         
-        JLabel staffLabel = new JLabel("DANH SÁCH PHIẾU NHẬP");
+        JLabel staffLabel = new JLabel("DANH SÁCH HÓA ĐƠN");
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -165,7 +161,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         
         searchCbB = new JComboBox<>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo"}));      
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã hóa đơn", "Mã nhân viên", "Ngày tạo"}));      
         searchCbB.setBounds(10, 70, 80, 40);
         searchPanel.add(searchCbB);
         
@@ -187,7 +183,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         searchPanel.add(priceTo);
         
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo", "Tổng giá"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã hóa đơn", "Mã nhân viên"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
         sortCbB.setBounds(100, 180, 145, 40);
         searchPanel.add(sortCbB);
@@ -212,9 +208,9 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		GiaoDien.phieuNhap.setVisible(false);
-		        GiaoDien.taoPhieu.setVisible(true);
-		        GiaoDien.taoPhieu.resetComponent();
+        		GiaoDien.hoaDon.setVisible(false);
+		        GiaoDien.taoDon.setVisible(true);
+		        GiaoDien.taoDon.resetComponent();
         	}
         });
         btnField.add(createBtn);
@@ -247,6 +243,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 		
 	}
 	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

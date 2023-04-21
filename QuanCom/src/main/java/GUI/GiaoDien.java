@@ -1,22 +1,13 @@
-package main.java.GUI;
+package GUI;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 
@@ -38,15 +29,18 @@ public class GiaoDien extends JFrame {
     static JPanel functionPanel5;
     static JPanel functionPanel6;
     static JPanel functionPanel7;
+    static OrdersGUI hoaDon;
     static DetailOrdersGUI taoDon;
     static ReceivingGUI phieuNhap;
     static DetailReceivingGUI taoPhieu;
     static SupplierGUI supplier;
     static StaffsGUI staffs;
     static AccountAndRoleGUI accounts;
+    static MaterialGUI material;
+    static ProductAndRecipeGUI product;
     public GiaoDien() {
     	try {
-    		FlatGradiantoDeepOceanIJTheme.setup();
+    		FlatMacLightLaf.setup();
     	} catch( Exception ex ) {
     	    System.err.println( "Failed to initialize LaF" );
     	}
@@ -87,10 +81,14 @@ public class GiaoDien extends JFrame {
         mainContent.add(switchPanel);
         //Tạo đơn
         functionPanel1 = new JPanel(null);
-        functionPanel1.setPreferredSize(new Dimension(1080, 700));      
+        functionPanel1.setPreferredSize(new Dimension(1080, 700));    
+        hoaDon = new OrdersGUI();
+        hoaDon.setBounds(0, 0, 1080, 700);
+        functionPanel1.add(hoaDon);       
         taoDon = new DetailOrdersGUI();
         taoDon.setBounds(0, 0, 1080, 700);
         functionPanel1.add(taoDon);
+        taoDon.setVisible(false);
         switchPanel.add(functionPanel1, "func1");
         
         //Tạo phiếu nhập
@@ -106,15 +104,21 @@ public class GiaoDien extends JFrame {
         switchPanel.add(functionPanel2, "func2");   
         
         
-        //chức năng 3
+        //món ăn và công thức
         functionPanel3 = new JPanel(null);
-        functionPanel3.setPreferredSize(new Dimension(1080, 700));
-        
+        functionPanel3.setPreferredSize(new Dimension(1080, 700));	
+        product = new ProductAndRecipeGUI();
+        product.setBounds(0, 0, 1080, 700);
+        functionPanel3.add(product);
         switchPanel.add(functionPanel3, "func3");
         
         //chức năng 4
         functionPanel4 = new JPanel(null);
-        switchPanel.add(functionPanel4, "fun4");
+        functionPanel4.setPreferredSize(new Dimension(1080, 700));
+        material = new MaterialGUI();
+        material.setBounds(0, 0, 1080, 700);
+        functionPanel4.add(material);
+        switchPanel.add(functionPanel4, "func4");
         
         //Tài khoản và phân quyền
         functionPanel5 = new JPanel(null);

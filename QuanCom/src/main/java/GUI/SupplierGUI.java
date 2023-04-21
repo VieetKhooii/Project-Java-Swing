@@ -1,20 +1,15 @@
-package main.java.GUI;
+package GUI;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
 import java.awt.*;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
@@ -90,6 +85,20 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
 	    	}
 	    }
 	    
+	    ListSelectionModel listSelectionModel = supplierTable.getSelectionModel();
+        listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSelectionModel.addListSelectionListener(new ListSelectionListener(){      	
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+            	int row = supplierTable.getSelectedRow();        		   		    		        
+            	idSupplierTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+            	nameSupplierTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+            	addressSupplierTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+            	phoneNumbTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+            }          
+        });
+        detailTableModel.addRow(new Object[] {"12", "Cocacola", "273 an duong vuong", "0123456789"});
+        
         supplierScrollPane = new JScrollPane(supplierTable);
         supplierScrollPane.setBounds(5, 5, 1070, 350);
         staffListPanel.add(supplierScrollPane);
@@ -204,7 +213,7 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên quyền"}));
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Địa chỉ", "Số điện thoại"}));
         searchCbB.setBounds(130, 75, 101, 40);
         searchPanel.add(searchCbB);
         
@@ -220,8 +229,9 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         searchPanel.add(lblSpXp);
         
         sortCbB = new JComboBox<String>();
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Địa chỉ",  "Số điện thoại"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(241, 145, 100, 40);
+        sortCbB.setBounds(241, 145, 149, 40);
         searchPanel.add(sortCbB);
         
         lblTmKim = new JLabel("Tìm kiếm");
@@ -240,18 +250,6 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
 		
 	}
 	
-	 class CheckboxRenderer extends JCheckBox implements TableCellRenderer {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-	            setSelected((value != null && ((Boolean) value).booleanValue()));
-	            return this;
-	        }
-	  }
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

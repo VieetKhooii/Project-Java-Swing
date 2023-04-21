@@ -1,4 +1,4 @@
-package main.java.GUI;
+package GUI;
 
 
 import javax.swing.*;
@@ -14,11 +14,14 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.json.ParseException;
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 
 public class ReceivingGUI extends JPanel implements MouseListener, ActionListener{
@@ -45,6 +48,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 	private JTextField priceFrom;
 	private JTextField priceTo;
 	private JComboBox<String> sortCbB;
+	private JComboBox<String> searchCbB;
 	private JLabel lblSpXp;
 	/**
 	 * Create the panel.
@@ -79,7 +83,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         receivingTable.setDefaultRenderer(String.class, centerRenderer);
 	    receivingTable.setRowHeight(30);
 	    
-	    detailTableModel.addRow(new Object[] {"PN123", "NV123", "NCC12", "29/12/2023", 10000000});
+	    detailTableModel.addRow(new Object[] {"PN123", "NV123", "NCC12", "12/29/2023", 10000000});
 	    
 	    for(int i = 0; i < 4; i++) {
 	    	receivingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -92,12 +96,27 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
             public void valueChanged(ListSelectionEvent e) {
             	int row = receivingTable.getSelectedRow();   
             	viewBtn.setEnabled(true);           		   		    		        
-            	 viewBtn.addActionListener(new ActionListener() {
+            	viewBtn.addActionListener(new ActionListener() {
                  	public void actionPerformed(ActionEvent e) {
                  		GiaoDien.phieuNhap.setVisible(false);
          		        GiaoDien.taoPhieu.setVisible(true);
                  	}
-                 });
+                });
+            	
+            	GiaoDien.taoPhieu.idPNTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+            	GiaoDien.taoPhieu.idStaffCreatePNTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+            	GiaoDien.taoPhieu.idNCCTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+            	
+            	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            	Date date = null;
+            	try {
+            	    date = dateFormat.parse(detailTableModel.getValueAt(row, 3).toString());
+            	} catch (ParseException | java.text.ParseException e1) {
+            	    e1.printStackTrace();
+            	}
+            	GiaoDien.taoPhieu.datePNChooser.setDate(date);
+            	
+            	GiaoDien.taoPhieu.totalPricePNTxt.setText(detailTableModel.getValueAt(row, 4).toString());
             }          
         });
 	    
@@ -144,7 +163,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         searchButton.setBounds(100, 250, 100, 50);
         searchPanel.add(searchButton);
         
-        JComboBox<String> searchCbB = new JComboBox<>();
+        searchCbB = new JComboBox<>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
         searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo"}));      
         searchCbB.setBounds(10, 70, 80, 40);
@@ -228,18 +247,6 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 		
 	}
 	
-	 class CheckboxRenderer extends JCheckBox implements TableCellRenderer {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-	            setSelected((value != null && ((Boolean) value).booleanValue()));
-	            return this;
-	        }
-	  }
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

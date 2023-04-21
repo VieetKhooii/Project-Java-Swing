@@ -1,15 +1,20 @@
-package main.java.GUI;
+package GUI;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import com.formdev.flatlaf.json.ParseException;
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 
 public class RolesGUI extends JPanel implements MouseListener, ActionListener{
@@ -20,9 +25,9 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentField;
 	private JPanel accListPanel;
-	private JTable staffTable;
+	private JTable roleTable;
 	private DefaultTableModel detailTableModel;
-	private JScrollPane accScrollPane;
+	private JScrollPane roleScrollPane;
 	private DefaultTableCellRenderer centerRenderer;	
 	private JPanel searchPanel;
 	private JLabel lblNewLabel;
@@ -79,24 +84,38 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         contentField.add(accListPanel);
         /////////////////////////////////////////////////////////////////
         detailTableModel = new DefaultTableModel(new Object[]{"Mã quyền", "Tên quyền", "Mô tả"}, 0);		
-        staffTable = new JTable(detailTableModel);
-        staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
-        staffTable.setDefaultRenderer(String.class, centerRenderer);
-	    staffTable.setRowHeight(30);
+        roleTable = new JTable(detailTableModel);
+        roleTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        roleTable.setDefaultRenderer(String.class, centerRenderer);
+	    roleTable.setRowHeight(30);
 	    for(int i = 0; i < 3; i++) {
 	    	if(i == 2) {
-	    		staffTable.getColumnModel().getColumn(i).setPreferredWidth(150);
-	    		staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	    		roleTable.getColumnModel().getColumn(i).setPreferredWidth(150);
+	    		roleTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    	else {
-	    		//staffTable.getColumnModel().getColumn(i).setPreferredWidth(125);
-	    		staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	    		//roleTable.getColumnModel().getColumn(i).setPreferredWidth(125);
+	    		roleTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 	    	}
 	    }
 	    
-        accScrollPane = new JScrollPane(staffTable);
-        accScrollPane.setBounds(5, 5, 1070, 280);
-        accListPanel.add(accScrollPane);
+	    ListSelectionModel listSelectionModel = roleTable.getSelectionModel();
+        listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSelectionModel.addListSelectionListener(new ListSelectionListener(){      	
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+            	int row = roleTable.getSelectedRow(); 
+            	idRoleTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+            	nameRoleTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+            	descriptionTextArea.setText(detailTableModel.getValueAt(row, 2).toString());
+            	//xu li checkbox functionality
+            }
+           	
+        });
+	    
+        roleScrollPane = new JScrollPane(roleTable);
+        roleScrollPane.setBounds(5, 5, 1070, 280);
+        accListPanel.add(roleScrollPane);
         ///////////////////////////////////////////////////////////////////
         staffInfoPanel = new JPanel();
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
