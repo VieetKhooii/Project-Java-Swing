@@ -194,7 +194,6 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
                 staffTable.clearSelection();
                 idStaffTxt.setText(null);
                 nameStaffTxt.setText(null);
-                nameStaffTxt.setText(null);
                 dateChooser.setDate(null);
                 phoneNumbTxt.setText(null);
                 addressStaffTxt.setText(null);

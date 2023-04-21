@@ -12,9 +12,11 @@ import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import model.Functions;
 import model.Role_Func;
 import model.Roles;
+import model.User;
 import service.FunctionService;
 import service.RoleFuncService;
 import service.RoleService;
+import service.UserService;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -66,6 +68,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
     RoleService roleService = new RoleService();
     FunctionService functionService = new FunctionService();
     RoleFuncService roleFuncService = new RoleFuncService();
+    UserService userService = new UserService();
     List<Roles> rolesList = roleService.getAllRoles();
     List<Functions> functionsList = functionService.getAllFunctions();
     List<Functions> role_funcList = new ArrayList<>();
@@ -296,7 +299,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         fixAccBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idRoleTxt.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 nhân viên và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 quyền và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 else if(nameRoleTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -329,6 +332,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
                             }
                         }
                         showTableRoles();
+                        clearInfoBtn.doClick();
                         JOptionPane.showMessageDialog(null, "Đã sửa quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -342,11 +346,17 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         delAccBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idRoleTxt.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 nhân viên và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 quyền và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 else {
                     int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
                     if (decide == 0) {
+                        List<User> userList = userService.getAllUsers();
+                        for (User user : userList){
+                            if (user.getRoleId() == Integer.parseInt(idRoleTxt.getText())){
+                                userService.deleteUser(user.getId());
+                            }
+                        }
                         roleFuncService.deteleFuncRole(Integer.parseInt(idRoleTxt.getText()));
                         roleService.roleDetele(Integer.parseInt(idRoleTxt.getText()));
                         clearInfoBtn.doClick();
@@ -365,6 +375,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         descriptionTextArea = new JTextArea();
         descriptionTextArea.setBounds(190, 151, 170, 80);
         descriptionTextArea.setBorder(BorderFactory.createLineBorder(Color.gray));
+        descriptionTextArea.setRows(10);
         staffInfoPanel.add(descriptionTextArea);
 
         JLabel lblNewLabel_1 = new JLabel("Mô tả");

@@ -73,7 +73,7 @@ CREATE TABLE orders(
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
 select * from roles;
-select * from role_func;
+select * from role_func order by role_id asc;
 select * from functions;
 select * from users;
 select * from orders;

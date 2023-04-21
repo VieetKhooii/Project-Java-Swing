@@ -34,13 +34,13 @@ public class UserRepository {
         return list;
     }
 
-    public int login(String email, String password){
+    public int login(String name, String password){
         int count=0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "select count(*) as count from users u where u.email= ? and u.password= ?";
+        String query = "select count(*) as count from users u where u.username= ? and u.password= ?";
         try {
             PreparedStatement preparedStatement =connection.prepareStatement(query);
-            preparedStatement.setString(1,email);
+            preparedStatement.setString(1,name);
             preparedStatement.setString(2,password);
             ResultSet resultSet =preparedStatement.executeQuery();
             while (resultSet.next()){

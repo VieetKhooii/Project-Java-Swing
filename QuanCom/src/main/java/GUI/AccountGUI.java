@@ -2,11 +2,14 @@ package GUI;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
+import model.Functions;
 import model.Roles;
 import model.User;
 import service.RoleService;
@@ -40,6 +43,7 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
     private JButton searchButton;
     private JPanel staffInfoPanel;
     private JButton addAccBtn;
+    private JButton clearInfoBtn;
     private JButton fixAccBtn;
     private JButton delAccBtn;
     private final ButtonGroup buttonGroup = new ButtonGroup();
@@ -77,12 +81,12 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
 
         contentField.add(accListPanel);
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập", "Email", "Quyền"}, 0);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập","Password", "Email", "Quyền"}, 0);
         staffTable = new JTable(detailTableModel);
         staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
         staffTable.setDefaultRenderer(String.class, centerRenderer);
         staffTable.setRowHeight(30);
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 5; i++) {
             if(i == 1 || i == 4) {
                 staffTable.getColumnModel().getColumn(i).setPreferredWidth(150);
                 staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -92,6 +96,27 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                 staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
         }
+
+        ListSelectionModel listSelectionModel = staffTable.getSelectionModel();
+        listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSelectionModel.addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int row = staffTable.getSelectedRow();
+                if (row >= 0) {
+                    idAccTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    nameAccTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+                    passTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+                    emailTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+                    for (int i=0; i<rolesList.size(); i++){
+                        if (positioncbB.getItemAt(i).equalsIgnoreCase(detailTableModel.getValueAt(row, 4).toString())){
+                            positioncbB.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
 
         accScrollPane = new JScrollPane(staffTable);
         accScrollPane.setBounds(5, 5, 1070, 280);
@@ -170,7 +195,46 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         addAccBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addAccBtn);
 
+        //Clear Information
+        clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                staffTable.clearSelection();
+                idAccTxt.setText(null);
+                nameAccTxt.setText(null);
+                emailTxt.setText(null);
+                passTxt.setText(null);
+                showTableAcc();
+            }
+        });
+        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        clearInfoBtn.setBounds(534, 280, 90, 35);
+        staffInfoPanel.add(clearInfoBtn);
+
         fixAccBtn = new JButton("Cập nhật");
+        fixAccBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (idAccTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 tài khoản và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else if(nameAccTxt.getText().equals("") || passTxt.getText().equals("") || emailTxt.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    int modifyIdOfRole=0;
+                        for (Roles role : rolesList){
+                            if (positioncbB.getSelectedItem().equals(role.getName())){
+                                modifyIdOfRole = role.getId();
+                                break;
+                            }
+                        }
+                    userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole);
+                    showTableAcc();
+                    JOptionPane.showMessageDialog(null, "Đã sửa quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                }
+            }
+        });
         fixAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixAccBtn.setBounds(358, 280, 90, 35);
         staffInfoPanel.add(fixAccBtn);
@@ -178,10 +242,18 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         delAccBtn = new JButton("Xóa");
         delAccBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                //xoa o day
-                if(decide == 0) {
-                    JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                if (idAccTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 tài khoản và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else {
+                    int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                    //xoa o day
+                    if(decide == 0) {
+                        userService.deleteUser(Integer.parseInt(idAccTxt.getText()));
+                        clearInfoBtn.doClick();
+                        showTableAcc();
+                        JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -281,7 +353,7 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                 }
             }
             detailTableModel.addRow(new Object[] {
-                    user.getId(), user.getName(), user.getEmail(), roleName
+                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName
             });
         }
     }

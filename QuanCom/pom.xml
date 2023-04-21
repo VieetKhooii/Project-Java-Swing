@@ -64,6 +64,19 @@
             <version>1.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bidib.jbidib.swinglabs.swingx</groupId>
+            <artifactId>swingx-core</artifactId>
+            <version>1.6.5-1</version>
+        </dependency>
+        <!-- Thanks for using https://jar-download.com -->
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>
