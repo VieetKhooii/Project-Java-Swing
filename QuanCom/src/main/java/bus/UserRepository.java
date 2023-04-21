@@ -21,8 +21,11 @@ public class UserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setName(resultSet.getString("username"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
+                user.setRoleId(resultSet.getInt("role_id"));
                 list.add(user);
             }
         } catch (SQLException e) {
@@ -51,26 +54,20 @@ public class UserRepository {
 
     public int addUser(
             String userName,
-            String fullName,
             String email,
             String password,
-            String address,
-            String phone,
             int roleId){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "INSERT INTO users(username, password, fullname, email, address, phonenumber, role_id)\n" +
+        String query = "INSERT INTO users(username, password, email, role_id)\n" +
                 "values\n" +
-                "(?,?,?,?,?,?,?)";
+                "(?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,password);
-            preparedStatement.setString(3,fullName);
-            preparedStatement.setString(4,email);
-            preparedStatement.setString(5,address);
-            preparedStatement.setString(6,phone);
-            preparedStatement.setInt(7,roleId);
+            preparedStatement.setString(3,email);
+            preparedStatement.setInt(4,roleId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while add user "+e.getMessage());
@@ -95,26 +92,20 @@ public class UserRepository {
     public int modifyUser(
             int id,
             String userName,
-            String fullName,
             String email,
             String password,
-            String address,
-            String phone,
             int roleId){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update users set username = ?, password = ?, " +
-                "fullname = ?, email = ?, address = ?, phonenumber = ?, role_id = ? where user_id=?";
+                "email = ?, role_id = ? where user_id=?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,password);
-            preparedStatement.setString(3,fullName);
-            preparedStatement.setString(4,email);
-            preparedStatement.setString(5,address);
-            preparedStatement.setString(6,phone);
-            preparedStatement.setInt(7,roleId);
-            preparedStatement.setInt(8,id);
+            preparedStatement.setString(3,email);
+            preparedStatement.setInt(4,roleId);
+            preparedStatement.setInt(5,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while modify user "+e.getMessage());

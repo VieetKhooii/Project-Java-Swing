@@ -17,9 +17,9 @@ public class StaffService {
         return repository.addStaff(name, address, phone, birthDate, gender) >= 1;
     }
 
-    public boolean modifyStaff(String name, String address, String phone, int id, Date birthDate, String gender){
+    public boolean modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender){
         StaffRepository repository = new StaffRepository();
-        return repository.modifyStaff(name, address, phone, id, birthDate, gender) >= 1;
+        return repository.modifyStaff(id, name, address, phone, birthDate, gender) >= 1;
     }
 
     public boolean deleteStaff(int id){

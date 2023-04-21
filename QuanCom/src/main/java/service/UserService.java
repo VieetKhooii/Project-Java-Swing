@@ -18,20 +18,14 @@ public class UserService {
     }
 
     public boolean addUser(String userName,
-                           String fullName,
                            String email,
                            String password,
-                           String address,
-                           String phone,
                            int roleId){
         UserRepository userRepository = new UserRepository();
         return userRepository.addUser(
                 userName,
-                fullName,
                 email,
                 password,
-                address,
-                phone,
                 roleId) >= 1;
     }
 
@@ -54,11 +48,8 @@ public class UserService {
         return  userRepository.modifyUser(
                 id,
                 userName,
-                fullName,
                 email,
                 password,
-                address,
-                phone,
                 roleId
         ) >= 1;
     }

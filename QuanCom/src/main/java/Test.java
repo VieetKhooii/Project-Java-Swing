@@ -1,3 +1,5 @@
+import GUI.AccountAndRoleGUI;
+import GUI.AccountGUI;
 import GUI.StaffGUI;
 import model.Roles;
 import service.RoleService;
@@ -14,7 +16,11 @@ public class Test {
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(1080,700));
         frame.setVisible(true);
-        StaffGUI staffGUI = new StaffGUI();
-        frame.add(staffGUI);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        AccountAndRoleGUI accountAndRoleGUI = new AccountAndRoleGUI();
+        frame.add(accountAndRoleGUI);
+
+//        StaffGUI staffGUI = new StaffGUI();
+//        frame.add(staffGUI);
     }
 }

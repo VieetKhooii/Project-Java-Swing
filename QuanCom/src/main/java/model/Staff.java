@@ -66,7 +66,8 @@ public class Staff {
     public Staff() {
     }
 
-    public Staff(String name, String address, String phone,Date birthDate, String gender) {
+    public Staff(int id, String name, String address, String phone,Date birthDate, String gender) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;

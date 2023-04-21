@@ -51,7 +51,7 @@ public class StaffRepository {
         return isSuccess;
     }
 
-    public int modifyStaff(String name, String address, String phone, int id, Date birthDate, String gender){
+    public int modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update staffs set name = ?, address = ?, phonenumber = ?, date_of_birth = ?, gender = ?" +

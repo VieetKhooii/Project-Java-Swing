@@ -40,10 +40,10 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
     private JButton addStaffBtn;
     private JButton fixStaffBtn;
     private JButton delStaffBtn;
+    private JButton clearInfoBtn;
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private JRadioButton maleRadioBtn;
     private JRadioButton femaleRadioBtn;
-    private JComboBox<String> positioncbB;
     private JDateChooser dateChooser = new JDateChooser();
     StaffService staffService = new StaffService();
     List<Staff> staffList = staffService.getAllStaff();
@@ -74,13 +74,12 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
 
         contentField.add(staffListPanel);
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã nhân viên", "Tên nhân viên", "Giới tính", "Ngày sinh", "Số điện thoại", "Địa chỉ", "Chức vụ"}, 0);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã nhân viên", "Tên nhân viên", "Giới tính", "Ngày sinh", "Số điện thoại", "Địa chỉ"}, 0);
         staffTable = new JTable(detailTableModel);
         staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
         staffTable.setDefaultRenderer(String.class, centerRenderer);
         staffTable.setRowHeight(30);
-//        staffTable.setEnabled(false);
-        for(int i = 0; i < 7; i++) {
+        for(int i = 0; i < 6; i++) {
             if(i == 1 || i == 5) {
                 staffTable.getColumnModel().getColumn(i).setPreferredWidth(150);
                 staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -97,12 +96,21 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int row = staffTable.getSelectedRow();
-                idStaffTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-                nameStaffTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-                nameStaffTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-                dateChooser.setDate((java.sql.Date) detailTableModel.getValueAt(row, 3));
-                phoneNumbTxt.setText(detailTableModel.getValueAt(row, 4).toString());
-                addressStaffTxt.setText(detailTableModel.getValueAt(row, 5).toString());
+                if (row >= 0) {
+                    idStaffTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    nameStaffTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+                    dateChooser.setDate((java.sql.Date) detailTableModel.getValueAt(row, 3));
+                    phoneNumbTxt.setText(detailTableModel.getValueAt(row, 4).toString());
+                    addressStaffTxt.setText(detailTableModel.getValueAt(row, 5).toString());
+                    if (detailTableModel.getValueAt(row, 2).toString().equalsIgnoreCase(maleRadioBtn.getText())){
+                        maleRadioBtn.setSelected(true);
+                        femaleRadioBtn.setSelected(false);
+                    }
+                    else {
+                        femaleRadioBtn.setSelected(true);
+                        maleRadioBtn.setSelected(false);
+                    }
+                }
             }
         });
 
@@ -126,7 +134,7 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
         lblNewLabel = new JLabel("Thông tin nhân viên");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel.setBounds(306, 0, 150, 40);
+        lblNewLabel.setBounds(306, 0, 200, 40);
         staffInfoPanel.add(lblNewLabel);
 
         JLabel idsStaffLabel = new JLabel("Mã NV");
@@ -138,6 +146,7 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
         idStaffTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idStaffTxt.setColumns(10);
         idStaffTxt.setBounds(340, 50, 170, 30);
+        idStaffTxt.setEditable(false);
         staffInfoPanel.add(idStaffTxt);
 
         nameStaffTxt = new JTextField();
@@ -178,7 +187,51 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
         addStaffBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addStaffBtn);
 
+//Clear Information
+        clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                staffTable.clearSelection();
+                idStaffTxt.setText(null);
+                nameStaffTxt.setText(null);
+                nameStaffTxt.setText(null);
+                dateChooser.setDate(null);
+                phoneNumbTxt.setText(null);
+                addressStaffTxt.setText(null);
+            }
+    });
+        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        clearInfoBtn.setBounds(534, 280, 90, 35);
+        staffInfoPanel.add(clearInfoBtn);
+
+
         fixStaffBtn = new JButton("Cập nhật");
+        fixStaffBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận thay đổi?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                //xoa o day
+                if(decide == 0) {
+                    String gender="";
+                    if (maleRadioBtn.isSelected()) {
+                        gender = "Nam";
+                    }
+                    else {
+                        gender = "Nữ";
+                    }
+                    java.sql.Date sqlDate = new Date(dateChooser.getDate().getTime());
+                    staffService.modifyStaff(
+                            Integer.parseInt(idStaffTxt.getText()),
+                            nameStaffTxt.getText(),
+                            addressStaffTxt.getText(),
+                            phoneNumbTxt.getText(),
+                            sqlDate,
+                            gender
+                    );
+                    showTableStaff();
+                    JOptionPane.showMessageDialog(null, "Thay đổi thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
         fixStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixStaffBtn.setBounds(358, 280, 90, 35);
         staffInfoPanel.add(fixStaffBtn);
@@ -186,11 +239,18 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
         delStaffBtn = new JButton("Xóa");
         delStaffBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
                 //xoa o day
-                if(decide == 0) {
-                    staffService.deleteStaff(Integer.parseInt(idStaffTxt.getText()));
-                    JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                if (idStaffTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 nhân viên và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else {
+                    int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                    if (decide == 0) {
+                        staffService.deleteStaff(Integer.parseInt(idStaffTxt.getText()));
+                        clearInfoBtn.doClick();
+                        showTableStaff();
+                        JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -222,16 +282,6 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
         staffDateLabel.setBounds(530, 100, 70, 30);
         staffInfoPanel.add(staffDateLabel);
 
-        positioncbB = new JComboBox<>();
-        positioncbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Admin", "Quản lí", "Nhân viên"}));
-        positioncbB.setBounds(340, 200, 90, 30);
-        staffInfoPanel.add(positioncbB);
-
-        JLabel lblChcV = new JLabel("Chức vụ");
-        lblChcV.setFont(new Font("Arial", Font.BOLD, 13));
-        lblChcV.setBounds(270, 200, 70, 30);
-        staffInfoPanel.add(lblChcV);
-
         dateChooser.setBounds(600, 100, 170, 30);
         staffInfoPanel.add(dateChooser);
 
@@ -253,6 +303,9 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
                 if(nameStaffTxt.getText().equals("") || addressStaffTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
+                else if (!idStaffTxt.getText().isBlank()){
+                    JOptionPane.showMessageDialog(null, "Id nhân viên phải để trống!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
                 else {
                     String gender="";
                     if (maleRadioBtn.isSelected()) {
@@ -267,16 +320,7 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
                             phoneNumbTxt.getText(),
                             sqlDate,
                             gender);
-
-                    Staff staff = new Staff(nameStaffTxt.getText(),
-                            addressStaffTxt.getText(),
-                            phoneNumbTxt.getText(),
-                            sqlDate,
-                            gender);
-                    staffList.add(staff);
-                    detailTableModel.addRow(new Object[] {
-                            staff.getId(), staff.getName(), staff.getGender(), staff.getBirthDate(),
-                            staff.getPhone(), staff.getAddress()});
+                    showTableStaff();
                     JOptionPane.showMessageDialog(null, "Đã thêm nhân viên!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -309,6 +353,10 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
     }
 
     private void showTableStaff(){
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        staffList = staffService.getAllStaff();
         for(Staff staff : staffList) {
             detailTableModel.addRow(new Object[] {
                     staff.getId(), staff.getName(), staff.getGender(), staff.getBirthDate(),

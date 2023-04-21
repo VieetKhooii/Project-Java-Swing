@@ -60,8 +60,6 @@ CREATE TABLE staffs(
 	phonenumber varchar(50),
 	primary key(staff_id)
 );
-alter table staffs add column gender varchar(4);
-select * from staffs;
 
 CREATE TABLE orders(
 	order_id INT NOT NULL,
@@ -74,8 +72,20 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
-update orders o set o.order_status = 'Complete' where o.order_id = 2;
-select * from orders o where o.order_status = 'Incomplete';
+select * from roles;
+select * from role_func;
+select * from functions;
+select * from users;
+select * from orders;
+INSERT INTO functions(func_name) VALUES
+('Đơn hàng'),
+('Nhập hàng'),
+('Món ăn'),
+('Nguyên liệu'),
+('Tài khoản'),
+('Nhân viên'),
+('Nhà cung cấp');
+
 CREATE TABLE products(
 	product_id INT NOT NULL,
     product_name varchar(50),
