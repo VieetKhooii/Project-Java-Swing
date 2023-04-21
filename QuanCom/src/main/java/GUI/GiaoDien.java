@@ -1,6 +1,9 @@
 package GUI;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
@@ -8,6 +11,8 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 
@@ -146,7 +151,24 @@ public class GiaoDien extends JFrame {
         
         
         //---------------------------------------------------------------
+        LeftMenu.dangXuat.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+		            // Set the system look and feel
+		            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+		            e1.printStackTrace();
+		        }
+		        
+				Login a = new Login();
+				a.setVisible(true);
+				dispose();
+			}
+	    	
+	    });
 
 
 

@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
 
 public class TitlePanel extends JPanel{
 
@@ -25,14 +27,18 @@ public class TitlePanel extends JPanel{
     private int mousePosY;
     private JFrame frame;
 	public TitlePanel(JFrame frame) {
-		
+		try {
+    		FlatMacLightLaf.setup();
+    	} catch( Exception ex ) {
+    	    System.err.println( "Failed to initialize LaF" );
+    	}
 		this.frame = frame;
 		init();
 	}
 	private void init() {
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(1280, 32));
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(Color.GRAY);
 
         
 

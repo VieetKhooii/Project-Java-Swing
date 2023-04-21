@@ -7,7 +7,7 @@ public class MySqlConfig {
     private static String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private static String URL = "jdbc:mysql://localhost:3308/quancom";
     private static String USER_NAME = "root";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "123456";
 
 
     public static Connection getConnection(){
@@ -23,4 +23,13 @@ public class MySqlConfig {
         }
         return connection;
     }
+    public static void main(String[] args) {
+    	Connection conn= MySqlConfig.getConnection();
+    	if(conn == null) {
+    		System.out.println("Lỗi");
+    	}
+    	else {
+    		System.out.println("Thành công");
+    	}
+	}
 }

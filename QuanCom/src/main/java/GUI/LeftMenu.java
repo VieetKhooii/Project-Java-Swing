@@ -19,6 +19,8 @@ public class LeftMenu extends JPanel implements ActionListener{
 	int w = 200, h = 65;
 	private JLabel userLb;
     private JPanel nut;
+    private JButton home;
+    static JButton dangXuat;
 	public LeftMenu() {
 		
 		init();
@@ -35,13 +37,15 @@ public class LeftMenu extends JPanel implements ActionListener{
 	    
 	    nut = new JPanel(new GridLayout(1,2));
 	    nut.setBounds(0, 200, 200, 45);
-	    JButton dangNhap = new JButton("Trang chủ");
-	    dangNhap.setSize(100,45);
-	    JButton dangXuat = new JButton("Đăng xuất");
-	    dangNhap.setSize(100,45);
+	    home = new JButton("Trang chủ");
+	    home.setSize(100,45);
+	    dangXuat = new JButton("Đăng xuất");
+	    
+	    home.setSize(100,45);
 
-	    nut.add(dangNhap);
+	    nut.add(home);
 	    nut.add(dangXuat);      
+	    
 	    this.add(nut);
 	    this.add(userLb);
 	    /////////////////////

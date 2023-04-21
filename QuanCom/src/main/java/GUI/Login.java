@@ -12,8 +12,6 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
-
 public class Login extends JFrame implements ActionListener{
 
 	/**
@@ -82,7 +80,7 @@ public class Login extends JFrame implements ActionListener{
 		JPanel passPanel = new JPanel(new BorderLayout());
 		passPanel.setBackground(Color.white);
 		passPanel.setBounds(50, 140, 250, 39);
-		pass = new RoundedBorderPasswordField(20);
+		pass = new JPasswordField(20);
 		PromptSupport.setPrompt("Mật khẩu", pass);
 		pass.setFont(userFont);
 		pass.setBackground(Color.white);
@@ -127,7 +125,6 @@ public class Login extends JFrame implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
 				GiaoDien a = new GiaoDien();
 				a.setVisible(true);
 				dispose();
@@ -181,6 +178,7 @@ public class Login extends JFrame implements ActionListener{
 		
 	}
 	public static void main(String[] args) {
+		
 		new Login();
 	}
 	
@@ -211,34 +209,5 @@ class RoundedJTextField extends JTextField {
         return shape.contains(x, y);
     }
 }
-class RoundedBorderPasswordField extends JPasswordField {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public RoundedBorderPasswordField(int columns) {
-        super(columns);
-        setOpaque(false);
-    }
-
-    protected void paintComponent(Graphics g) {
-        g.setColor(getBackground());
-        g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 14, 14);
-        super.paintComponent(g);
-    }
-
-    protected void paintBorder(Graphics g) {
-    }
-
-    public boolean contains(int x, int y) {
-        Shape shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 14, 14);
-        return shape.contains(x, y);
-    }
-    
-    public static void main(String[] args) {
-    	Login log = new Login(); 	
-	}
-}
 
