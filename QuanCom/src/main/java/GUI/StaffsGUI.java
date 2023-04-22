@@ -47,6 +47,9 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     private JDateChooser dateChooser = new JDateChooser();
     StaffService staffService = new StaffService();
     List<Staff> staffList = staffService.getAllStaff();
+    private JComboBox<String> searchCbB;
+	private JComboBox<String> sortCbB;
+	
     /**
      * Create the panel.
      */
@@ -187,7 +190,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         addStaffBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addStaffBtn);
 
-//Clear Information
+        //Clear Information
         clearInfoBtn = new JButton("Clear");
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -199,7 +202,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
                 phoneNumbTxt.setText(null);
                 addressStaffTxt.setText(null);
             }
-    });
+        });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         clearInfoBtn.setBounds(534, 280, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
@@ -208,28 +211,33 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         fixStaffBtn = new JButton("Cập nhật");
         fixStaffBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận thay đổi?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                //xoa o day
-                if(decide == 0) {
-                    String gender="";
-                    if (maleRadioBtn.isSelected()) {
-                        gender = "Nam";
-                    }
-                    else {
-                        gender = "Nữ";
-                    }
-                    java.sql.Date sqlDate = new Date(dateChooser.getDate().getTime());
-                    staffService.modifyStaff(
-                            Integer.parseInt(idStaffTxt.getText()),
-                            nameStaffTxt.getText(),
-                            addressStaffTxt.getText(),
-                            phoneNumbTxt.getText(),
-                            sqlDate,
-                            gender
-                    );
-                    showTableStaff();
-                    JOptionPane.showMessageDialog(null, "Thay đổi thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            	if (idStaffTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 quyền và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
+            	else {
+            		int decide = JOptionPane.showConfirmDialog(null, "Xác nhận thay đổi?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                    //xoa o day
+                    if(decide == 0) {
+                        String gender="";
+                        if (maleRadioBtn.isSelected()) {
+                            gender = "Nam";
+                        }
+                        else {
+                            gender = "Nữ";
+                        }
+                        java.sql.Date sqlDate = new Date(dateChooser.getDate().getTime());
+                        staffService.modifyStaff(
+                                Integer.parseInt(idStaffTxt.getText()),
+                                nameStaffTxt.getText(),
+                                addressStaffTxt.getText(),
+                                phoneNumbTxt.getText(),
+                                sqlDate,
+                                gender
+                        );
+                        showTableStaff();
+                        JOptionPane.showMessageDialog(null, "Thay đổi thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+            	}              
             }
         });
         fixStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -331,23 +339,40 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         searchPanel.setBounds(800, 50, 280, 330);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
-
-        JLabel lblTmKim = new JLabel("Tìm kiếm");
-        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTmKim.setFont(new Font("Arial", Font.BOLD, 15));
-        lblTmKim.setBounds(80, 80, 120, 40);
-        searchPanel.add(lblTmKim);
-
+        
+        searchCbB = new JComboBox<String>();
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nhân viên", "Tên nhân viên"}));
+        searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        searchCbB.setBounds(10, 64, 101, 40);
+        searchPanel.add(searchCbB);
+        
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
         textField.setColumns(10);
-        textField.setBounds(55, 131, 170, 30);
+        textField.setBounds(121, 64, 149, 40);
         searchPanel.add(textField);
-
+        
+        JLabel lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
+        lblSpXp.setBounds(10, 134, 80, 40);
+        searchPanel.add(lblSpXp);
+        
+        sortCbB = new JComboBox<String>();
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nhân viên", "Tên nhân viên"}));
+        sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        sortCbB.setBounds(121, 134, 149, 40);
+        searchPanel.add(sortCbB);
+        
         searchButton = new JButton("OK");
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(90, 180, 100, 30);
+        searchButton.setBounds(97, 224, 100, 50);
         searchPanel.add(searchButton);
+        
+        JLabel lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTmKim.setBounds(85, 0, 120, 40);
+        searchPanel.add(lblTmKim);
         //End
         showTableStaff();
     }

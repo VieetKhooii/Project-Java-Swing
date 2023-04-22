@@ -12,9 +12,9 @@ public class UserService {
         List<User> list = userRepository.getAllUser();
         return list;
     }
-    public boolean login(String email,String password){
+    public boolean login(String userName,String password){
         UserRepository repository = new UserRepository();
-        return repository.login(email,password) >= 1;
+        return repository.login(userName,password) >= 1;
     }
 
     public boolean addUser(String userName,
