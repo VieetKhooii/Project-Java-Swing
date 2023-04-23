@@ -11,6 +11,7 @@ public class ProductAndRecipeGUI extends JTabbedPane{
 	private static final long serialVersionUID = 1L;
 	static ProductGUI product;
 	static RecipeGUI recipe;
+	static CategoryGUI category;
 	public ProductAndRecipeGUI() {
 		// TODO Auto-generated constructor stub
 		init();
@@ -27,6 +28,10 @@ public class ProductAndRecipeGUI extends JTabbedPane{
 		recipe = new RecipeGUI();
 		recipe.setPreferredSize(new Dimension(1080, 700));
 		this.add("Công thức", recipe);
+		//tab phân loại
+		category = new CategoryGUI();
+		category.setPreferredSize(new Dimension(1080, 700));
+		this.add("Phân loại", category);
 	}
 	
 	
