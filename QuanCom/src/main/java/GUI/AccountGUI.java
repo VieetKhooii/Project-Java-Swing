@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-import com.toedter.calendar.JDateChooser;
 import model.Functions;
 import model.Roles;
 import model.User;
@@ -230,7 +229,7 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                         }
                     userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole);
                     showTableAcc();
-                    JOptionPane.showMessageDialog(null, "Đã sửa quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
@@ -344,7 +343,6 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         }
         userList = userService.getAllUsers();
         for(User user : userList) {
-            System.out.println(user.getRoleId());
             String roleName = "";
             for (Roles roles : rolesList){
                 if (user.getRoleId() == roles.getId()){

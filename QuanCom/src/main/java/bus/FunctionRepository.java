@@ -2,7 +2,6 @@ package bus;
 
 import config.MySqlConfig;
 import model.Functions;
-import model.Roles;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

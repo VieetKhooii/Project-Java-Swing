@@ -244,7 +244,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         addAccBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!idRoleTxt.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Không được chọn nhân viên đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Không được chọn quyền đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 else if(nameRoleTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);

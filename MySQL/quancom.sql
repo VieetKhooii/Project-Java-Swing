@@ -23,21 +23,12 @@ CREATE TABLE role_func(
 	FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
-CREATE TABLE mutual_category(
-	mutual_id INT NOT NULL,
-    mutual_name varchar(50),
-    description varchar(50),
-    PRIMARY KEY(mutual_id)
-);
-
 CREATE TABLE category(
 	cate_id INT NOT NULL,
     cate_name varchar(50),
-    description varchar(50),
-    mutual_id int,
-    PRIMARY KEY(cate_id),
-    FOREIGN KEY(mutual_id) REFERENCES mutual_category(mutual_id)
+    description varchar(50)
 );
+
 
 CREATE TABLE users(
 	user_id INT NOT NULL,  
@@ -72,11 +63,18 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
+select * from category;
+select * from materials;
 select * from roles;
 select * from role_func order by role_id asc;
 select * from functions;
 select * from users;
 select * from orders;
+select * from supplier;
+select * from staffs;
+select * from phieuNhap;
+select * from chitietphieuNhap;
+
 INSERT INTO functions(func_name) VALUES
 ('Đơn hàng'),
 ('Nhập hàng'),
@@ -126,7 +124,6 @@ CREATE TABLE phieuNhap(
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id),
 	FOREIGN KEY(sup_id) REFERENCES supplier(sup_id)
 );
-
 
 CREATE TABLE materials(
 	material_id INT NOT NULL auto_increment,

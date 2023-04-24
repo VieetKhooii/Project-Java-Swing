@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.util.List;
 
-public class StaffGUI extends JPanel implements MouseListener, ActionListener{
+public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     private static final long serialVersionUID = 1L;
     private JPanel contentField;
     private JPanel staffListPanel;
@@ -50,7 +50,7 @@ public class StaffGUI extends JPanel implements MouseListener, ActionListener{
     /**
      * Create the panel.
      */
-    public StaffGUI() {
+    public StaffsGUI() {
         init();
     }
     private void init() {

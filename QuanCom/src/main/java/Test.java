@@ -1,13 +1,7 @@
 import GUI.AccountAndRoleGUI;
-import GUI.AccountGUI;
-import GUI.StaffGUI;
-import model.Roles;
-import service.RoleService;
-import service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.Scanner;
 
 public class Test {
@@ -20,7 +14,7 @@ public class Test {
         AccountAndRoleGUI accountAndRoleGUI = new AccountAndRoleGUI();
         frame.add(accountAndRoleGUI);
 
-//        StaffGUI staffGUI = new StaffGUI();
+//        StaffsGUI staffGUI = new StaffsGUI();
 //        frame.add(staffGUI);
     }
 }

@@ -1,9 +1,7 @@
 package service;
 
 import bus.FunctionRepository;
-import bus.RoleRepository;
 import model.Functions;
-import model.Roles;
 
 import java.util.List;
 

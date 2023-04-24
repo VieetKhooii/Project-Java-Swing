@@ -7,10 +7,12 @@ import service.RoleFuncService;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 
-public class LeftMenu extends JPanel{
+public class LeftMenu extends JPanel implements ActionListener {
 
     /**
      *
@@ -19,12 +21,13 @@ public class LeftMenu extends JPanel{
     //private static final long serialVersionUID = 1L;
     private RoleFuncService roleFuncService= new RoleFuncService();
     User user = Login.userStatic;
-    public JButton[] funcBtn = new JButton[7];
     public List<Functions> funcNameList = roleFuncService.funcOfRole(user.getRoleId());
+    public JButton[] funcBtn = new JButton[funcNameList.size()];
     int x = 0, y = 245;
     int w = 200, h = 65;
     private JLabel userLb;
     private JPanel nut;
+    static JButton dangXuat;
     public LeftMenu() {
 
         init();
@@ -39,12 +42,12 @@ public class LeftMenu extends JPanel{
 
         nut = new JPanel(new GridLayout(1,2));
         nut.setBounds(0, 200, 200, 45);
-        JButton dangNhap = new JButton("Trang chủ");
-        dangNhap.setSize(100,45);
-        JButton dangXuat = new JButton("Đăng xuất");
-        dangNhap.setSize(100,45);
+        JButton home = new JButton("Trang chủ");
+        home.setSize(100,45);
+        dangXuat = new JButton("Đăng xuất");
+        dangXuat.setSize(100,45);
 
-        nut.add(dangNhap);
+        nut.add(home);
         nut.add(dangXuat);
         this.add(nut);
         this.add(userLb);
@@ -56,75 +59,27 @@ public class LeftMenu extends JPanel{
             funcBtn[i].setFocusPainted(false);
             funcBtn[i].setBorder(null);
             funcBtn[i].setFont(new Font("Arial", Font.BOLD, 15));
-//            funcBtn[i].addActionListener(this);
+            funcBtn[i].addActionListener(this);
             this.add(funcBtn[i]);
             y = y + h;
 
         }
     }
-    public void mouseEntered(){
 
-//		for(int i = 0; i < funcBtn.length; i++){
-//			funcBtn[i].setBackground(Color.orange);
-//		}
-
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        String a = "func";
+        String b;
+        for(int i = 0; i < funcBtn.length; i++) {
+            funcBtn[i].setEnabled(true);
+        }
+        for(int i = 0; i < funcBtn.length; i++) {
+            if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals(funcNameList.get(i).getName())) {
+                b = a + String.valueOf(i + 1);
+                GiaoDien.cardLayout.show(GiaoDien.switchPanel, b);
+                funcBtn[i].setEnabled(false);
+            }
+        }
     }
-
-    public void mouseExited(){
-        //for(int i = 0 ; i < funcBtn.length; i++){
-        //funcBtn[i].setBackground(Color.DARK_GRAY);
-        //}
-
-    }
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        // TODO Auto-generated method stub
-//        for(int i = 0; i < funcBtn.length; i++) {
-//            funcBtn[i].setEnabled(true);
-//        }
-//        for(int i = 0; i < funcBtn.length; i++) {
-//            if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Đơn hàng")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func1");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Nhập hàng")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func2");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Nguyên liệu")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func4");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Món ăn")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func3");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Tài khoản")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func5");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Nhân viên")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func6");
-//                funcBtn[i].setEnabled(false);
-//            }
-//            else if(e.getSource() == funcBtn[i] && funcBtn[i].getText().equals("Nhà cung cấp")) {
-//                GiaoDien.cardLayout.show(GiaoDien.switchPanel, "func7");
-//                funcBtn[i].setEnabled(false);
-//            }
-//
-//        }
-//    }
-
-    public static void main(String[] args) {
-        LeftMenu leftMenu = new LeftMenu();
-        JFrame a = new JFrame();
-        a.setSize(200,700);
-        a.setVisible(true);
-        a.add(leftMenu);
-    }
-
-
-
-
-
 }

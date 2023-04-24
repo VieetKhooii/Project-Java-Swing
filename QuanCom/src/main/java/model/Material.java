@@ -39,13 +39,13 @@ public class Material {
         this.price = price;
     }
 
-    private int categoryId;
+    private int amount;
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

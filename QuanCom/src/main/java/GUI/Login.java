@@ -33,7 +33,7 @@ public class Login extends JFrame implements ActionListener{
     private JTextField user;
     private JLabel passIcon;
     private JPasswordField pass;
-    private JCheckBox rememberCheckBox;
+    private JLabel messageLb;
     private JButton loginBtn;
     private JPanel windowBtn;
     private JPanel title;
@@ -118,12 +118,13 @@ public class Login extends JFrame implements ActionListener{
         passPanel.add(showHideButton, BorderLayout.EAST);
         JSeparator separator2 = new JSeparator(SwingConstants.HORIZONTAL);
         separator2.setBounds(50, 180, 250, 1);
-        // Checkbox remember
-        rememberCheckBox = new JCheckBox("Ghi nhớ đăng nhập");
-        rememberCheckBox.setFont(new Font("Arial", Font.PLAIN, 13));
-        rememberCheckBox.setBounds(0, 200, 200, 20);
-        rememberCheckBox.setBackground(null);
-        rememberCheckBox.setFocusable(false);
+        // thông báo
+        messageLb = new JLabel("");
+        messageLb.setFont(new Font("Arial", Font.PLAIN, 13));
+        messageLb.setForeground(Color.red);
+        messageLb.setBounds(0, 200, 200, 20);
+        messageLb.setBackground(null);
+        messageLb.setFocusable(false);
         // Login button
         loginBtn = new JButton("GO!");
         loginBtn.setFont(userFont);
@@ -142,17 +143,12 @@ public class Login extends JFrame implements ActionListener{
                         break;
                     }
                 }
-//                GiaoDien a = new GiaoDien();
-//                a.setVisible(true);
-//                dispose();
                 if (check) {
-                    LeftMenu leftMenu = new LeftMenu();
-                    JFrame a = new JFrame();
-                    a.setSize(200,700);
+                    GiaoDien a = new GiaoDien();
                     a.setVisible(true);
-                    a.add(leftMenu);
+                    dispose();
                 }
-                else System.out.println("Failed!");
+                else messageLb.setText("*Sai tên đăng nhập hoặc mật khẩu");
             }
         });
         loginBtn.addMouseListener(new MouseAdapter() {
@@ -167,7 +163,7 @@ public class Login extends JFrame implements ActionListener{
         inside_wrap.add(loginLabel);
         inside_wrap.add(user);
         inside_wrap.add(passPanel);
-        inside_wrap.add(rememberCheckBox);
+        inside_wrap.add(messageLb);
         inside_wrap.add(loginBtn);
         inside_wrap.add(userIcon);
         inside_wrap.add(passIcon);
@@ -179,16 +175,16 @@ public class Login extends JFrame implements ActionListener{
         //End Wraped login
 
         // Tao thanh tieu de
-//        this.setUndecorated(true);
-//        windowBtn = new JPanel();
-//        windowBtn.setLayout(new BorderLayout());
-//        windowBtn.setBounds(0, 0, 400, 32);
-//        this.setUndecorated(true);
-////        title = new TitlePanel(this);
-//        windowBtn.add(title, BorderLayout.NORTH);
+        this.setUndecorated(true);
+        windowBtn = new JPanel();
+        windowBtn.setLayout(new BorderLayout());
+        windowBtn.setBounds(0, 0, 400, 32);
+        this.setUndecorated(true);
+        title = new TittlePanel(this);
+        windowBtn.add(title, BorderLayout.NORTH);
         //End thanh tieu de
 
-//        getContentPane().add(windowBtn);
+        getContentPane().add(windowBtn);
         getContentPane().add(loginField);
         this.setFocusable(true);
         this.requestFocusInWindow();
@@ -201,9 +197,6 @@ public class Login extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
 
-    }
-    public static void main(String[] args) {
-        new Login();
     }
 
 }
@@ -221,7 +214,7 @@ class RoundedJTextField extends JTextField {
 
     protected void paintComponent(Graphics g) {
         g.setColor(getBackground());
-        g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 14, 14);
+        g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 14, 14);
         super.paintComponent(g);
     }
 
@@ -229,34 +222,8 @@ class RoundedJTextField extends JTextField {
     }
 
     public boolean contains(int x, int y) {
-        Shape shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 14, 14);
+        Shape shape = new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, 14, 14);
         return shape.contains(x, y);
     }
 }
-//class RoundedBorderPasswordField extends JPasswordField {
-//
-//    /**
-//     *
-//     */
-//    private static final long serialVersionUID = 1L;
-//
-//    public RoundedBorderPasswordField(int columns) {
-//        super(columns);
-//        setOpaque(false);
-//    }
-//
-//    protected void paintComponent(Graphics g) {
-//        g.setColor(getBackground());
-//        g.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 14, 14);
-//        super.paintComponent(g);
-//    }
-//
-//    protected void paintBorder(Graphics g) {
-//    }
-//
-//    public boolean contains(int x, int y) {
-//        Shape shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 14, 14);
-//        return shape.contains(x, y);
-//    }
-//}
 

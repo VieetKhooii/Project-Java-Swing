@@ -1,7 +1,7 @@
 package bus;
 
 import config.MySqlConfig;
-import model.MutualCategory;
+import model.Category;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,22 +10,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MutualCategoryRepository {
-    public List<MutualCategory> getAllMutualCategory(){
-        List<MutualCategory> list = new ArrayList<>();
+public class CategoryRepository {
+    public List<Category> getAllCategory(){
+        List<Category> list = new ArrayList<>();
         Connection connection = MySqlConfig.getConnection();
-        String query = "select * from mutual_category";
+        String query = "select * from category";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
-                MutualCategory mutualCategory = new MutualCategory();
-                mutualCategory.setName(resultSet.getString("mutual_name"));
-                mutualCategory.setDescription(resultSet.getString("description"));
-                list.add(mutualCategory);
+                Category category = new Category();
+                category.setId(resultSet.getInt("cate_id"));
+                category.setName(resultSet.getString("cate_name"));
+                category.setDescription(resultSet.getString("description"));
+                list.add(category);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting mutual Category in database");
+            System.out.println("Error while getting category in database");
         }
         return list;
     }
