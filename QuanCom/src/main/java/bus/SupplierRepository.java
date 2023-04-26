@@ -24,6 +24,7 @@ public class SupplierRepository {
                 supplier.setId(resultSet.getInt("sup_id"));
                 supplier.setName(resultSet.getString("sup_name"));
                 supplier.setAddress(resultSet.getString("sup_address"));
+                supplier.setPhone(resultSet.getString("supp_phone"));
                 list.add(supplier);
             }
         } catch (SQLException e) {
@@ -32,14 +33,15 @@ public class SupplierRepository {
         return list;
     }
 
-    public int addSupplier(String name, String address){
+    public int addSupplier(String name, String address, String phone){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "INSERT INTO supplier(sup_name, sup_address) values (?,?)";
+        String query = "INSERT INTO supplier(sup_name, sup_address, supp_phone) values (?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,address);
+            preparedStatement.setString(3,phone);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while add supplier "+e.getMessage());
@@ -61,15 +63,16 @@ public class SupplierRepository {
         return isSuccess;
     }
 
-    public int modifySupplier(int id, String name, String address){
+    public int modifySupplier(int id, String name, String address, String phone){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "update supplier set sup_name = ?, sup_address = ? where sup_id = ?";
+        String query = "update supplier set sup_name = ?, sup_address = ?,  supp_phone = ? where sup_id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1,name);
             statement.setString(2,address);
-            statement.setInt(3,id);
+            statement.setString(3,phone);
+            statement.setInt(4,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error modify supplier "+e.getMessage());

@@ -11,10 +11,12 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import model.User;
 import org.jdesktop.swingx.prompt.PromptSupport;
-import com.formdev.flatlaf.FlatLaf;
+
 import service.UserService;
 
 public class Login extends JFrame implements ActionListener{
@@ -39,7 +41,6 @@ public class Login extends JFrame implements ActionListener{
     public static User userStatic = new User();
     List<User> userList = userService.getAllUsers();
     public Login() {
-        // TODO Auto-generated constructor stub
         init();
     }
     public void init() {
@@ -49,8 +50,11 @@ public class Login extends JFrame implements ActionListener{
         //this.setUndecorated(true);
         //Logo
         logo = new JLabel();
-        //logo.setIcon(new ImageIcon("Image/—Pngtree—rice mealtime rice_7390543.png"));
-        logo.setBounds(135, 0, 130, 130);
+        logo.setForeground(Color.PINK);
+        logo.setHorizontalAlignment(SwingConstants.CENTER);
+        logo.setFont(new Font("Ravie", Font.PLAIN, 26));
+        logo.setText("QUÁN CƠM JAVA");
+        logo.setBounds(50, 23, 300, 100);
         // Wrap login
         loginField = new JPanel();
         loginField.setLayout(null);
@@ -126,7 +130,7 @@ public class Login extends JFrame implements ActionListener{
         // Login button
         loginBtn = new JButton("GO!");
         loginBtn.setFont(userFont);
-        loginBtn.setBounds(89, 306, 120, 60);
+        loginBtn.setBounds(90, 270, 120, 50);
         loginBtn.setBackground(new Color(255, 204, 153));
         loginBtn.setBorder(null);
         loginBtn.setFocusPainted(false);

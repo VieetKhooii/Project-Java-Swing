@@ -2,23 +2,19 @@ create database quancom;
 use quancom;
 
 CREATE TABLE functions(
-	func_id INT NOT NULL,
+	func_id INT NOT NULL auto_increment,
 	func_name varchar(50),
 	description varchar(50),
 	PRIMARY KEY(func_id)
 );
-ALTER TABLE functions add role_id INT, add FOREIGN KEY (role_id) REFERENCES roles(role_id);
--- INSERT INTO functions(func_id,func_name,description,role_id) VALUES(1,N'All Access',N'',1);
--- INSERT INTO roles(role_id,role_name,description,func_id) values(1,N'Admin',N'Highest',1);
 
 CREATE TABLE roles(
-	role_id INT NOT NULL,
+	role_id INT NOT NULL auto_increment,
     role_name varchar(50),
     description varchar(50),
     PRIMARY KEY(role_id)
 );
-ALTER TABLE roles ADD func_id int, ADD FOREIGN KEY (func_id) REFERENCES functions(func_id);
-
+select * from orders;
 CREATE TABLE role_func(
 	role_id INT NOT NULL,
 	func_id INT NOT NULL,
@@ -35,7 +31,7 @@ CREATE TABLE mutual_category(
 );
 
 CREATE TABLE category(
-	cate_id INT NOT NULL,
+	cate_id INT NOT NULL auto_increment,
     cate_name varchar(50),
     description varchar(50),
     mutual_id int,
@@ -44,7 +40,7 @@ CREATE TABLE category(
 );
 
 CREATE TABLE users(
-	user_id INT NOT NULL,  
+	user_id INT NOT NULL auto_increment,  
 	username varchar(20),
     password varchar(50),
     fullname varchar(50),
@@ -55,16 +51,20 @@ CREATE TABLE users(
     foreign key(role_id) REFERENCES roles(role_id),
     PRIMARY KEY(user_id)
 );
+alter table staffs drop column staff_id;
 CREATE TABLE staffs(
-	staff_id INT NOT NULL,
+	staff_id INT NOT NULL auto_increment,
     name nvarchar(50),
+    date_of_birth datetime,
+    gender varchar(4),
     address nvarchar(50),
 	phonenumber varchar(50),
 	primary key(staff_id)
 );
+
 CREATE TABLE orders(
-	order_id INT NOT NULL,
-    order_status varchar(50),
+	order_id INT NOT NULL auto_increment,
+    order_status varchar(10) constraint check(order_status = 'Incomplete' or order_status = 'Complete'),
 	order_date datetime,
     tonggia int,
     user_id int,
@@ -73,8 +73,22 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
+select * from roles;
+select * from role_func order by role_id asc;
+select * from functions;
+select * from users;
+select * from orders;
+INSERT INTO functions(func_name) VALUES
+('Đơn hàng'),
+('Nhập hàng'),
+('Món ăn'),
+('Nguyên liệu'),
+('Tài khoản'),
+('Nhân viên'),
+('Nhà cung cấp');
+
 CREATE TABLE products(
-	product_id INT NOT NULL,
+	product_id INT NOT NULL auto_increment,
     product_name varchar(50),
     soluong int,
 	donvitinh varchar(15),
@@ -84,7 +98,7 @@ CREATE TABLE products(
     FOREIGN KEY(category_id) REFERENCES category(cate_id)
 );
 CREATE TABLE chitiet_orders(
-	order_id INT NOT NULL,
+	order_id INT NOT NULL auto_increment,
     product_id int,
 	name nvarchar(50),
 	soluong int,
@@ -96,16 +110,15 @@ CREATE TABLE chitiet_orders(
 
 
 CREATE TABLE supplier(
-	sup_id int not null,
+	sup_id int not null auto_increment,
 	sup_name varchar(50),
 	sup_address varchar(50),
 	PRIMARY KEY(sup_id)
 );
 
 
-
 CREATE TABLE phieuNhap(
-	phieu_id INT NOT NULL,
+	phieu_id INT NOT NULL auto_increment,
     staff_id int,
     sup_id int,
 	tonggia int,
@@ -117,7 +130,7 @@ CREATE TABLE phieuNhap(
 
 
 CREATE TABLE materials(
-	material_id INT NOT NULL,
+	material_id INT NOT NULL auto_increment,
     name nvarchar(50),
 	donvitnh nvarchar(20),
 	gia int,
@@ -135,21 +148,24 @@ CREATE TABLE chitietphieuNhap(
 	FOREIGN KEY(material_id) REFERENCES materials(material_id),
 	FOREIGN KEY(phieu_id) REFERENCES phieuNhap(phieu_id)
 );
-create table congthuc(
-	congthuc_id int not null,
-	product_id int,
-	name_ct nvarchar(50),
-	description nvarchar(50),
-	PRIMARY KEY(congthuc_id),
-	FOREIGN KEY(product_id) REFERENCES products(product_id)
-);
 
 create table chitietcongthuc(
-	congthuc_id int not null,
+	product_id int,
 	material_id int,
-	name_material nvarchar(50),
+	name_material varchar(50),
 	gia int,
 	soluong int,
-	PRIMARY KEY(congthuc_id, material_id),
-	FOREIGN KEY(material_id) REFERENCES materials(material_id)
+	PRIMARY KEY(product_id, material_id),
+	FOREIGN KEY(material_id) REFERENCES materials(material_id),
+    FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
+
+
+
+select * from staffs;
+select * from roles;
+select * from functions;
+select * from role_func;
+select * from users;
+select * from supplier;
+alter table supplier add column supp_phone varchar(10);

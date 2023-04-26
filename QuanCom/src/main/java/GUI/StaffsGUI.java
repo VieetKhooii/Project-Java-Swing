@@ -311,6 +311,9 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
                 if(nameStaffTxt.getText().equals("") || addressStaffTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
+                else if (!phoneNumbTxt.getText().matches("0[123456789]{1}\\d{8}")) {
+                	JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu từ 0 và đủ 10 số!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
                 else if (!idStaffTxt.getText().isBlank()){
                     JOptionPane.showMessageDialog(null, "Id nhân viên phải để trống!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
@@ -323,8 +326,8 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
                         gender = "Nữ";
                     }
                     java.sql.Date sqlDate = new Date(dateChooser.getDate().getTime());
-                    staffService.addStaff(nameStaffTxt.getText(),
-                            addressStaffTxt.getText(),
+                    staffService.addStaff(chuanHoa(nameStaffTxt.getText()),
+                    		chuanHoa(addressStaffTxt.getText()),
                             phoneNumbTxt.getText(),
                             sqlDate,
                             gender);
@@ -376,7 +379,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         //End
         showTableStaff();
     }
-
+    
     private void showTableStaff(){
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
@@ -389,7 +392,6 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
             });
         }
     }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -415,5 +417,22 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     public void actionPerformed(ActionEvent e) {
 
     }
-
+    public String chuanHoa(String message) {
+    	message = message.toLowerCase();
+	    char[] charArray = message.toCharArray();
+	    boolean foundSpace = true;
+	    for(int i = 0; i < charArray.length; i++) {
+	      if(Character.isLetter(charArray[i])) {   
+	        if(foundSpace) {	          
+	          charArray[i] = Character.toUpperCase(charArray[i]);
+	          foundSpace = false;
+	        }
+	      }
+	      else {
+	        foundSpace = true;
+	      }
+	    }
+	    message = String.valueOf(charArray);
+	    return message;
+    }
 }
