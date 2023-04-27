@@ -12,6 +12,7 @@ import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import model.Functions;
 import model.Role_Func;
 import model.Roles;
+import model.Staff;
 import model.User;
 import service.FunctionService;
 import service.RoleFuncService;
@@ -25,7 +26,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RolesGUI extends JPanel implements MouseListener, ActionListener{
+public class RolesGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -55,16 +56,10 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
     private JCheckBox supplierCB;
     private JCheckBox staffCB;
     private JButton clearInfoBtn;
-    Pair<String, String> createOrderPair;
-    Pair<String, String> createReceivingPair;
-    Pair<String, String> productsPair;
-    Pair<String, String> accountPair;
-    Pair<String, String> materialPair;
-    Pair<String, String> supplierPair;
-    Pair<String, String> staffPair;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JComboBox<String> searchCbB;
     private JComboBox<String> sortCbB;
+    private JButton searchButton;
     RoleService roleService = new RoleService();
     FunctionService functionService = new FunctionService();
     RoleFuncService roleFuncService = new RoleFuncService();
@@ -193,49 +188,42 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         createOrderCB = new JCheckBox("Đơn hàng");
         createOrderCB.setFont(new Font("Arial", Font.PLAIN, 12));
         createOrderCB.setBounds(445, 80, 110, 25);
-        createOrderPair = new Pair<>("1", "Đơn hàng");
         staffInfoPanel.add(createOrderCB);
         checkBoxList.add(createOrderCB);
 
         createReceivingCB = new JCheckBox("Nhập hàng");
         createReceivingCB.setFont(new Font("Arial", Font.PLAIN, 12));
         createReceivingCB.setBounds(595, 80, 110, 25);
-        createReceivingPair = new Pair<>("2", "Nhập hàng");
         staffInfoPanel.add(createReceivingCB);
         checkBoxList.add(createReceivingCB);
 
         productsCB = new JCheckBox("Món ăn");
         productsCB.setFont(new Font("Arial", Font.PLAIN, 12));
         productsCB.setBounds(445, 125, 110, 25);
-        productsPair = new Pair<>("3", "Món ăn");
         staffInfoPanel.add(productsCB);
         checkBoxList.add(productsCB);
 
         accountCB = new JCheckBox("Tài khoản");
         accountCB.setFont(new Font("Arial", Font.PLAIN, 12));
         accountCB.setBounds(445, 170, 110, 25);
-        accountPair = new Pair<>("5", "Tài khoản");
         staffInfoPanel.add(accountCB);
         checkBoxList.add(accountCB);
 
         materialCB = new JCheckBox("Nguyên liệu");
         materialCB.setFont(new Font("Arial", Font.PLAIN, 12));
         materialCB.setBounds(595, 125, 110, 25);
-        materialPair = new Pair<>("4", "Nguyên liệu");
         staffInfoPanel.add(materialCB);
         checkBoxList.add(materialCB);
 
         supplierCB = new JCheckBox("Nhà cung cấp");
         supplierCB.setFont(new Font("Arial", Font.PLAIN, 12));
         supplierCB.setBounds(445, 215, 110, 25);
-        supplierPair = new Pair<>("7", "Nhà cung cấp");
         staffInfoPanel.add(supplierCB);
         checkBoxList.add(supplierCB);
 
         staffCB = new JCheckBox("Nhân viên");
         staffCB.setFont(new Font("Arial", Font.PLAIN, 12));
         staffCB.setBounds(595, 170, 110, 25);
-        staffPair = new Pair<>("6", "Nhân viên");
         staffInfoPanel.add(staffCB);
         checkBoxList.add(staffCB);
 
@@ -418,11 +406,11 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         searchCbB.setBounds(10, 70, 101, 40);
         searchPanel.add(searchCbB);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(121, 70, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(121, 70, 149, 40);
+        searchPanel.add(searchTxt);
 
         JLabel lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
@@ -430,39 +418,81 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã quyền", "Tên quyền"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã quyền giảm dần", "Tên quyền"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
         sortCbB.setBounds(121, 140, 100, 40);
-        sortCbB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
-                    roleService.quickSort(rolesList,true);
-                }
-                else {
-                    roleService.quickSort(rolesList,false);
-                }
-                //display on screen after sorting
-                while (detailTableModel.getRowCount() != 0){
-                    detailTableModel.removeRow(0);
-                }
-                for(Roles roles : rolesList) {
-                    detailTableModel.addRow(new Object[] {
-                            roles.getId(), roles.getName(), roles.getDescription()
-                    });
-                }
-            }
-        });
+//        sortCbB.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
+//                    roleService.quickSort(rolesList,true);
+//                }
+//                else {
+//                    roleService.quickSort(rolesList,false);
+//                }
+//                //display on screen after sorting
+//                while (detailTableModel.getRowCount() != 0){
+//                    detailTableModel.removeRow(0);
+//                }
+//                for(Roles roles : rolesList) {
+//                    detailTableModel.addRow(new Object[] {
+//                            roles.getId(), roles.getName(), roles.getDescription()
+//                    });
+//                }
+//            }
+//        });
         searchPanel.add(sortCbB);
-
-        JButton searchButton = new JButton("OK");
+        
+        searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {  
+        		boolean none = false;
+                boolean id = false;
+                boolean name = false;
+                if(sortCbB.getSelectedItem().toString().equals("None")) {
+                	none = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Mã quyền giảm dần")) {
+                	id = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Tên quyền")) {
+                	name = true;
+                }                
+        		if(searchCbB.getSelectedItem().toString().equals("Mã quyền")) {
+        			if(!searchTxt.getText().equals("")) {
+        				showSearchResultById(searchTxt.getText(), none, name, id);
+        			}        			
+    			}
+    			if(searchCbB.getSelectedItem().toString().equals("Tên quyền")){   				
+    				if(!searchTxt.getText().equals("")) {
+    					showSearchResultByName(searchTxt.getText(), none, name, id);
+    				}
+    			}
+    			if(searchTxt.getText().equals("")) {
+    				showSortTable(none, name, id);    				
+    			}
+        	}
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(100, 269, 100, 50);
+        searchButton.setBounds(45, 269, 100, 50);
         searchPanel.add(searchButton);
+        
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		searchTxt.setText("");
+        		showSortTable(true, false, false);
+        		sortCbB.setSelectedIndex(0);
+        	}
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(144, 269, 100, 50);
+        searchPanel.add(rmSearchBtn);
         //End
         showTableRoles();
 
 
     }
+    
     private void showTableRoles(){
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
@@ -475,27 +505,62 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
             });
         }
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private List<Roles> showSortTable(boolean none, boolean name, boolean id) {
+    	List<Roles> sortResultList = null;
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+    	if(none) {
+    		sortResultList = roleService.getAllRoles();
+    		if(searchTxt.getText().equals("")) {
+    			showTableRoles();
+    		}
+    	}
+    	if(name) {
+    		sortResultList = roleService.sortByName(rolesList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Roles i : sortResultList) {
+    				detailTableModel.addRow(new Object[] {
+    	                    i.getId(), i.getName(), i.getDescription()
+    	            });
+                }
+    		}
+    	}
+    	if(id) {
+    		sortResultList = roleService.sortById(rolesList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Roles i : sortResultList) {
+    				detailTableModel.addRow(new Object[] {
+    	                    i.getId(), i.getName(), i.getDescription()
+    	            });
+                }
+    		} 		
+    	}
+		return sortResultList;
     }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Roles> searchResultList = roleService.searchByName(name, showSortTable(none, name2, id));
+        for(Roles i : searchResultList) {
+			detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getDescription()
+            });
+        }
+        
     }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
+    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Roles> searchResultList = roleService.searchById(id, showSortTable(none, name, id2));
+        for(Roles i : searchResultList) {
+        	detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getDescription()
+            });
+        }
     }
     @Override
     public void actionPerformed(ActionEvent e) {

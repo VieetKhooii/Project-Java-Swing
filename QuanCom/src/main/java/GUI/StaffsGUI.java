@@ -13,13 +13,11 @@ import model.Staff;
 import service.StaffService;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.util.List;
 
-public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
+public class StaffsGUI extends JPanel implements ActionListener{
     private static final long serialVersionUID = 1L;
     private JPanel contentField;
     private JPanel staffListPanel;
@@ -34,7 +32,7 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
     private JTextField nameStaffTxt;
     private JTextField addressStaffTxt;
     private JTextField phoneNumbTxt;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JButton searchButton;
     private JPanel staffInfoPanel;
     private JButton addStaffBtn;
@@ -349,11 +347,11 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         searchCbB.setBounds(10, 64, 101, 40);
         searchPanel.add(searchCbB);
         
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(121, 64, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(121, 64, 149, 40);
+        searchPanel.add(searchTxt);
         
         JLabel lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
@@ -361,14 +359,49 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         searchPanel.add(lblSpXp);
         
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nhân viên", "Tên nhân viên"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã nhân viên giảm dần", "Tên nhân viên"}));
+        sortCbB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Thực hiện hành động khi chọn một tùy chọn trong JComboBox
+                
+            }
+        });        
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
         sortCbB.setBounds(121, 134, 149, 40);
         searchPanel.add(sortCbB);
         
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {  
+        		boolean none = false;
+                boolean id = false;
+                boolean name = false;
+                if(sortCbB.getSelectedItem().toString().equals("None")) {
+                	none = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Mã nhân viên giảm dần")) {
+                	id = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Tên nhân viên")) {
+                	name = true;
+                }                
+        		if(searchCbB.getSelectedItem().toString().equals("Mã nhân viên")) {
+        			if(!searchTxt.getText().equals("")) {
+        				showSearchResultById(searchTxt.getText(), none, name, id);
+        			}        			
+    			}
+    			if(searchCbB.getSelectedItem().toString().equals("Tên nhân viên")){   				
+    				if(!searchTxt.getText().equals("")) {
+    					showSearchResultByName(searchTxt.getText(), none, name, id);
+    				}
+    			}
+    			if(searchTxt.getText().equals("")) {
+    				showSortTable(none, name, id);    				
+    			}
+        	}
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(97, 224, 100, 50);
+        searchButton.setBounds(45, 269, 100, 50);
         searchPanel.add(searchButton);
         
         JLabel lblTmKim = new JLabel("Tìm kiếm");
@@ -376,8 +409,21 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
         lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
         lblTmKim.setBounds(85, 0, 120, 40);
         searchPanel.add(lblTmKim);
+        
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		searchTxt.setText("");
+        		showSortTable(true, false, false);
+        		sortCbB.setSelectedIndex(0);
+        	}
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(144, 269, 100, 50);
+        searchPanel.add(rmSearchBtn);
         //End
         showTableStaff();
+        
     }
     
     private void showTableStaff(){
@@ -392,27 +438,70 @@ public class StaffsGUI extends JPanel implements MouseListener, ActionListener{
             });
         }
     }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private List<Staff> showSortTable(boolean none, boolean name, boolean id) {
+    	List<Staff> sortResultList = null;
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+    	if(none) {
+    		sortResultList = staffService.getAllStaff();
+    		if(searchTxt.getText().equals("")) {
+    			showTableStaff();
+    		}
+    	}
+    	if(name) {
+    		sortResultList = staffService.sortByName(staffList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Staff i : sortResultList) {
+                    detailTableModel.addRow(new Object[] {
+                            i.getId(), i.getName(), i.getGender(), i.getBirthDate(),
+                            i.getPhone(), i.getAddress()
+                    });
+                }
+    		}
+    	}
+    	if(id) {
+    		sortResultList = staffService.sortById(staffList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Staff i : sortResultList) {
+                    detailTableModel.addRow(new Object[] {
+                            i.getId(), i.getName(), i.getGender(), i.getBirthDate(),
+                            i.getPhone(), i.getAddress()
+                    });
+                }
+    		}   		
+    	}
+		return sortResultList;
     }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Staff> searchResultList = staffService.searchByName(name, showSortTable(none, name2, id));
+        for(Staff i : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getGender(), i.getBirthDate(),
+                    i.getPhone(), i.getAddress()
+            });
+        }
+        
     }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Staff> searchResultList = staffService.searchById(id, showSortTable(none, name, id2));
+        for(Staff i : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getGender(), i.getBirthDate(),
+                    i.getPhone(), i.getAddress()
+            });
+        }
     }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+   
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 

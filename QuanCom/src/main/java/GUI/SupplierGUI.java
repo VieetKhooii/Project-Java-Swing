@@ -1,6 +1,5 @@
 package GUI;
 
-import model.Roles;
 import model.Supplier;
 import service.SupplierService;
 
@@ -13,12 +12,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class SupplierGUI extends JPanel implements MouseListener, ActionListener{
+public class SupplierGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -41,7 +38,7 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
     private JButton fixSupplierBtn;
     private JButton delSupplierBtn;
     private JComboBox<String> searchCbB;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JLabel lblSpXp;
     private JComboBox<String> sortCbB;
     private JLabel lblTmKim;
@@ -175,8 +172,11 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
                 if (!idSupplierTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn nhà cung cấp đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("")) {
+                else if(nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else if (!phoneNumbTxt.getText().matches("0[123456789]{1}\\d{8}")) {
+                	JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu từ 0 và đủ 10 số!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     supplierService.addSupplier(nameSupplierTxt.getText(),addressSupplierTxt.getText(), phoneNumbTxt.getText());
@@ -210,8 +210,11 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
                 if (idSupplierTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 nhà cung cấp và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("")) {
+                else if(nameSupplierTxt.getText().equals("") || addressSupplierTxt.getText().equals("") || phoneNumbTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else if (!phoneNumbTxt.getText().matches("0[123456789]{1}\\d{8}")) {
+                	JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu từ 0 và đủ 10 số!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     supplierService.supplierModify(Integer.parseInt(idSupplierTxt.getText()),nameSupplierTxt.getText(),addressSupplierTxt.getText(), phoneNumbTxt.getText());
@@ -267,15 +270,15 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
 
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Địa chỉ", "Số điện thoại"}));
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Số điện thoại"}));
         searchCbB.setBounds(130, 75, 101, 40);
         searchPanel.add(searchCbB);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(241, 75, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(241, 75, 149, 40);
+        searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
@@ -283,31 +286,31 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Địa chỉ",  "Số điện thoại"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã NCC giảm dần", "Tên NCC"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
         sortCbB.setBounds(241, 145, 149, 40);
-        sortCbB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
-                    supplierService.quickSort(supplierList,"id");
-                }
-                else if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(1))){
-                    supplierService.quickSort(supplierList,"name");
-                }
-                else {
-                    supplierService.quickSort(supplierList,"address");
-                }
-                //display on screen after sorting
-                while (detailTableModel.getRowCount() != 0){
-                    detailTableModel.removeRow(0);
-                }
-                for(Supplier supplier : supplierList) {
-                    detailTableModel.addRow(new Object[] {
-                            supplier.getId(), supplier.getName(), supplier.getAddress()
-                    });
-                }
-            }
-        });
+//        sortCbB.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
+//                    supplierService.quickSort(supplierList,"id");
+//                }
+//                else if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(1))){
+//                    supplierService.quickSort(supplierList,"name");
+//                }
+//                else {
+//                    supplierService.quickSort(supplierList,"address");
+//                }
+//                //display on screen after sorting
+//                while (detailTableModel.getRowCount() != 0){
+//                    detailTableModel.removeRow(0);
+//                }
+//                for(Supplier supplier : supplierList) {
+//                    detailTableModel.addRow(new Object[] {
+//                            supplier.getId(), supplier.getName(), supplier.getAddress()
+//                    });
+//                }
+//            }
+//        });
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
@@ -317,11 +320,52 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {  
+        		boolean none = false;
+                boolean id = false;
+                boolean name = false;
+                if(sortCbB.getSelectedItem().toString().equals("None")) {
+                	none = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Mã NCC giảm dần")) {
+                	id = true;
+                }
+                else if(sortCbB.getSelectedItem().toString().equals("Tên NCC")) {
+                	name = true;
+                }                
+        		if(searchCbB.getSelectedItem().toString().equals("Mã NCC")) {
+        			if(!searchTxt.getText().equals("")) {
+        				showSearchResultById(searchTxt.getText(), none, name, id);
+        			}        			
+    			}
+    			if(searchCbB.getSelectedItem().toString().equals("Tên NCC")){   				
+    				if(!searchTxt.getText().equals("")) {
+    					showSearchResultByName(searchTxt.getText(), none, name, id);
+    				}
+    			}
+    			if(searchCbB.getSelectedItem().toString().equals("Số điện thoại")) {
+    				if(!searchTxt.getText().equals("")) {
+    					showSearchResultByPhoneNumber(searchTxt.getText(), none, name, id);
+    				}
+    			}
+    			if(searchTxt.getText().equals("")) {
+    				showSortTable(none, name, id);    				
+    			}
+        	}
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
         searchButton.setBounds(160, 229, 100, 50);
         searchPanel.add(searchButton);
         
         rmSearchButton = new JButton("Hủy");
+        rmSearchButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		searchTxt.setText("");
+        		showSortTable(true, false, false);
+        		sortCbB.setSelectedIndex(0);
+        	}
+        });
         rmSearchButton.setFont(new Font("Arial", Font.PLAIN, 13));
         rmSearchButton.setBounds(259, 229, 100, 50);
         searchPanel.add(rmSearchButton);
@@ -341,27 +385,77 @@ public class SupplierGUI extends JPanel implements MouseListener, ActionListener
             });
         }
     }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private List<Supplier> showSortTable(boolean none, boolean name, boolean id) {
+    	List<Supplier> sortResultList = null;
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+    	if(none) {
+    		sortResultList = supplierService.getAllSupplier();
+    		if(searchTxt.getText().equals("")) {
+    			showTableSupplier();
+    		}
+    	}
+    	if(name) {
+    		sortResultList = supplierService.sortByName(supplierList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Supplier i : sortResultList) {
+    				detailTableModel.addRow(new Object[] {
+    	                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+    	            });
+                }
+    		}
+    	}
+    	if(id) {
+    		sortResultList = supplierService.sortById(supplierList);
+    		if(searchTxt.getText().equals("")) {
+    			for(Supplier i : sortResultList) {
+    				detailTableModel.addRow(new Object[] {
+    	                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+    	            });
+                }
+    		}		
+    	}
+		return sortResultList;
     }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Supplier> searchResultList = supplierService.searchByName(name, showSortTable(none, name2, id));
+        for(Supplier i : searchResultList) {
+        	detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+            });
+        }
     }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+    
+    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Supplier> searchResultList = supplierService.searchById(id, showSortTable(none, name, id2));
+        for(Supplier i : searchResultList) {
+        	detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+            });
+        }
     }
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    
+    private void showSearchResultByPhoneNumber(String phoneNumber, boolean none, boolean name, boolean id) {   	
+    	while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Supplier> searchResultList = supplierService.searchByPhoneNumber(phoneNumber, showSortTable(none, name, id));
+        for(Supplier i : searchResultList) {
+        	detailTableModel.addRow(new Object[] {
+                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+            });
+        }
     }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 
