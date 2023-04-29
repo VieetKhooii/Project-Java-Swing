@@ -193,7 +193,7 @@ public class AccountGUI extends JPanel implements ActionListener{
             }
         });
         addAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addAccBtn.setBounds(270, 280, 90, 35);
+        addAccBtn.setBounds(225, 284, 90, 35);
         UserInfoPanel.add(addAccBtn);
 
         //Clear Information
@@ -209,7 +209,7 @@ public class AccountGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(534, 280, 90, 35);
+        clearInfoBtn.setBounds(489, 284, 90, 35);
         UserInfoPanel.add(clearInfoBtn);
 
         fixAccBtn = new JButton("Cập nhật");
@@ -240,7 +240,7 @@ public class AccountGUI extends JPanel implements ActionListener{
             }
         });
         fixAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixAccBtn.setBounds(358, 280, 90, 35);
+        fixAccBtn.setBounds(313, 284, 90, 35);
         UserInfoPanel.add(fixAccBtn);
 
         delAccBtn = new JButton("Xóa");
@@ -262,7 +262,7 @@ public class AccountGUI extends JPanel implements ActionListener{
             }
         });
         delAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delAccBtn.setBounds(445, 280, 90, 35);
+        delAccBtn.setBounds(400, 284, 90, 35);
         UserInfoPanel.add(delAccBtn);
 
         JLabel UserDateLabel = new JLabel("Email");
