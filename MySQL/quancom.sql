@@ -14,7 +14,7 @@ CREATE TABLE roles(
     description varchar(50),
     PRIMARY KEY(role_id)
 );
-select * from orders;
+
 CREATE TABLE role_func(
 	role_id INT NOT NULL,
 	func_id INT NOT NULL,
@@ -23,35 +23,23 @@ CREATE TABLE role_func(
 	FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
-CREATE TABLE mutual_category(
-	mutual_id INT NOT NULL,
-    mutual_name varchar(50),
-    description varchar(50),
-    PRIMARY KEY(mutual_id)
-);
-
 CREATE TABLE category(
 	cate_id INT NOT NULL auto_increment,
     cate_name varchar(50),
     description varchar(50),
-    mutual_id int,
-    PRIMARY KEY(cate_id),
-    FOREIGN KEY(mutual_id) REFERENCES mutual_category(mutual_id)
+    PRIMARY KEY(cate_id)
 );
 
 CREATE TABLE users(
 	user_id INT NOT NULL auto_increment,  
 	username varchar(20),
     password varchar(50),
-    fullname varchar(50),
 	email varchar(50),
-	address varchar(50),
-	phonenumber char(10), 
     role_id INT NOT NULL,
     foreign key(role_id) REFERENCES roles(role_id),
     PRIMARY KEY(user_id)
 );
-alter table staffs drop column staff_id;
+
 CREATE TABLE staffs(
 	staff_id INT NOT NULL auto_increment,
     name nvarchar(50),
@@ -73,11 +61,7 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
-select * from roles;
-select * from role_func order by role_id asc;
-select * from functions;
-select * from users;
-select * from orders;
+
 INSERT INTO functions(func_name) VALUES
 ('Đơn hàng'),
 ('Nhập hàng'),
@@ -97,25 +81,24 @@ CREATE TABLE products(
     PRIMARY KEY(product_id),
     FOREIGN KEY(category_id) REFERENCES category(cate_id)
 );
+
 CREATE TABLE chitiet_orders(
 	order_id INT NOT NULL auto_increment,
     product_id int,
 	name nvarchar(50),
 	soluong int,
-	gia int,
-	
+	gia int,	
     PRIMARY KEY(order_id, product_id),
     FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );                    
-
 
 CREATE TABLE supplier(
 	sup_id int not null auto_increment,
 	sup_name varchar(50),
 	sup_address varchar(50),
+    supp_phone varchar(10),
 	PRIMARY KEY(sup_id)
 );
-
 
 CREATE TABLE phieuNhap(
 	phieu_id INT NOT NULL auto_increment,
@@ -132,11 +115,10 @@ CREATE TABLE phieuNhap(
 CREATE TABLE materials(
 	material_id INT NOT NULL auto_increment,
     name nvarchar(50),
-	donvitnh nvarchar(20),
+	donvitinh nvarchar(20),
 	gia int,
-	category_id int,
-	PRIMARY KEY(material_id),
-	FOREIGN KEY(category_id) REFERENCES category(cate_id)
+    soluong int,
+	PRIMARY KEY(material_id)
 );
 CREATE TABLE chitietphieuNhap(
 	material_id INT NOT NULL,
@@ -168,4 +150,5 @@ select * from functions;
 select * from role_func;
 select * from users;
 select * from supplier;
-alter table supplier add column supp_phone varchar(10);
+select * from materials;
+
