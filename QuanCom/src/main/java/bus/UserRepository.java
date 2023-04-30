@@ -29,7 +29,7 @@ public class UserRepository {
                 list.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Error while query get all users "+e.getMessage());
+            System.out.println("UserRepository: Error while query get all users "+e.getMessage());
         }
         return list;
     }
@@ -47,7 +47,7 @@ public class UserRepository {
                 count = resultSet.getInt("count");
             }
         } catch (SQLException e) {
-            System.out.println("Error login query "+e.getMessage());
+            System.out.println("UserRepository: Error login query "+e.getMessage());
         }
         return count;
     }
@@ -70,7 +70,7 @@ public class UserRepository {
             preparedStatement.setInt(4,roleId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add user "+e.getMessage());
+            System.out.println("UserRepository: Error while add user "+e.getMessage());
         }
         return isSuccess;
     }
@@ -84,7 +84,7 @@ public class UserRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting user "+e.getMessage());
+            System.out.println("UserRepository: Error deleting user "+e.getMessage());
         }
         return isSuccess;
     }
@@ -108,7 +108,7 @@ public class UserRepository {
             preparedStatement.setInt(5,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while modify user "+e.getMessage());
+            System.out.println("UserRepository: Error while modify user "+e.getMessage());
         }
         return isSuccess;
     }

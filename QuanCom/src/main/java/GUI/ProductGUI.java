@@ -115,8 +115,8 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                             break;
                         }
                     }
-                    priceProductTxt.setText(detailTableModel.getValueAt(row, 3).toString());
-                    soLuongProductTxt.setText(detailTableModel.getValueAt(row, 4).toString());
+                    priceProductTxt.setText(detailTableModel.getValueAt(row, 4).toString());
+                    soLuongProductTxt.setText(detailTableModel.getValueAt(row, 3).toString());
                     for(int i = 0; i < categoryProductCbB.getItemCount(); i++) {
                         if(detailTableModel.getValueAt(row, 5).toString().equals(categoryProductCbB.getItemAt(i).toString())) {
                             categoryProductCbB.setSelectedIndex(i);
@@ -421,7 +421,6 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         categoryList = categoryService.getAllCate();
         productList = productService.getAllProduct();
         for(Product product : productList) {
-            System.out.println("hi");
             for (Category category : categoryList){
                 if (category.getId() == product.getCategoryId()){
                     categoryName = category.getName();

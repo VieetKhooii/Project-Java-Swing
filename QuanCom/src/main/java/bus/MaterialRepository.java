@@ -28,7 +28,7 @@ public class MaterialRepository {
                 list.add(material);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting material in database");
+            System.out.println("Error while getting material in MaterialRepository");
         }
         return list;
     }
@@ -45,7 +45,7 @@ public class MaterialRepository {
             preparedStatement.setInt(4,amount);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding material "+e.getMessage());
+            System.out.println("Error while adding material in MaterialRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -59,7 +59,7 @@ public class MaterialRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting material "+e.getMessage());
+            System.out.println("Error deleting material in MaterialRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -78,7 +78,7 @@ public class MaterialRepository {
             statement.setInt(5,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modify material "+e.getMessage());
+            System.out.println("Error modify material in MaterialRepository "+e.getMessage());
         }
         return isSuccess;
     }

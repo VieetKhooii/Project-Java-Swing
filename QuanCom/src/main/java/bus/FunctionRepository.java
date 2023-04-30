@@ -26,7 +26,7 @@ public class FunctionRepository {
                 list.add(functions);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting functions in database");
+            System.out.println("Error while getting functions in FunctionRepository");
         }
         return list;
     }
@@ -41,7 +41,7 @@ public class FunctionRepository {
             preparedStatement.setString(2,description);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add functions "+e.getMessage());
+            System.out.println("Error while add functions in FunctionRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -55,7 +55,7 @@ public class FunctionRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting function "+e.getMessage());
+            System.out.println("Error deleting function in FunctionRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -71,7 +71,7 @@ public class FunctionRepository {
             statement.setInt(3,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modify function "+e.getMessage());
+            System.out.println("Error modify function in FunctionRepository "+e.getMessage());
         }
         return isSuccess;
     }

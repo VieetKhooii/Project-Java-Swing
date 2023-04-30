@@ -1,12 +1,12 @@
 package model;
 
 public class Recipe {
-    private int id;
-    public int getId() {
-        return id;
+    private int materialId;
+    public int getMaterialId() {
+        return materialId;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setMaterialId(int materialId) {
+        this.materialId = materialId;
     }
 
     private int productId;
@@ -29,13 +29,23 @@ public class Recipe {
         this.name = name;
     }
 
-    private String description;
+    private int price;
 
-    public String getDescription() {
-        return description;
+    public int getPrice() {
+        return price;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    private int amount;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

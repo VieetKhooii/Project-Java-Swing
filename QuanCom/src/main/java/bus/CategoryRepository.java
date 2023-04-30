@@ -26,7 +26,7 @@ public class CategoryRepository {
                 list.add(category);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting category in database");
+            System.out.println("Error while getting category in CategoryRepository");
         }
         return list;
     }
@@ -41,7 +41,7 @@ public class CategoryRepository {
             preparedStatement.setString(2,description);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding cate "+e.getMessage());
+            System.out.println("Error while adding cate in CategoryRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -55,7 +55,7 @@ public class CategoryRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting cate "+e.getMessage());
+            System.out.println("Error deleting cate in CategoryRepository "+e.getMessage());
         }
         return isSuccess;
     }
@@ -71,7 +71,7 @@ public class CategoryRepository {
             statement.setInt(3,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modifying cate "+e.getMessage());
+            System.out.println("Error modifying cate in CategoryRepository "+e.getMessage());
         }
         return isSuccess;
     }

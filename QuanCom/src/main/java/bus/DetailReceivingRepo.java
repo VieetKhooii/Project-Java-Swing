@@ -25,7 +25,7 @@ public class DetailReceivingRepo {
                 list.add(receivedNoteDetail);
             }
         } catch (SQLException e) {
-            System.out.println("Error while query get all detailed receiving note "+e.getMessage());
+            System.out.println("Error while query get data in DetailReceivingRepo "+e.getMessage());
         }
         return list;
     }
@@ -43,7 +43,7 @@ public class DetailReceivingRepo {
             preparedStatement.setInt(5,price);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding detailed receiving note "+e.getMessage());
+            System.out.println("Error while adding data in DetailReceivingRepo "+e.getMessage());
         }
         return isSuccess;
     }
@@ -57,7 +57,7 @@ public class DetailReceivingRepo {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting detailed received note "+e.getMessage());
+            System.out.println("Error deleting data in DetailReceivingRepo "+e.getMessage());
         }
         return isSuccess;
     }

@@ -27,7 +27,7 @@ public class StaffRepository {
                 list.add(staff);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting Staff in database");
+            System.out.println("StaffRepository: Error while getting Staff in database");
         }
         return list;
     }
@@ -46,7 +46,7 @@ public class StaffRepository {
             preparedStatement.setString(5,gender);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding staff "+e.getMessage());
+            System.out.println("StaffRepository: Error while adding staff "+e.getMessage());
         }
         return isSuccess;
     }
@@ -66,7 +66,7 @@ public class StaffRepository {
             preparedStatement.setInt(6,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while modifying staff "+e.getMessage());
+            System.out.println("StaffRepository: Error while modifying staff "+e.getMessage());
         }
         return isSuccess;
     }
@@ -80,7 +80,7 @@ public class StaffRepository {
             preparedStatement.setInt(1,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while deleting staff");
+            System.out.println("StaffRepository: Error while deleting staff");
         }
         return isSuccess;
     }

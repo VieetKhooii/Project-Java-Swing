@@ -31,7 +31,7 @@ public class OrderRepository {
                 list.add(orders);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting Orders in database");
+            System.out.println("OrderRepository: Error while getting Orders in database");
         }
         return list;
     }
@@ -45,7 +45,7 @@ public class OrderRepository {
             preparedStatement.setInt(1, id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while change order's status "+e.getMessage());
+            System.out.println("OrderRepository: Error while change order's status "+e.getMessage());
         }
         return isSuccess;
     }

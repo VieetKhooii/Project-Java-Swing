@@ -29,7 +29,7 @@ public class RoleFuncRepo {
                 list.add(functions);
             }
         } catch (SQLException e) {
-            System.out.println("Error while get function of role with id no."+roleId);
+            System.out.println("RoleFuncRepo: Error while get function of role with id no."+roleId);
         }
         return list;
     }
@@ -44,7 +44,7 @@ public class RoleFuncRepo {
             preparedStatement.setInt(2,funcId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add functions no."+funcId +" to role no."+roleId);
+            System.out.println("RoleFuncRepo: Error while add functions no."+funcId +" to role no."+roleId);
         }
         return isSuccess;
     }
@@ -58,7 +58,7 @@ public class RoleFuncRepo {
             preparedStatement.setInt(1,roleId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while delete functions from role no."+roleId);
+            System.out.println("RoleFuncRepo: Error while delete functions from role no."+roleId);
         }
         return isSuccess;
     }
@@ -73,7 +73,7 @@ public class RoleFuncRepo {
             preparedStatement.setInt(2,roleId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while modify functions no."+funcId +" to role no."+roleId);
+            System.out.println("RoleFuncRepo: Error while modify functions no."+funcId +" to role no."+roleId);
         }
         return isSuccess;
     }
@@ -88,7 +88,7 @@ public class RoleFuncRepo {
             preparedStatement.setInt(2,funcId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while delete function no."+funcId+" from role no."+roleId);
+            System.out.println("RoleFuncRepo: Error while delete function no."+funcId+" from role no."+roleId);
         }
         return isSuccess;
     }

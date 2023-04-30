@@ -26,7 +26,7 @@ public class RoleRepository {
                 list.add(roles);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting Roles in database");
+            System.out.println("RoleRepository: Error while getting Roles in database");
         }
         return list;
     }
@@ -41,7 +41,7 @@ public class RoleRepository {
             preparedStatement.setString(2,description);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add role "+e.getMessage());
+            System.out.println("RoleRepository: Error while add role "+e.getMessage());
         }
         return isSuccess;
     }
@@ -55,7 +55,7 @@ public class RoleRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting role "+e.getMessage());
+            System.out.println("RoleRepository: Error deleting role "+e.getMessage());
         }
         return isSuccess;
     }
@@ -71,7 +71,7 @@ public class RoleRepository {
             statement.setInt(3,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modify role "+e.getMessage());
+            System.out.println("RoleRepository: Error modify role "+e.getMessage());
         }
         return isSuccess;
     }

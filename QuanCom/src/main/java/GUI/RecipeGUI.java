@@ -41,6 +41,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
     private JLabel lblTmKim;
     private JButton searchButton;
     private JTextField priceEveryMaterialTxt;
+
     /**
      * Create the panel.
      */
@@ -101,7 +102,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         contentField.add(recipeInfoPanel);
         recipeInfoPanel.setLayout(null);
 
-        lblNewLabel = new JLabel("Thông tin nhà cung cấp");
+        lblNewLabel = new JLabel("Thông tin nhà công thức");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setBounds(200, 0, 200, 40);

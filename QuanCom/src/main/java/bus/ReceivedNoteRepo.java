@@ -26,7 +26,7 @@ public class ReceivedNoteRepo {
                 list.add(receivedNote);
             }
         } catch (SQLException e) {
-            System.out.println("Error while query get all receiving note "+e.getMessage());
+            System.out.println("ReceivedNoteRepo: Error while query get all receiving note "+e.getMessage());
         }
         return list;
     }
@@ -42,7 +42,7 @@ public class ReceivedNoteRepo {
             preparedStatement.setDate(4,date);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add receiving note "+e.getMessage());
+            System.out.println("ReceivedNoteRepo: Error while add receiving note "+e.getMessage());
         }
         return isSuccess;
     }
@@ -60,7 +60,7 @@ public class ReceivedNoteRepo {
             preparedStatement.setInt(5,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while modify receiving note "+e.getMessage());
+            System.out.println("ReceivedNoteRepo: Error while modify receiving note "+e.getMessage());
         }
         return isSuccess;
     }
@@ -74,7 +74,7 @@ public class ReceivedNoteRepo {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting received note "+e.getMessage());
+            System.out.println("ReceivedNoteRepo: Error deleting received note "+e.getMessage());
         }
         return isSuccess;
     }
@@ -93,7 +93,7 @@ public class ReceivedNoteRepo {
             totalPrice = resultSet.getInt("total");
 
         } catch (SQLException e) {
-            System.out.println("Error getting total price "+e.getMessage());
+            System.out.println("ReceivedNoteRepo: Error getting total price "+e.getMessage());
         }
         return totalPrice;
     }

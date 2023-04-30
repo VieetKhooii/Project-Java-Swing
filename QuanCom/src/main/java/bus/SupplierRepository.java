@@ -27,7 +27,7 @@ public class SupplierRepository {
                 list.add(supplier);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting Supplier in database");
+            System.out.println("SupplierRepository: Error while getting Supplier in database");
         }
         return list;
     }
@@ -42,7 +42,7 @@ public class SupplierRepository {
             preparedStatement.setString(2,address);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add supplier "+e.getMessage());
+            System.out.println("SupplierRepository: Error while add supplier "+e.getMessage());
         }
         return isSuccess;
     }
@@ -56,7 +56,7 @@ public class SupplierRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting supplier "+e.getMessage());
+            System.out.println("SupplierRepository: Error deleting supplier "+e.getMessage());
         }
         return isSuccess;
     }
@@ -72,7 +72,7 @@ public class SupplierRepository {
             statement.setInt(3,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modify supplier "+e.getMessage());
+            System.out.println("SupplierRepository: Error modify supplier "+e.getMessage());
         }
         return isSuccess;
     }
