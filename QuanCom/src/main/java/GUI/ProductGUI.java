@@ -1,11 +1,11 @@
 package GUI;
 
 import enumm.ProductUnit;
-import model.Category;
-import model.Product;
-import model.Roles;
+import model.*;
 import service.CategoryService;
+import service.MaterialService;
 import service.ProductService;
+import service.RecipeService;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -55,8 +55,12 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
     private JButton clearInfoBtn;
     ProductService productService = new ProductService();
     CategoryService categoryService = new CategoryService();
+    MaterialService materialService = new MaterialService();
+    RecipeService recipeService = new RecipeService();
     List<Product> productList = productService.getAllProduct();
     List<Category> categoryList = categoryService.getAllCate();
+    List<Material> materialList = materialService.getAllMaterial();
+    List<Recipe> recipeList = recipeService.getAllRecipe();
     /**
      * Create the panel.
      */
@@ -420,6 +424,7 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         }
         categoryList = categoryService.getAllCate();
         productList = productService.getAllProduct();
+        productAmountCal();
         for(Product product : productList) {
             for (Category category : categoryList){
                 if (category.getId() == product.getCategoryId()){
@@ -430,6 +435,34 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                     product.getId(), product.getName(), product.getUnit(), product.getAmount(),
                     product.getPrice(), categoryName
             });
+        }
+    }
+
+    private void productAmountCal(){
+        int min;
+        int temp=0;
+        for (Product product : productList){
+            min=-1;
+            temp=0;
+            for (Recipe recipe : recipeList){
+                if (product.getId() == recipe.getProductId()){
+                    for (Material material : materialList){
+                        if (material.getId() == recipe.getMaterialId()){
+                            temp = material.getAmount()/recipe.getAmount();
+                            System.out.println(temp);
+                            break;
+                        }
+                    }
+                    if (min==-1) min = temp;
+                    else if (temp < min) min = temp;
+                    System.out.println("Min: "+min);
+                }
+            }
+            if (min==-1){
+                product.setAmount(0);
+            }
+            else
+            product.setAmount(min);
         }
     }
 

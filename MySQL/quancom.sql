@@ -75,6 +75,7 @@ select * from staffs;
 select * from phieuNhap;
 select * from chitietphieuNhap;
 select * from products;
+select * from chitietcongthuc;
 
 INSERT INTO functions(func_name) VALUES
 ('Đơn hàng'),

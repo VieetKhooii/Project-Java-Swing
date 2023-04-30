@@ -1,5 +1,8 @@
 package GUI;
 
+import model.Recipe;
+import service.RecipeService;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -12,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
 
@@ -34,6 +38,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
     private JButton addRecipeBtn;
     private JButton fixRecipeBtn;
     private JButton delRecipeBtn;
+    private JButton clearInfoBtn;
     private JComboBox<String> searchCbB;
     private JTextField textField;
     private JLabel lblSpXp;
@@ -41,6 +46,10 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
     private JLabel lblTmKim;
     private JButton searchButton;
     private JTextField priceEveryMaterialTxt;
+    private int oldProductId=0;
+    private int oldMaterialId=0;
+    RecipeService recipeService = new RecipeService();
+    List<Recipe> recipeList = recipeService.getAllRecipe();
 
     /**
      * Create the panel.
@@ -84,10 +93,18 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int row = recipeTable.getSelectedRow();
-                idProductTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-                idMaterialTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-                soLuongTxt.setText(detailTableModel.getValueAt(row, 2).toString());
-                priceEveryMaterialTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+                if (row >= 0){
+                    idProductTxt.setEnabled(false);
+                    idMaterialTxt.setEnabled(false);
+                    delRecipeBtn.setEnabled(true);
+                    fixRecipeBtn.setEnabled(true);
+                    oldMaterialId = (int) detailTableModel.getValueAt(row, 1);
+                    oldProductId =  (int) detailTableModel.getValueAt(row, 0);
+                    idProductTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    idMaterialTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+                    soLuongTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+//                    priceEveryMaterialTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+                }
             }
         });
         detailTableModel.addRow(new Object[] {"12", "1", "24", 3000000});
@@ -144,11 +161,18 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         addRecipeBtn = new JButton("Thêm");
         addRecipeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(idProductTxt.getText().equals("") || idMaterialTxt.getText().equals("") || soLuongTxt.getText().equals("")) {
+                if(idMaterialTxt.getText().equals("") || idProductTxt.getText().equals("") || soLuongTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    JOptionPane.showMessageDialog(null, "Đã thêm công thức!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    boolean check = recipeService.addRecipe(Integer.parseInt(idProductTxt.getText()),Integer.parseInt(idMaterialTxt.getText()),Integer.parseInt(soLuongTxt.getText()));
+                    if (check){
+                        showAllRecipe();
+                        JOptionPane.showMessageDialog(null, "Đã thêm công thức!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Công thức đã tồn tại hoặc mã nguyên liệu, mã sản phẩm không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -156,18 +180,66 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         addRecipeBtn.setBounds(400, 67, 90, 35);
         recipeInfoPanel.add(addRecipeBtn);
 
+        //Clear Information
+        clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                idProductTxt.setEnabled(true);
+                idMaterialTxt.setEnabled(true);
+                fixRecipeBtn.setEnabled(false);
+                delRecipeBtn.setEnabled(false);
+                recipeTable.clearSelection();
+                idProductTxt.setText(null);
+                idMaterialTxt.setText(null);
+                soLuongTxt.setText(null);
+            }
+        });
+        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        clearInfoBtn.setBounds(400, 249, 90, 35);
+        recipeInfoPanel.add(clearInfoBtn);
+
         fixRecipeBtn = new JButton("Cập nhật");
+        fixRecipeBtn.setEnabled(false);
+        fixRecipeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(idMaterialTxt.getText().equals("") || idProductTxt.getText().equals("") || soLuongTxt.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    System.out.println("pro: "+oldProductId);
+                    System.out.println("mate: "+oldMaterialId);
+                    boolean check = recipeService.modifyRecipe(Integer.parseInt(idProductTxt.getText()),Integer.parseInt(idMaterialTxt.getText()),Integer.parseInt(soLuongTxt.getText()),oldProductId,oldMaterialId);
+                    if (check){
+                        showAllRecipe();
+                        JOptionPane.showMessageDialog(null, "Đã sửa công thức!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Công thức đã tồn tại hoặc mã nguyên liệu, mã sản phẩm không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
         fixRecipeBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixRecipeBtn.setBounds(400, 129, 90, 35);
         recipeInfoPanel.add(fixRecipeBtn);
 
         delRecipeBtn = new JButton("Xóa");
+        delRecipeBtn.setEnabled(false);
         delRecipeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                //xoa o day
-                if(decide == 0) {
-                    JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                if (idMaterialTxt.getText().equals("") || idProductTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 công thức và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else {
+                    int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                    //xoa o day
+                    if(decide == 0) {
+                        recipeService.deleteRecipe(Integer.parseInt(idProductTxt.getText()),
+                                Integer.parseInt(idMaterialTxt.getText()));
+                        clearInfoBtn.doClick();
+                        showAllRecipe();
+                        JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -238,9 +310,21 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         searchButton.setBounds(192, 229, 100, 50);
         searchPanel.add(searchButton);
         //End
+        showAllRecipe();
 
 
+    }
 
+    public void showAllRecipe(){
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        recipeList = recipeService.getAllRecipe();
+        for (Recipe recipe : recipeList){
+            detailTableModel.addRow(new Object[] {
+                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
+            });
+        }
     }
 
     @Override
