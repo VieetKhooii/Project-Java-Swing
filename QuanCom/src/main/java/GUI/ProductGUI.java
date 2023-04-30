@@ -1,5 +1,6 @@
 package GUI;
 
+import enumm.ProductUnit;
 import model.Category;
 import model.Product;
 import model.Roles;
@@ -51,6 +52,7 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
     private JButton fixProductBtn;
     private JButton delProductBtn;
     private JButton browsePhoto;
+    private JButton clearInfoBtn;
     ProductService productService = new ProductService();
     CategoryService categoryService = new CategoryService();
     List<Product> productList = productService.getAllProduct();
@@ -104,20 +106,22 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int row = productTable.getSelectedRow();
-                idProductTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-                nameProductTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-                for(int i = 0; i < unitProductCbB.getItemCount(); i++) {
-                    if(detailTableModel.getValueAt(row, 2).toString().equals(unitProductCbB.getItemAt(i).toString())) {
-                        unitProductCbB.setSelectedIndex(i);
-                        break;
+                if (row >= 0){
+                    idProductTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    nameProductTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+                    for(int i = 0; i < unitProductCbB.getItemCount(); i++) {
+                        if(detailTableModel.getValueAt(row, 2).toString().equals(unitProductCbB.getItemAt(i).toString())) {
+                            unitProductCbB.setSelectedIndex(i);
+                            break;
+                        }
                     }
-                }
-                priceProductTxt.setText(detailTableModel.getValueAt(row, 3).toString());
-                soLuongProductTxt.setText(detailTableModel.getValueAt(row, 4).toString());
-                for(int i = 0; i < categoryProductCbB.getItemCount(); i++) {
-                    if(detailTableModel.getValueAt(row, 5).toString().equals(categoryProductCbB.getItemAt(i).toString())) {
-                        categoryProductCbB.setSelectedIndex(i);
-                        break;
+                    priceProductTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+                    soLuongProductTxt.setText(detailTableModel.getValueAt(row, 4).toString());
+                    for(int i = 0; i < categoryProductCbB.getItemCount(); i++) {
+                        if(detailTableModel.getValueAt(row, 5).toString().equals(categoryProductCbB.getItemAt(i).toString())) {
+                            categoryProductCbB.setSelectedIndex(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -238,7 +242,18 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-
+                    int id=0;
+                    for (Category category : categoryList){
+                        if (category.getName().equalsIgnoreCase((String) categoryProductCbB.getSelectedItem())){
+                            id = category.getId();
+                            break;
+                        }
+                    }
+                    productService.addProduct(nameProductTxt.getText(),
+                            0,(String) unitProductCbB.getSelectedItem(),
+                            Integer.parseInt(priceProductTxt.getText()),
+                            id);
+                    showTableProduct();
                     JOptionPane.showMessageDialog(null, "Đã thêm món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -247,7 +262,48 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         addProductBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addProductBtn);
 
+        //Clear Information
+        clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                productTable.clearSelection();
+                idProductTxt.setText(null);
+                nameProductTxt.setText(null);
+                priceProduct.setText(null);
+                soLuongProductTxt.setText(null);
+            }
+        });
+        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        clearInfoBtn.setBounds(534, 280, 90, 35);
+        staffInfoPanel.add(clearInfoBtn);
+
         fixProductBtn = new JButton("Cập nhật");
+        fixProductBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (idProductTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 món ăn và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else if(nameProductTxt.getText().equals("") || priceProduct.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    int id=0;
+                    for (Category category : categoryList){
+                        if (category.getName().equalsIgnoreCase((String) categoryProductCbB.getSelectedItem())){
+                            id = category.getId();
+                            break;
+                        }
+                    }
+                    productService.modifyProduct(nameProductTxt.getText(),
+                            Integer.parseInt(soLuongProductTxt.getText()),
+                            (String) unitProductCbB.getSelectedItem(),Integer.parseInt(priceProductTxt.getText()),
+                            id,Integer.parseInt(idProductTxt.getText()));
+                    showTableProduct();
+                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                }
+            }
+        });
         fixProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixProductBtn.setBounds(358, 280, 90, 35);
         staffInfoPanel.add(fixProductBtn);
@@ -255,11 +311,18 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         delProductBtn = new JButton("Xóa");
         delProductBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                //xoa o day
-                if(decide == 0) {
-
-                    JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                if (idProductTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Hãy chọn 1 món ăn và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else {
+                    int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                    //xoa o day
+                    if(decide == 0) {
+                        productService.deleteProduct(Integer.parseInt(idProductTxt.getText()));
+                        clearInfoBtn.doClick();
+                        showTableProduct();
+                        JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -296,7 +359,12 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         staffInfoPanel.add(lblnVTnh);
 
         unitProductCbB = new JComboBox<String>();
-        unitProductCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Món", "Chai", "Ly", "Chén"}));
+        ProductUnit[] units = ProductUnit.values();
+        String[] unitList = new String[units.length];
+        for (int i=0; i<unitList.length; i++) {
+            unitList[i] = units[i].getUnit();
+        }
+        unitProductCbB.setModel(new DefaultComboBoxModel<String>(unitList));
         unitProductCbB.setFont(new Font("Arial", Font.BOLD, 13));
         unitProductCbB.setBounds(660, 120, 100, 30);
         staffInfoPanel.add(unitProductCbB);
@@ -345,16 +413,17 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
 
 
     }
-    private void showTableProduct(){
+    public void showTableProduct(){
         String categoryName = "";
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-        productList = productService.getAllProduct();
         categoryList = categoryService.getAllCate();
+        productList = productService.getAllProduct();
         for(Product product : productList) {
+            System.out.println("hi");
             for (Category category : categoryList){
-                if (category.getCateId() == product.getCategoryId()){
+                if (category.getId() == product.getCategoryId()){
                     categoryName = category.getName();
                 }
             }

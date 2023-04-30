@@ -4,6 +4,7 @@ import javax.swing.*;
 
 //import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import enumm.UnitMaterial;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

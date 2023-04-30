@@ -29,12 +29,4 @@ public class Category {
         this.description = description;
     }
 
-    private int cateId;
-    public int getCateId() {
-        return cateId;
-    }
-
-    public void setCateId(int cateId) {
-        this.cateId = cateId;
-    }
 }

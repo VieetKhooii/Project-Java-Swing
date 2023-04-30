@@ -1,5 +1,6 @@
 package GUI;
 
+import enumm.UnitMaterial;
 import model.Material;
 import service.MaterialService;
 
@@ -34,7 +35,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
     private JTextField idMaterialTxt;
     private JTextField nameMaterialTxt;
     private JTextField priceMaterialTxt;
-    private JComboBox<String> unitMaterialCbB = new JComboBox<>();
+    private JComboBox<String> unitMaterialCbB;
     private JComboBox<String> categoryMaterialCbB;
     private JPanel materialInfoPanel;
     private JComboBox<String> searchCbB;
@@ -165,26 +166,16 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         materialInfoPanel.add(priceMaterialTxt);
 
         UnitMaterial unitMaterial = new UnitMaterial();
-        unitMaterialCbB = new JComboBox<String>(unitMaterial.unitArray);
-        unitMaterialCbB.setModel(new DefaultComboBoxModel<String>());
+        unitMaterialCbB = new JComboBox<String>();
+        unitMaterialCbB.setModel(new DefaultComboBoxModel<String>(unitMaterial.unitArray));
         unitMaterialCbB.setFont(new Font("Arial", Font.BOLD, 13));
         unitMaterialCbB.setBounds(454, 101, 100, 30);
         materialInfoPanel.add(unitMaterialCbB);
-
-        categoryMaterialCbB = new JComboBox<String>();
-        categoryMaterialCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        categoryMaterialCbB.setBounds(454, 151, 100, 30);
-        materialInfoPanel.add(categoryMaterialCbB);
 
         JLabel lblnVTnh = new JLabel("Đơn vị tính");
         lblnVTnh.setFont(new Font("Arial", Font.BOLD, 13));
         lblnVTnh.setBounds(334, 101, 70, 30);
         materialInfoPanel.add(lblnVTnh);
-
-        JLabel lblPhnLoi = new JLabel("Phân loại");
-        lblPhnLoi.setFont(new Font("Arial", Font.BOLD, 13));
-        lblPhnLoi.setBounds(334, 151, 70, 30);
-        materialInfoPanel.add(lblPhnLoi);
 
         JLabel soluongLb = new JLabel("Số lượng");
         soluongLb.setFont(new Font("Arial", Font.BOLD, 13));
@@ -346,7 +337,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
 
     }
 
-    private void showTableMaterial(){
+    public void showTableMaterial(){
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }

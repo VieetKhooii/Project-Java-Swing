@@ -73,6 +73,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
     List<Functions> functionsList = functionService.getAllFunctions();
     List<Functions> role_funcList = new ArrayList<>();
     List<JCheckBox> checkBoxList = new ArrayList<>();
+    AccountGUI accountGUI = new AccountGUI();
     /**
      * Create the panel.
      */
@@ -268,12 +269,14 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                         }
+                        accountGUI.showRoleChooser();
                         showTableRoles();
                         JOptionPane.showMessageDialog(null, "Đã thêm quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
         });
+
         addAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         addAccBtn.setBounds(270, 280, 90, 35);
         staffInfoPanel.add(addAccBtn);
@@ -332,6 +335,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
                             }
                         }
                         showTableRoles();
+                        accountGUI.showRoleChooser();
                         clearInfoBtn.doClick();
                         JOptionPane.showMessageDialog(null, "Đã sửa quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -361,6 +365,7 @@ public class RolesGUI extends JPanel implements MouseListener, ActionListener{
                         roleService.roleDetele(Integer.parseInt(idRoleTxt.getText()));
                         clearInfoBtn.doClick();
                         showTableRoles();
+                        accountGUI.showRoleChooser();
                         JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }

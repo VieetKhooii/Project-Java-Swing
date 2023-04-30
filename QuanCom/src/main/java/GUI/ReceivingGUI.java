@@ -105,14 +105,9 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
                 int row = receivingTable.getSelectedRow();
                 if (row >= 0){
                     viewBtn.setEnabled(true);
-                    noteStatic.setId(Integer.parseInt(detailTableModel.getValueAt(row, 0).toString()));
-                    viewBtn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            GiaoDien.phieuNhap.setVisible(false);
-                            GiaoDien.taoPhieu.setVisible(true);
-                            GiaoDien.taoPhieu.showTableReceiving();
-                        }
-                    });
+                    int id = Integer.parseInt(detailTableModel.getValueAt(row, 0).toString());
+                    noteStatic.setId(id);
+
                     GiaoDien.taoPhieu.idPNTxt.setText(detailTableModel.getValueAt(row, 0).toString());
                     GiaoDien.taoPhieu.idStaffCreatePNTxt.setText(detailTableModel.getValueAt(row, 1).toString());
                     GiaoDien.taoPhieu.idNCCTxt.setText(detailTableModel.getValueAt(row, 2).toString());
@@ -217,24 +212,35 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         viewBtn = new JButton("Xem chi tiết");
         viewBtn.setEnabled(false);
         viewBtn.setBounds(80, 70, 120, 40);
+        viewBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                GiaoDien.phieuNhap.setVisible(false);
+                GiaoDien.taoPhieu.setVisible(true);
+                GiaoDien.taoPhieu.showTableReceiving();
+                GiaoDien.taoPhieu.showTempMaterial();
+
+            }
+        });
         btnField.add(viewBtn);
 
         createBtn = new JButton("Tạo mới");
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                receivingTable.clearSelection();
                 noteStatic.setId(0);
                 GiaoDien.phieuNhap.setVisible(false);
                 GiaoDien.taoPhieu.setVisible(true);
                 GiaoDien.taoPhieu.resetComponent();
+                GiaoDien.taoPhieu.showTableReceiving();
                 GiaoDien.taoPhieu.showTempMaterial();
             }
         });
         btnField.add(createBtn);
 
-        updateBtn = new JButton("Cập nhật");
-        updateBtn.setBounds(80, 190, 120, 40);
-        btnField.add(updateBtn);
+//        updateBtn = new JButton("Cập nhật");
+//        updateBtn.setBounds(80, 190, 120, 40);
+//        btnField.add(updateBtn);
 
         delBtn = new JButton("Xóa");
         delBtn.addActionListener(new ActionListener() {
@@ -251,7 +257,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
                 }
             }
         });
-        delBtn.setBounds(80, 250, 120, 40);
+        delBtn.setBounds(80, 190, 120, 40);
         btnField.add(delBtn);
 
         JLabel controllerLabel = new JLabel("Cài đặt");
@@ -265,7 +271,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 
     }
 
-    private void showTableReceiving(){
+    public void showTableReceiving(){
         int totalPrice = 0;
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);

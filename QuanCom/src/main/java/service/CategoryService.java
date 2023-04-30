@@ -12,18 +12,18 @@ public class CategoryService {
         return list;
     }
 
-    public boolean addMutualCate(String name, String description){
+    public boolean addCate(String name, String description){
         CategoryRepository repository = new CategoryRepository();
-        return repository.addMutualCate(name,description) >= 1;
+        return repository.addCate(name,description) >= 1;
     }
 
-    public boolean mutualCateDetele(int id){
+    public boolean cateDelete(int id){
         CategoryRepository repository = new CategoryRepository();
-        return repository.deleteMutualCate(id) >= 1;
+        return repository.deleteCate(id) >= 1;
     }
 
-    public boolean mutualCateModify(int id, String name, String description){
+    public boolean cateModify(int id, String name, String description){
         CategoryRepository repository = new CategoryRepository();
-        return repository.modifyMutualCate(id, name, description) >= 1;
+        return repository.modifyCate(id, name, description) >= 1;
     }
 }

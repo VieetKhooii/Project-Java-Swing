@@ -20,6 +20,7 @@ public class ProductRepository {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 Product product = new Product();
+                product.setId(resultSet.getInt("product_id"));
                 product.setName(resultSet.getString("product_name"));
                 product.setAmount(resultSet.getInt("soluong"));
                 product.setUnit(resultSet.getString("donvitinh"));

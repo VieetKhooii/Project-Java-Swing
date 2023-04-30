@@ -282,11 +282,8 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
         staffInfoPanel.add(staffDateLabel);
 
         //positioncbB
-        for (Roles roles : rolesList){
-            positioncbB.addItem(roles.getName());
-        }
-        positioncbB.setBounds(471, 190, 90, 30);
-        staffInfoPanel.add(positioncbB);
+        showRoleChooser();
+
 
         JLabel lblChcV = new JLabel("Quyền");
         lblChcV.setFont(new Font("Arial", Font.BOLD, 13));
@@ -354,6 +351,17 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                     user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName
             });
         }
+    }
+
+    public void showRoleChooser(){
+        staffInfoPanel.remove(positioncbB);
+        positioncbB = new JComboBox<>();
+        rolesList = roleService.getAllRoles();
+        for (Roles roles : rolesList){
+            positioncbB.addItem(roles.getName());
+        }
+        positioncbB.setBounds(471, 190, 90, 30);
+        staffInfoPanel.add(positioncbB);
     }
 
     @Override
