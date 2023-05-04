@@ -263,7 +263,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         addAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addAccBtn.setBounds(270, 280, 90, 35);
+        addAccBtn.setBounds(222, 284, 90, 35);
         staffInfoPanel.add(addAccBtn);
 
         //Clear Information
@@ -280,7 +280,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(534, 280, 90, 35);
+        clearInfoBtn.setBounds(486, 284, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
         fixAccBtn = new JButton("Cập nhật");
@@ -327,7 +327,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         fixAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixAccBtn.setBounds(358, 280, 90, 35);
+        fixAccBtn.setBounds(310, 284, 90, 35);
         staffInfoPanel.add(fixAccBtn);
 
         delAccBtn = new JButton("Xóa");
@@ -355,7 +355,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         delAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delAccBtn.setBounds(445, 280, 90, 35);
+        delAccBtn.setBounds(397, 284, 90, 35);
         staffInfoPanel.add(delAccBtn);
 
         //////////////////////////////////////

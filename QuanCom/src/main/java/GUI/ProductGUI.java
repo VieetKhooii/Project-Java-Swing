@@ -264,9 +264,10 @@ public class ProductGUI extends JPanel implements ActionListener{
         JButton rmSearchBtn = new JButton("Hủy");
         rmSearchBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		searchTxt.setText("");
-        		showSortTable(true, false, false, false, false, false, false);
+        		searchTxt.setText("");   		
         		sortCbB.setSelectedIndex(0);
+        		categorySearchCbB.setSelectedIndex(0);
+        		showSortTable(true, false, false, false, false, false, false);
         	}
         });
         rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
