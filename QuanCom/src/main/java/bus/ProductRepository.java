@@ -20,14 +20,16 @@ public class ProductRepository {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 Product product = new Product();
+                product.setId(resultSet.getInt("product_id"));
                 product.setName(resultSet.getString("product_name"));
                 product.setAmount(resultSet.getInt("soluong"));
                 product.setUnit(resultSet.getString("donvitinh"));
                 product.setPrice(resultSet.getInt("gia"));
                 product.setCategoryId(resultSet.getInt("category_id"));
+                list.add(product);
             }
         } catch (SQLException e) {
-            System.out.println("Error while getting product in database");
+            System.out.println("ProductRepository: Error while getting product in database");
         }
         return list;
     }
@@ -46,7 +48,7 @@ public class ProductRepository {
             preparedStatement.setInt(5,cateId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while add product "+e.getMessage());
+            System.out.println("ProductRepository: Error while add product "+e.getMessage());
         }
         return isSuccess;
     }
@@ -60,7 +62,7 @@ public class ProductRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting product "+e.getMessage());
+            System.out.println("ProductRepository: Error deleting product "+e.getMessage());
         }
         return isSuccess;
     }
@@ -86,7 +88,7 @@ public class ProductRepository {
             statement.setInt(6,productId);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error modify product "+e.getMessage());
+            System.out.println("ProductRepository: Error modify product "+e.getMessage());
         }
         return isSuccess;
     }

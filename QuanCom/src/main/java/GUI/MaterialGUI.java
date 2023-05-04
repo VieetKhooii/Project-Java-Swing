@@ -102,12 +102,11 @@ public class MaterialGUI extends JPanel implements ActionListener{
                 if (row >= 0){
                     idMaterialTxt.setText(detailTableModel.getValueAt(row, 0).toString());
                     nameMaterialTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-//                    for(int i = 0; i < unitMaterialCbB.getItemCount(); i++) {
-//                        if(detailTableModel.getValueAt(row, 2).toString().equals(unitMaterialCbB.getItemAt(i).toString())) {
-//                            unitMaterialCbB.setSelectedIndex(i);
-//                            break;
-//                        }
-//                    }
+                    for(int i = 0; i < unitMaterialCbB.getItemCount(); i++) {
+                    	if(detailTableModel.getValueAt(row, 2).toString().equals(unitMaterialCbB.getItemAt(i).toString())) {
+                    		unitMaterialCbB.setSelectedIndex(i);
+                    	}
+                    }
 
                     soluongMaterialTxt.setText(detailTableModel.getValueAt(row, 3).toString());
                     priceMaterialTxt.setText(detailTableModel.getValueAt(row, 4).toString());
@@ -213,7 +212,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
             }
         });
         addMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addMaterialBtn.setBounds(162, 244, 90, 35);
+        addMaterialBtn.setBounds(127, 244, 90, 35);
         materialInfoPanel.add(addMaterialBtn);
 
         //Clear Information
@@ -229,7 +228,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(424, 244, 90, 35);
+        clearInfoBtn.setBounds(389, 244, 90, 35);
         materialInfoPanel.add(clearInfoBtn);
 
         fixMaterialBtn = new JButton("Cập nhật");
@@ -258,7 +257,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
             }
         });
         fixMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixMaterialBtn.setBounds(250, 244, 90, 35);
+        fixMaterialBtn.setBounds(215, 244, 90, 35);
         materialInfoPanel.add(fixMaterialBtn);
 
         delMaterialBtn = new JButton("Xóa");
@@ -279,7 +278,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
             }
         });
         delMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delMaterialBtn.setBounds(337, 244, 90, 35);
+        delMaterialBtn.setBounds(302, 244, 90, 35);
         materialInfoPanel.add(delMaterialBtn);
 
         JPanel bigNamePanel = new JPanel();

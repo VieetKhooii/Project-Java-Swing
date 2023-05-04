@@ -9,8 +9,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import com.formdev.flatlaf.json.ParseException;
-
 import java.awt.*;
 
 import java.awt.event.ActionListener;
@@ -106,10 +104,12 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
             	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
             	Date date = null;
             	try {
-            	    date = dateFormat.parse(detailTableModel.getValueAt(row, 2).toString());
-            	} catch (ParseException | java.text.ParseException e1) {
-            	    e1.printStackTrace();
-            	}
+					date = dateFormat.parse(detailTableModel.getValueAt(row, 2).toString());
+				} catch (java.text.ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	
             	GiaoDien.taoDon.orderDateChooser.setDate(date);
             	
             	GiaoDien.taoDon.totalPriceOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());

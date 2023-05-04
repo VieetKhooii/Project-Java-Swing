@@ -2,22 +2,14 @@ package GUI;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
 import java.awt.*;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.json.ParseException;
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
@@ -110,10 +102,11 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
             	SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
             	Date date = null;
             	try {
-            	    date = dateFormat.parse(detailTableModel.getValueAt(row, 3).toString());
-            	} catch (ParseException | java.text.ParseException e1) {
-            	    e1.printStackTrace();
-            	}
+					date = dateFormat.parse(detailTableModel.getValueAt(row, 3).toString());
+				} catch (java.text.ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             	GiaoDien.taoPhieu.datePNChooser.setDate(date);
             	
             	GiaoDien.taoPhieu.totalPricePNTxt.setText(detailTableModel.getValueAt(row, 4).toString());

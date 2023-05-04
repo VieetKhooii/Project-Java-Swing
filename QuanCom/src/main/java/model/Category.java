@@ -29,12 +29,4 @@ public class Category {
         this.description = description;
     }
 
-    private int mutualCateId;
-    public int getMutualCateId() {
-        return mutualCateId;
-    }
-
-    public void setMutualCateId(int mutualCateId) {
-        this.mutualCateId = mutualCateId;
-    }
 }

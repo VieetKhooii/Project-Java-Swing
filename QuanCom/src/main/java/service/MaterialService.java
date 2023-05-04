@@ -51,7 +51,8 @@ public class MaterialService {
     public List<Material> searchByName(String name, List<Material> materialList){
     	List<Material> searchList = new ArrayList<>();  
     	for(Material i : materialList) {
-    		Pattern pattern = Pattern.compile("(?i).*"+name+".*");
+    		Pattern pattern = Pattern.compile("(?i).*"+Normalizer.normalize(name, Normalizer.Form.NFD)
+            .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")+".*");
     		String vietnameseString = Normalizer.normalize(i.getName(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
     		String search = vietnameseString.toLowerCase().replaceAll("[đ]", "d")                          
                     .replaceAll("[ư]", "u")                                      
@@ -149,7 +150,7 @@ public class MaterialService {
     	});
     	return sortList;
     }
-    // sort by price asc
+    // sort by price des
     public List<Material> sortByPriceDes(List<Material> materialList){
     	List<Material> sortList = materialList;  
     	Collections.sort(sortList, new Comparator<Material>() {

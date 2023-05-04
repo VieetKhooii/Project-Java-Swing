@@ -185,7 +185,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
 
         addStaffBtn = new JButton("Thêm");
         addStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addStaffBtn.setBounds(270, 280, 90, 35);
+        addStaffBtn.setBounds(238, 284, 90, 35);
         staffInfoPanel.add(addStaffBtn);
 
         //Clear Information
@@ -202,7 +202,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(534, 280, 90, 35);
+        clearInfoBtn.setBounds(502, 284, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
 
@@ -239,7 +239,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
             }
         });
         fixStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixStaffBtn.setBounds(358, 280, 90, 35);
+        fixStaffBtn.setBounds(326, 284, 90, 35);
         staffInfoPanel.add(fixStaffBtn);
 
         delStaffBtn = new JButton("Xóa");
@@ -261,7 +261,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
             }
         });
         delStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delStaffBtn.setBounds(445, 280, 90, 35);
+        delStaffBtn.setBounds(413, 284, 90, 35);
         staffInfoPanel.add(delStaffBtn);
 
         JButton browsePhoto = new JButton("Chọn");

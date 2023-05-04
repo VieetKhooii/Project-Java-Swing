@@ -11,12 +11,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
 import model.User;
 import org.jdesktop.swingx.prompt.PromptSupport;
-
 import service.UserService;
 
 public class Login extends JFrame implements ActionListener{
@@ -145,7 +141,7 @@ public class Login extends JFrame implements ActionListener{
                         break;
                     }
                 }
-                if (check) {
+                if (check) {         
                     GiaoDien a = new GiaoDien();
                     a.setVisible(true);
                     dispose();

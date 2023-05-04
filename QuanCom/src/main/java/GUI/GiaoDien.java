@@ -4,7 +4,12 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightContrastIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubContrastIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanContrastIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import java.awt.BorderLayout;
@@ -44,11 +49,7 @@ public class GiaoDien extends JFrame {
     static MaterialGUI material;
     static ProductAndRecipeGUI product;
     public GiaoDien() {
-    	try {
-    		FlatMacLightLaf.setup();
-    	} catch( Exception ex ) {
-    	    System.err.println( "Failed to initialize LaF" );
-    	}
+    	FlatMacLightLaf.setup();
         init();
         this.setVisible(true);
     }
@@ -183,14 +184,9 @@ public class GiaoDien extends JFrame {
         
         
     }
-
-    
     public static void main(String[] args) {
-    	try {
-    		FlatMacLightLaf.setup();
-    	} catch( Exception ex ) {
-    	    System.err.println( "Failed to initialize LaF" );
-    	}
-		JFrame a = new GiaoDien();		
+    	//FlatLightLaf.setup();
+    	new GiaoDien();
 	}
+
 }
