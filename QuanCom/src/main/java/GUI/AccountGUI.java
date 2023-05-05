@@ -40,7 +40,7 @@ public class AccountGUI extends JPanel implements ActionListener{
     private JButton clearInfoBtn;
     private JButton fixAccBtn;
     private JButton delAccBtn;
-    private JComboBox<String> positioncbB = new JComboBox<>();
+    public JComboBox<String> positioncbB = new JComboBox<>();
     private JLabel lblTmKim;
 	private JComboBox<String> searchCbB;
 	private JTextField searchTxt;

@@ -29,7 +29,7 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class ReceivingGUI extends JPanel implements MouseListener, ActionListener{
+public class ReceivingGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -285,27 +285,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 

@@ -258,6 +258,7 @@ public class RolesGUI extends JPanel implements ActionListener{
                         }
                         showTableRoles();
                         JOptionPane.showMessageDialog(null, "Đã thêm quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        AccountAndRoleGUI.accountPanel.positioncbB.addItem(nameRoleTxt.getText());                      
                     }
                 }
             }
