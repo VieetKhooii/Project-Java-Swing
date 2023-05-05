@@ -9,14 +9,22 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
+import model.Category;
+import model.Material;
+import model.Product;
+import model.Recipe;
+import service.ProductService;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
+import java.util.List;
 
 public class DetailOrdersGUI extends JPanel implements MouseListener, ActionListener, ItemListener{
 
@@ -69,9 +77,14 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
     private JComboBox<String> categoryCbb;
     private JButton selectProductBtn;
     private JButton unselectedBtn;
+    private JButton updateBtn;
+    private JButton delBtn;
     Component[] components1;
     Component[] components2;
     Component[] totalComponents;
+    ProductService productService = new ProductService();
+    List<Product> productList = productService.getAllProduct();
+    List<Product> cart = new ArrayList<>();
     /**
      * Create the panel.
      */
@@ -202,14 +215,20 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                 detailOrdersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
         }
-        detailOrdersTable.addMouseListener(new MouseAdapter() {
+        ListSelectionModel listSelectionModel1 = detailOrdersTable.getSelectionModel();
+        listSelectionModel1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSelectionModel1.addListSelectionListener(new ListSelectionListener(){
             @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = ordersSelectedTable.getSelectedRow();
-                idDetailOrderTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-                nameDetailOrderTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-                soLuongMuaTxt.setText(detailTableModel.getValueAt(row, 2).toString());
-                priceDetailOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+            public void valueChanged(ListSelectionEvent e) {
+                int row = detailOrdersTable.getSelectedRow();
+                if (row >= 0){
+                    idDetailOrderTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    nameDetailOrderTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+                    soLuongMuaTxt.setText(detailTableModel.getValueAt(row, 2).toString());
+                    priceDetailOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());
+                }
+                updateBtn.setEnabled(true);
+                delBtn.setEnabled(true);
             }
         });
         detailOrderScrollPane = new JScrollPane(detailOrdersTable);
@@ -245,6 +264,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         idDetailOrderTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idDetailOrderTxt.setColumns(10);
         idDetailOrderTxt.setBounds(93, 80, 167, 30);
+        idDetailOrderTxt.setEnabled(false);
         infoDetailOrderPanel.add(idDetailOrderTxt);
 
         JLabel nameDetailOrderLabel = new JLabel("Tên món");
@@ -256,6 +276,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         nameDetailOrderTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameDetailOrderTxt.setColumns(10);
         nameDetailOrderTxt.setBounds(93, 132, 167, 30);
+        nameDetailOrderTxt.setEnabled(false);
         infoDetailOrderPanel.add(nameDetailOrderTxt);
 
         JLabel soLuongMuaLabel = new JLabel("Số lượng mua");
@@ -278,7 +299,71 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         priceDetailOrderTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         priceDetailOrderTxt.setColumns(10);
         priceDetailOrderTxt.setBounds(93, 240, 167, 30);
+        priceDetailOrderTxt.setEnabled(false);
         infoDetailOrderPanel.add(priceDetailOrderTxt);
+
+        updateBtn = new JButton("Cập nhật");
+        updateBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean flag=true;
+                int price=0;
+                for (Product product : cart){
+                    if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
+                        for (Product product1 : productList){
+                            if (product1.getAmount() < Integer.parseInt(soLuongMuaTxt.getText())){
+                                JOptionPane.showMessageDialog(null, "Số lượng món ăn có thể làm không đủ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                flag=false;
+                                break;
+                            }
+                            if (product.getId() == product1.getId()){
+                                price = product1.getPrice();
+                            }
+                        }
+                        if (flag){
+                            product.setAmount(Integer.parseInt(soLuongMuaTxt.getText()));
+                            if (product.getAmount()==0){
+                                cart.remove(product);
+                            }
+                            else {
+                                product.setPrice(product.getAmount() * price);
+                            }
+                            showCart();
+                            JOptionPane.showMessageDialog(null, "Đã cập nhật số lượng!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+        updateBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        updateBtn.setBounds(50, 310, 90, 35);
+        updateBtn.addActionListener(this);
+        updateBtn.setEnabled(false);
+        infoDetailOrderPanel.add(updateBtn);
+
+        delBtn = new JButton("Xóa");
+        delBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (Product product : cart){
+                    if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
+                        for (int i=0; i<model.getRowCount(); i++){
+                            if (Integer.parseInt(model.getValueAt(i,0).toString()) == product.getId()){
+                                model.setValueAt(0,i,4);
+                            }
+                        }
+                        cart.remove(product);
+                        break;
+                    }
+                }
+                showCart();
+                JOptionPane.showMessageDialog(null, "Đã xóa!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        delBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        delBtn.setBounds(140, 310, 90, 35);
+        delBtn.addActionListener(this);
+        delBtn.setEnabled(false);
+        infoDetailOrderPanel.add(delBtn);
 
         JLabel thongtinHDLabel_1 = new JLabel("THÔNG TIN MÓN");
         thongtinHDLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -307,31 +392,28 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
             public void valueChanged(ListSelectionEvent e) {
                 int row = ordersSelectedTable.getSelectedRow();
 
-                idItemSelectedTxt.setText(model.getValueAt(row, 0).toString());
-                nameItemSelectedTxt.setText(model.getValueAt(row, 1).toString());
-                remainItemSelectedTxt.setText(model.getValueAt(row, 2).toString());
-                priceItemSelectedTxt.setText(model.getValueAt(row, 3).toString());
-                amountInputItemSelectedTxt.setText(model.getValueAt(row, 4).toString());
-
+                if (row >= 0){
+                    idItemSelectedTxt.setText(model.getValueAt(row, 0).toString());
+                    nameItemSelectedTxt.setText(model.getValueAt(row, 1).toString());
+                    remainItemSelectedTxt.setText(model.getValueAt(row, 2).toString());
+                    priceItemSelectedTxt.setText(model.getValueAt(row, 3).toString());
+                    amountInputItemSelectedTxt.setText(model.getValueAt(row, 4).toString());
+                }
 
                 selectProductBtn.setEnabled(true);
 
-                if(!amountInputItemSelectedTxt.getText().equals("0")) {
-                    unselectedBtn.setEnabled(true);
-                }
-                else {
-                    unselectedBtn.setEnabled(false);
-                }
+//                if(!amountInputItemSelectedTxt.getText().equals("0")) {
+//                    unselectedBtn.setEnabled(true);
+//                }
+//                else {
+//                    unselectedBtn.setEnabled(false);
+//                }
             }
         });
 
         ordersSelectedTable.setDefaultRenderer(String.class, centerRenderer);
         ordersSelectedTable.setRowHeight(30);
 
-        model.addRow(new Object[]{"C1", "Cơm sườn", 10, 30000, 0});
-        model.addRow(new Object[]{"C2", "Cơm gà", 1, 30000, 0});
-        model.addRow(new Object[]{"C3", "Cơm chiên", 1, 30000, 0});
-        model.addRow(new Object[]{"C4", "Cơm trộn", 1, 30000, 0});
         for(int i = 0; i < 5; i++) {
             if(i == 1) {
                 ordersSelectedTable.getColumnModel().getColumn(i).setPreferredWidth(300);
@@ -376,6 +458,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         idItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idItemSelectedTxt.setColumns(10);
         idItemSelectedTxt.setBounds(93, 50, 167, 30);
+        idItemSelectedTxt.setEnabled(false);
         infoItemSeclected.add(idItemSelectedTxt);
 
         JLabel nameItemSelectedLabel = new JLabel("Tên món");
@@ -387,6 +470,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         nameItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameItemSelectedTxt.setColumns(10);
         nameItemSelectedTxt.setBounds(93, 102, 167, 30);
+        nameItemSelectedTxt.setEnabled(false);
         infoItemSeclected.add(nameItemSelectedTxt);
 
         JLabel remainItemSelectedLabel = new JLabel("Số lượng còn lại");
@@ -398,6 +482,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         remainItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         remainItemSelectedTxt.setColumns(10);
         remainItemSelectedTxt.setBounds(170, 154, 90, 30);
+        remainItemSelectedTxt.setEnabled(false);
         infoItemSeclected.add(remainItemSelectedTxt);
 
         JLabel amountInputItemSelectedLabel = new JLabel("Số lượng mua");
@@ -421,6 +506,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         priceItemSelectedTxt.setBounds(93, 262, 167, 30);
         infoItemSeclected.add(priceItemSelectedTxt);
         priceItemSelectedTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        priceItemSelectedTxt.setEnabled(false);
         priceItemSelectedTxt.setColumns(10);
 
         thongtinHDLabel = new JLabel("THÔNG TIN MÓN");
@@ -435,19 +521,20 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 
         selectProductBtn = new JButton("Chọn");
         selectProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        selectProductBtn.setBounds(50, 310, 90, 35);
+        selectProductBtn.setBounds(95, 310, 90, 35);
         selectProductBtn.addActionListener(this);
         selectProductBtn.setEnabled(false);
         infoItemSeclected.add(selectProductBtn);
 
-        unselectedBtn = new JButton("Bỏ chọn");
-        unselectedBtn.addActionListener(this);
-        unselectedBtn.setEnabled(false);
-        unselectedBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        unselectedBtn.setBounds(140, 310, 90, 35);
-        infoItemSeclected.add(unselectedBtn);
+//        unselectedBtn = new JButton("Bỏ chọn");
+//        unselectedBtn.addActionListener(this);
+//        unselectedBtn.setEnabled(false);
+//        unselectedBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+//        unselectedBtn.setBounds(140, 310, 90, 35);
+//        infoItemSeclected.add(unselectedBtn);
         //End
 
+        showTableProduct();
 
 
 
@@ -554,6 +641,31 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         System.arraycopy(components2, 0, totalComponents, components1.length, components2.length);
     }
 
+    public void showTableProduct(){
+        while (model.getRowCount() != 0){
+            model.removeRow(0);
+        }
+        productList = productService.getAllProduct();
+        for(Product product : productList) {
+            model.addRow(new Object[] {
+                    product.getId(), product.getName(), product.getAmount(),
+                    product.getPrice(), 0
+            });
+        }
+    }
+
+    public void showCart(){
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        if (cart.size() > 0){
+            for (Product product : cart){
+                detailTableModel.addRow(new Object[]{
+                        product.getId(), product.getName(), product.getAmount(), product.getPrice()
+                });
+            }
+        }
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -599,18 +711,44 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         }
         if(e.getSource() == selectProductBtn) {
 
-            String input;
+            String input="";
+            boolean flag;
+            boolean check=true;
             do {
+                flag=true;
                 input = JOptionPane.showInputDialog("Nhập số lượng món");
-                if(input == null) {
-                    input = "0";
-                    break;
+                if(input.equals("") || input == null || input.equals("0")) {
+                    flag=false;
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập số lượng", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-            }while(input.equals(""));
+                else if (Integer.parseInt(input) > (Integer) model.getValueAt(modelRow, 2)
+                        ||
+                        Integer.parseInt(model.getValueAt(modelRow, 4).toString())+ Integer.parseInt(input) >
+                                (Integer) model.getValueAt(modelRow, 2)){
+                    flag = false;
+                    JOptionPane.showMessageDialog(null, "Số lượng không đủ!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }while(!flag);
 
             amountInputItemSelectedTxt.setText(input);
-            ordersSelectedTable.setValueAt(input, modelRow, 4);
-
+            ordersSelectedTable.setValueAt(Integer.parseInt(model.getValueAt(modelRow, 4).toString())+ Integer.parseInt(input), modelRow, 4);
+            for (Product product : cart){
+                if ((Integer) model.getValueAt(modelRow, 0) == product.getId()){
+                    product.setAmount(product.getAmount()+Integer.parseInt(input));
+                    product.setPrice(product.getAmount() * (Integer) model.getValueAt(modelRow, 3));
+                    check = false;
+                    break;
+                }
+            }
+            if (check){
+                Product product = new Product();
+                product.setId((Integer) model.getValueAt(modelRow, 0));
+                product.setName((String) model.getValueAt(modelRow, 1));
+                product.setPrice((Integer) model.getValueAt(modelRow, 3) * Integer.parseInt(input));
+                product.setAmount(Integer.parseInt(input));
+                cart.add(product);
+            }
+            showCart();
 
         }
         if(e.getSource() == unselectedBtn) {

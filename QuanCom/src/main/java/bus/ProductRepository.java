@@ -77,7 +77,7 @@ public class ProductRepository {
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update products set product_name = ?, soluong = ?" +
-                ", donvitinh = ?, gia = ?, category_id = ? where role_id = ?";
+                ", donvitinh = ?, gia = ?, category_id = ? where product_id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1,name);

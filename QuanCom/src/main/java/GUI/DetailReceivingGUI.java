@@ -76,6 +76,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
     List<Material> materialList = materialService.getAllMaterial();
     List<Material> tempMaterialList = new ArrayList<>();
     ReceivedNote noteStatic = ReceivingGUI.noteStatic;
+    ProductGUI productGUI = new ProductGUI();
     int tempId = 0;
     /**
      * Create the panel.
@@ -587,7 +588,6 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                         detailReceiveService.addDetailNote(material.getId(),id,material.getName(),
                                 material.getAmount(), material.getPrice());
                         for (Material storeMaterial : materialList){
-                            System.out.println("yes");
                             if (storeMaterial.getName().equalsIgnoreCase(material.getName())){
                                 materialService.modifyMaterial(storeMaterial.getName(),
                                         storeMaterial.getUnit(),
@@ -601,8 +601,10 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                             materialService.addMaterial(material.getName(),material.getUnit(),material.getPrice(),material.getAmount());
                         }
                     }
+                    materialList = materialService.getAllMaterial();
                     GiaoDien.phieuNhap.showTableReceiving();
                     GiaoDien.material.showTableMaterial();
+                    productGUI.showTableProduct();
                     nextBtn.setEnabled(false);
                     addReceivingBtn.setEnabled(false);
                     delReceivingBtn.setEnabled(false);

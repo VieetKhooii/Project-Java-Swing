@@ -130,9 +130,6 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                 }
             }
         });
-
-        detailTableModel.addRow(new Object[] {"1", "Coca cola", "Chai", "3", "8000", "Nước"});
-
         productScrollPane = new JScrollPane(productTable);
         productScrollPane.setBounds(5, 5, 1070, 280);
         productListPanel.add(productScrollPane);
@@ -449,20 +446,22 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                     for (Material material : materialList){
                         if (material.getId() == recipe.getMaterialId()){
                             temp = material.getAmount()/recipe.getAmount();
-                            System.out.println(temp);
                             break;
                         }
                     }
                     if (min==-1) min = temp;
                     else if (temp < min) min = temp;
-                    System.out.println("Min: "+min);
                 }
             }
             if (min==-1){
                 product.setAmount(0);
             }
-            else
-            product.setAmount(min);
+            else {
+                product.setAmount(min);
+            }
+
+            productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
+                    product.getPrice(),product.getCategoryId(),product.getId());
         }
     }
 
