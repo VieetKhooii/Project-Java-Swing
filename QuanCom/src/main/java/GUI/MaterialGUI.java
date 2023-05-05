@@ -184,6 +184,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
         soluongMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         soluongMaterialTxt.setColumns(10);
         soluongMaterialTxt.setBounds(127, 151, 167, 30);
+        soluongMaterialTxt.setEnabled(false);
         materialInfoPanel.add(soluongMaterialTxt);
 
         addMaterialBtn = new JButton("Thêm");
@@ -193,16 +194,16 @@ public class MaterialGUI extends JPanel implements ActionListener{
                     JOptionPane.showMessageDialog(null, "Không được chọn nguyên liệu đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 
-                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("") || soluongMaterialTxt.getText().equals("")) {
+                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
-                else if(!priceMaterialTxt.getText().matches("[0-9]{1,9}") || !soluongMaterialTxt.getText().matches("[0-9]{1,9}")) {
+                else if(!priceMaterialTxt.getText().matches("[0-9]{1,9}")) {
                 	JOptionPane.showMessageDialog(null, "Sai đầu vào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     
                     materialService.addMaterial(chuanHoa(nameMaterialTxt.getText()),unitMaterialCbB.getSelectedItem().toString(),
-                    		Integer.parseInt(priceMaterialTxt.getText()),Integer.parseInt(soluongMaterialTxt.getText()));
+                    		Integer.parseInt(priceMaterialTxt.getText()),0);
                     showTableMaterial();
                     JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -234,7 +235,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
                 if (idMaterialTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 nguyên liệu và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("") || soluongMaterialTxt.getText().equals("")) {
+                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
@@ -246,7 +247,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
                         }
                     }
                     materialService.modifyMaterial(chuanHoa(nameMaterialTxt.getText()),unit,Integer.parseInt(priceMaterialTxt.getText()),
-                    		Integer.parseInt(soluongMaterialTxt.getText()), Integer.parseInt(idMaterialTxt.getText()));
+                    		0, Integer.parseInt(idMaterialTxt.getText()));
                     showTableMaterial();
                     JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
@@ -401,7 +402,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
 
     }
 
-    private void showTableMaterial(){
+    void showTableMaterial(){
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
