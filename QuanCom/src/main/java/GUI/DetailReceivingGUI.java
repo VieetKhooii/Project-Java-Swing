@@ -10,12 +10,8 @@ import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
 import enumm.UnitMaterial;
-import model.Material;
-import model.ReceivedNote;
-import model.ReceivedNoteDetail;
-import service.DetailReceiveService;
-import service.MaterialService;
-import service.ReceivedNoteService;
+import model.*;
+import service.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -77,6 +73,10 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
     List<Material> tempMaterialList = new ArrayList<>();
     ReceivedNote noteStatic = ReceivingGUI.noteStatic;
     ProductGUI productGUI = new ProductGUI();
+    ProductService productService = new ProductService();
+    List<Product> productList = productService.getAllProduct();
+    RecipeService recipeService = new RecipeService();
+    List<Recipe> recipeList = recipeService.getAllRecipe();
     int tempId = 0;
     /**
      * Create the panel.
@@ -498,10 +498,10 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
             nextBtn.setEnabled(true);
         }
 
-        detailList = detailReceiveService.getAll();
-        while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
+//        detailList = detailReceiveService.getAll();
+//        while (detailTableModel.getRowCount() != 0){
+//            detailTableModel.removeRow(0);
+//        }
 
         for (ReceivedNoteDetail detail : detailList){
             if (detail.getReceivedNoteId() == noteStatic.getId()){
@@ -532,7 +532,6 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
             detailTableModel.removeRow(0);
         }
         for (Material material : tempMaterialList){
-            String id="";
             totalPrice += material.getPrice();
             detailTableModel.addRow(new Object[] {
                     material.getId(),material.getName(),material.getAmount(), material.getUnit(), material.getPrice()
@@ -602,6 +601,8 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                         }
                     }
                     materialList = materialService.getAllMaterial();
+                    FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
+                    GiaoDien.taoDon.showTableProduct();
                     GiaoDien.phieuNhap.showTableReceiving();
                     GiaoDien.material.showTableMaterial();
                     productGUI.showTableProduct();

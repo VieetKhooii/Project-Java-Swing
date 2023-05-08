@@ -1,6 +1,12 @@
 create database quancom;
 use quancom;
 
+select p.product_name, m.name, ct.soluong
+from products p join chitietcongthuc ct on p.product_id = ct.product_id
+	 join materials m on m.material_id = ct.material_id
+order by p.product_name;
+
+
 CREATE TABLE functions(
 	func_id INT NOT NULL,
 	func_name varchar(50),

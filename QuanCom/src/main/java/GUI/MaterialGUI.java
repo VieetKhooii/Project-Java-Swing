@@ -2,7 +2,12 @@ package GUI;
 
 import enumm.UnitMaterial;
 import model.Material;
+import model.Product;
+import model.Recipe;
+import service.FoodCalculation;
 import service.MaterialService;
+import service.ProductService;
+import service.RecipeService;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -51,6 +56,10 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
     private JButton clearInfoBtn;
     MaterialService materialService = new MaterialService();
     List<Material> materialList = materialService.getAllMaterial();
+    ProductService productService = new ProductService();
+    RecipeService recipeService = new RecipeService();
+    List<Product> productList = productService.getAllProduct();
+    List<Recipe> recipeList = recipeService.getAllRecipe();
     /**
      * Create the panel.
      */
@@ -248,8 +257,11 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
                             break;
                         }
                     }
+                    productList = productService.getAllProduct();
                     materialService.modifyMaterial(nameMaterialTxt.getText(),unit,Integer.parseInt(priceMaterialTxt.getText()),Integer.parseInt(soluongMaterialTxt.getText()), Integer.parseInt(idMaterialTxt.getText()));
+                    FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
                     showTableMaterial();
+                    GiaoDien.taoDon.showTableProduct();
                     JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
@@ -349,7 +361,35 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
             });
         }
     }
-
+//    public void productAmountCal(){
+//        int min;
+//        int temp=0;
+//        for (Product product : productList){
+//            min=-1;
+//            temp=0;
+//            for (Recipe recipe : recipeList){
+//                if (product.getId() == recipe.getProductId()){
+//                    for (Material material : materialList){
+//                        if (material.getId() == recipe.getMaterialId()){
+//                            temp = material.getAmount()/recipe.getAmount();
+//                            break;
+//                        }
+//                    }
+//                    if (min==-1) min = temp;
+//                    else if (temp < min) min = temp;
+//                }
+//            }
+//            if (min==-1){
+//                product.setAmount(0);
+//            }
+//            else {
+//                product.setAmount(min);
+//            }
+//
+//            productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
+//                    product.getPrice(),product.getCategoryId(),product.getId());
+//        }
+//    }
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub

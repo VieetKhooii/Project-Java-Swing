@@ -16,8 +16,7 @@ public class ProductAndRecipeGUI extends JTabbedPane{
         // TODO Auto-generated constructor stub
         init();
     }
-
-    private void init() {
+    public void init() {
         setSize(new Dimension(1080, 700));
 
         //tab món ăn

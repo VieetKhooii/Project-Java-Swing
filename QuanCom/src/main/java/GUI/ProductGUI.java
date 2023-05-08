@@ -2,10 +2,7 @@ package GUI;
 
 import enumm.ProductUnit;
 import model.*;
-import service.CategoryService;
-import service.MaterialService;
-import service.ProductService;
-import service.RecipeService;
+import service.*;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -421,7 +418,7 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         }
         categoryList = categoryService.getAllCate();
         productList = productService.getAllProduct();
-        productAmountCal();
+        FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
         for(Product product : productList) {
             for (Category category : categoryList){
                 if (category.getId() == product.getCategoryId()){
@@ -432,36 +429,6 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                     product.getId(), product.getName(), product.getUnit(), product.getAmount(),
                     product.getPrice(), categoryName
             });
-        }
-    }
-
-    private void productAmountCal(){
-        int min;
-        int temp=0;
-        for (Product product : productList){
-            min=-1;
-            temp=0;
-            for (Recipe recipe : recipeList){
-                if (product.getId() == recipe.getProductId()){
-                    for (Material material : materialList){
-                        if (material.getId() == recipe.getMaterialId()){
-                            temp = material.getAmount()/recipe.getAmount();
-                            break;
-                        }
-                    }
-                    if (min==-1) min = temp;
-                    else if (temp < min) min = temp;
-                }
-            }
-            if (min==-1){
-                product.setAmount(0);
-            }
-            else {
-                product.setAmount(min);
-            }
-
-            productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
-                    product.getPrice(),product.getCategoryId(),product.getId());
         }
     }
 

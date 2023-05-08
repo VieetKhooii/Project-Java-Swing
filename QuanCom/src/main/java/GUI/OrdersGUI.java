@@ -9,6 +9,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.formdev.flatlaf.json.ParseException;
+import model.DetailOrder;
+import model.Orders;
+import model.ReceivedNote;
+import service.DetailOrderService;
+import service.OrderService;
 
 import java.awt.*;
 
@@ -18,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
 
@@ -45,6 +51,9 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
     private JComboBox<String> sortCbB;
     private JLabel lblSpXp;
     private JComboBox<String> searchCbB;
+    OrderService orderService = new OrderService();
+    List<Orders> ordersList = orderService.displayOrders();
+    public static Orders orderIdStatic = new Orders();
     /**
      * Create the panel.
      */
@@ -78,9 +87,6 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
         ordersTable.setDefaultRenderer(String.class, centerRenderer);
         ordersTable.setRowHeight(30);
 
-        detailTableModel.addRow(new Object[] {"123", "NV123", "12/29/2023", 10000000});
-        detailTableModel.addRow(new Object[] {"124", "NV123", "11/29/2023", 20000000});
-
         for(int i = 0; i < 4; i++) {
             ordersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
@@ -91,27 +97,25 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int row = ordersTable.getSelectedRow();
-                viewBtn.setEnabled(true);
-                viewBtn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        GiaoDien.hoaDon.setVisible(false);
-                        GiaoDien.taoDon.setVisible(true);
+                if (row >= 0){
+                    viewBtn.setEnabled(true);
+                    int id = Integer.parseInt(detailTableModel.getValueAt(row, 0).toString());
+                    orderIdStatic.setId(id);
+
+                    GiaoDien.taoDon.idOrderTxt.setText(detailTableModel.getValueAt(row, 0).toString());
+                    GiaoDien.taoDon.idStaffCreateOrderTxt.setText(detailTableModel.getValueAt(row, 1).toString());
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = null;
+                    try {
+                        date = dateFormat.parse(detailTableModel.getValueAt(row, 2).toString());
+                    } catch (ParseException | java.text.ParseException e1) {
+                        e1.printStackTrace();
                     }
-                });
+                    GiaoDien.taoDon.orderDateChooser.setDate(date);
 
-                GiaoDien.taoDon.idOrderTxt.setText(detailTableModel.getValueAt(row, 0).toString());
-                GiaoDien.taoDon.idStaffCreateOrderTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                Date date = null;
-                try {
-                    date = dateFormat.parse(detailTableModel.getValueAt(row, 2).toString());
-                } catch (ParseException | java.text.ParseException e1) {
-                    e1.printStackTrace();
+                    GiaoDien.taoDon.totalPriceOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());
                 }
-                GiaoDien.taoDon.orderDateChooser.setDate(date);
-
-                GiaoDien.taoDon.totalPriceOrderTxt.setText(detailTableModel.getValueAt(row, 3).toString());
             }
         });
 
@@ -201,22 +205,31 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
         viewBtn = new JButton("Xem chi tiết");
         viewBtn.setEnabled(false);
         viewBtn.setBounds(80, 70, 120, 40);
+        viewBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                GiaoDien.hoaDon.setVisible(false);
+                GiaoDien.taoDon.setVisible(true);
+                GiaoDien.taoDon.showCart();
+            }
+        });
         btnField.add(viewBtn);
 
         createBtn = new JButton("Tạo mới");
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                orderIdStatic.setId(0);
                 GiaoDien.hoaDon.setVisible(false);
                 GiaoDien.taoDon.setVisible(true);
                 GiaoDien.taoDon.resetComponent();
+                GiaoDien.taoDon.showCart();
             }
         });
         btnField.add(createBtn);
 
-        updateBtn = new JButton("Cập nhật");
-        updateBtn.setBounds(80, 190, 120, 40);
-        btnField.add(updateBtn);
+//        updateBtn = new JButton("Cập nhật");
+//        updateBtn.setBounds(80, 190, 120, 40);
+//        btnField.add(updateBtn);
 
         delBtn = new JButton("Xóa");
         delBtn.addActionListener(new ActionListener() {
@@ -224,11 +237,34 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
                 //xoa o day
                 if(decide == 0) {
-                    JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    boolean check1=true;
+                    DetailOrderService detailOrderService = new DetailOrderService();
+                    List<DetailOrder> detailOrderList = detailOrderService.getAllDetailOrder();
+                    for (DetailOrder detailOrder : detailOrderList){
+                        if (detailOrder.getOrderId() == orderIdStatic.getId()){
+                            check1 = detailOrderService.delDetailOrder(orderIdStatic.getId());
+                        }
+                        if (!check1){
+                            break;
+                        }
+                    }
+                    if (check1){
+                        boolean check2 = orderService.delOrder(orderIdStatic.getId());
+                        if (check2){
+                            JOptionPane.showMessageDialog(null, "Xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            showBill();
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(null, "Xóa đơn không thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Xóa chi tiết đơn không thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
-        delBtn.setBounds(80, 250, 120, 40);
+        delBtn.setBounds(80, 190, 120, 40);
         btnField.add(delBtn);
 
         JLabel controllerLabel = new JLabel("Cài đặt");
@@ -237,9 +273,20 @@ public class OrdersGUI extends JPanel implements MouseListener, ActionListener{
         controllerLabel.setBounds(80, 0, 120, 40);
         btnField.add(controllerLabel);
         //End
+        showBill();
 
 
-
+    }
+    public void showBill(){
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        ordersList = orderService.displayOrders();
+        for (Orders orders : ordersList){
+            detailTableModel.addRow(new Object[]{
+                    orders.getId(), orders.getStaffId(), orders.getOrderDate(), orders.getTotalPrice()
+            });
+        }
     }
 
 
