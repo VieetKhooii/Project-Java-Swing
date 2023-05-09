@@ -84,4 +84,49 @@ public class StaffRepository {
         }
         return isSuccess;
     }
+    
+    //Search by option
+    public List<Staff> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<Staff> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã nhân viên")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "staff_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên nhân viên")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "name";
+        }
+        else if(optSearch.equalsIgnoreCase("Số điện thoại")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "name";
+        }
+        String query = "select * from staffs where " + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã nhân viên giảm dần")) {
+        	query = query + " order by staff_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên nhân viên")){
+        	query = query + " order by name asc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Staff staff = new Staff();
+                staff.setId(resultSet.getInt("staff_id"));
+                staff.setName(resultSet.getString("name"));
+                staff.setAddress(resultSet.getString("address"));
+                staff.setGender(resultSet.getString("gender"));
+                staff.setBirthDate(resultSet.getDate("date_of_birth"));
+                staff.setPhone(resultSet.getString("phonenumber"));
+                searchList.add(staff);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
+    }
 }

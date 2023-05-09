@@ -2,6 +2,7 @@ package GUI;
 
 import model.Recipe;
 import model.Roles;
+import model.Staff;
 import service.RecipeService;
 
 import javax.swing.*;
@@ -298,42 +299,7 @@ public class RecipeGUI extends JPanel implements ActionListener{
         searchButton = new JButton("OK");      
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean productIdAsc = false;
-                boolean productIdDes = false;
-                boolean materialIdAsc = false;
-                boolean materialIdDes = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã món tăng dần")) {
-                	productIdAsc = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã món giảm dần")) {
-                	productIdDes = true;
-                }   
-                else if(sortCbB.getSelectedItem().toString().equals("Mã ng.liệu tăng dần")) {
-                	materialIdAsc = true;
-                }  
-                else if(sortCbB.getSelectedItem().toString().equals("Mã ng.liệu giảm dần")) {
-                	materialIdDes = true;
-                } 
-        		if(searchCbB.getSelectedItem().toString().equals("Mã quyền")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultByProductId(searchTxt.getText(), none, productIdAsc, productIdDes, 
-        						materialIdAsc, materialIdDes);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên quyền")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByMaterialId(searchTxt.getText(), none, productIdAsc, productIdDes, 
-        						materialIdAsc, materialIdDes);
-    				}
-    			}
-    			if(searchTxt.getText().equals("")) {
-    				showSortTable(none, productIdAsc, productIdDes, 
-    						materialIdAsc, materialIdDes);    				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -344,7 +310,7 @@ public class RecipeGUI extends JPanel implements ActionListener{
         rmSearchBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
-        		showSortTable(true, false, false, false, false);
+        		showAllRecipe();
         		sortCbB.setSelectedIndex(0);
         	}
         });
@@ -369,88 +335,18 @@ public class RecipeGUI extends JPanel implements ActionListener{
         }
     }
     
-    private List<Recipe> showSortTable(boolean none, boolean productIdAsc, boolean productIdDes
-    		, boolean materialIdAsc, boolean materialIdDes) {
-    	List<Recipe> sortResultList = null;
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-    	if(none) {
-    		sortResultList = recipeService.getAllRecipe();
-    		if(searchTxt.getText().equals("")) {
-    			showAllRecipe();
-    		}
-    	}
-    	if(productIdAsc) {
-    		sortResultList = recipeService.sortByProductIdAsc(recipeList);
-    		if(searchTxt.getText().equals("")) {
-    			for (Recipe recipe : sortResultList){
-    	            detailTableModel.addRow(new Object[] {
-    	                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
-    	            });
-    	        }
-    		}
-    	}
-    	if(productIdDes) {
-    		sortResultList = recipeService.sortByProductIdDes(recipeList);
-    		if(searchTxt.getText().equals("")) {
-    			for (Recipe recipe : sortResultList){
-    	            detailTableModel.addRow(new Object[] {
-    	                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
-    	            });
-    	        }
-    		} 		
-    	}
-    	if(materialIdAsc) {
-    		sortResultList = recipeService.sortByMaterialIdAsc(recipeList);
-    		if(searchTxt.getText().equals("")) {
-    			for (Recipe recipe : sortResultList){
-    	            detailTableModel.addRow(new Object[] {
-    	                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
-    	            });
-    	        }
-    		} 		
-    	}
-    	if(materialIdDes) {
-    		sortResultList = recipeService.sortByMaterialIdDes(recipeList);
-    		if(searchTxt.getText().equals("")) {
-    			for (Recipe recipe : sortResultList){
-    	            detailTableModel.addRow(new Object[] {
-    	                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
-    	            });
-    	        }
-    		} 		
-    	}
-		return sortResultList;
-    }
-    private void showSearchResultByProductId(String productId, boolean none, boolean productIdAsc, boolean productIdDes
-    		, boolean materialIdAsc, boolean materialIdDes) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Recipe> searchResultList = recipeService.searchByProductId(productId, showSortTable(none, productIdAsc
-        		, productIdDes, materialIdAsc, materialIdDes));
+        List<Recipe> searchResultList = recipeService.getAllSearchResult(searchTxt, optSearch, optSort);
         for (Recipe recipe : searchResultList){
             detailTableModel.addRow(new Object[] {
                     recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
             });
         }
-        
     }
-    private void showSearchResultByMaterialId(String materialId, boolean none, boolean productIdAsc, boolean productIdDes
-    		, boolean materialIdAsc, boolean materialIdDes) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Recipe> searchResultList = recipeService.searchByMaterialId(materialId, showSortTable(none, productIdAsc
-        		, productIdDes, materialIdAsc, materialIdDes));
-        for (Recipe recipe : searchResultList){
-            detailTableModel.addRow(new Object[] {
-                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
-            });
-        }
-        
-    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 

@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 
 public class MySqlConfig {
     private static String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
-    private static String URL = "jdbc:mysql://localhost:3308/quancom";
+    private static String URL = "jdbc:mysql://localhost:3306/quancom";
     private static String USER_NAME = "root";
-    private static String PASSWORD = "123456";
+    private static String PASSWORD = "gametop113";
 
 
     public static Connection getConnection(){

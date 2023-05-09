@@ -2,6 +2,7 @@ package GUI;
 
 import model.*;
 import service.CategoryService;
+import service.FoodCalculation;
 import service.MaterialService;
 import service.ProductService;
 //import service.RecipeService;
@@ -198,63 +199,8 @@ public class ProductGUI extends JPanel implements ActionListener{
         JButton searchButton = new JButton("OK");
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean id = false;
-                boolean name = false;
-                boolean priceAsc = false;
-                boolean priceDes = false;
-                boolean qualityAsc = false;
-                boolean qualityDes = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã giảm dần")) {
-                	id = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Tên")) {
-                	name = true;
-                }                
-                else if(sortCbB.getSelectedItem().toString().equals("Giá tăng dần")) {
-                	priceAsc = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Giá giảm dần")) {
-                	priceDes = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Số lượng tăng dần")) {
-                	qualityAsc = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Số lượng giảm dần")) {
-                	qualityAsc = true;
-                } 
-        		if(searchCbB.getSelectedItem().toString().equals("Mã")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultByid(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByName(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-    				}
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Số lượng")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByQuality(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-    				}
-    			}
-    			
-    			if(searchTxt.getText().equals("")) {
-    				if(!categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-        				showSearchResultByCategory(categorySearchCbB.getSelectedItem().toString(), none, name, id, priceAsc,
-            		        		priceDes, qualityAsc, qualityDes);
-    				}
-    				else if(categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    					showSortTable(none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);   
-    				}    				 				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim()
+        				, categorySearchCbB.getSelectedItem().toString());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -267,7 +213,7 @@ public class ProductGUI extends JPanel implements ActionListener{
         		searchTxt.setText("");   		
         		sortCbB.setSelectedIndex(0);
         		categorySearchCbB.setSelectedIndex(0);
-        		showSortTable(true, false, false, false, false, false, false);
+        		showTableProduct();
         	}
         });
         rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -366,7 +312,7 @@ public class ProductGUI extends JPanel implements ActionListener{
                             (String) unitProductCbB.getSelectedItem(),Integer.parseInt(priceProductTxt.getText()),
                             id,Integer.parseInt(idProductTxt.getText()));
                     showTableProduct();
-                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Đã sửa thông tin món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
@@ -487,7 +433,7 @@ public class ProductGUI extends JPanel implements ActionListener{
         }
         categoryList = categoryService.getAllCate();
         productList = productService.getAllProduct();
-        productAmountCal();
+        FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
         for(Product product : productList) {
             for (Category category : categoryList){
                 if (category.getId() == product.getCategoryId()){
@@ -501,236 +447,20 @@ public class ProductGUI extends JPanel implements ActionListener{
         }
     }
 
-    private void productAmountCal(){
-        int min;
-        int temp=0;
-        for (Product product : productList){
-            min=-1;
-            temp=0;
-            for (Recipe recipe : recipeList){
-                if (product.getId() == recipe.getProductId()){
-                    for (Material material : materialList){
-                        if (material.getId() == recipe.getMaterialId()){
-                            temp = material.getAmount()/recipe.getAmount();
-                            break;
-                        }
-                    }
-                    if (min==-1) min = temp;
-                    else if (temp < min) min = temp;
-                }
-            }
-            if (min==-1){
-                product.setAmount(0);
-            }
-            else {
-                product.setAmount(min);
-            }
+    
 
-            productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
-                    product.getPrice(),product.getCategoryId(),product.getId());
-        }
-    }
-
-    //Search
-    private List<Product> showSortTable(boolean none, boolean name, boolean id, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes) {
-    	List<Product> sortResultList = null;
-    	String categoryName = "";
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-    	if(none) {
-    		sortResultList = productService.getAllProduct(); 
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			showTableProduct();
-    		}
-    	}
-    	if(name) {
-    		sortResultList = productService.sortByName(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}
-    	}
-    	if(id) {
-    		sortResultList = productService.sortById(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}  		
-    	}
-    	if(priceAsc) {
-    		sortResultList = productService.sortByPriceAsc(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}  		
-    	}
-    	if(priceDes) {
-    		sortResultList = productService.sortByPriceDes(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}   
-    	}
-    	if(qualityAsc) {
-    		sortResultList = productService.sortByQualityAsc(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}   
-    	}
-    	if(qualityDes) {
-    		sortResultList = productService.sortByQualityDes(productList);
-    		categoryList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("") && categorySearchCbB.getSelectedItem().toString().equals("Tất cả")) {
-    			for(Product product : sortResultList) {
-    	            for (Category category : categoryList){
-    	                if (category.getId() == product.getCategoryId()){
-    	                    categoryName = category.getName();
-    	                }
-    	            }
-    	            detailTableModel.addRow(new Object[] {
-    	                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-    	                    product.getPrice(), categoryName
-    	            });
-    	        }
-    		}  
-    	}
-		return sortResultList;
-    }
-    
-    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-    	String categoryName = "";
-        List<Product> searchResultList = productService.searchByName(name, showSortTable(none, name2, id, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
-        categoryList = categoryService.getAllCate();
-        for(Product product : searchResultList) {
-            for (Category category : categoryList){
-                if (category.getId() == product.getCategoryId()){
-                    categoryName = category.getName();
-                }
-            }
-            detailTableModel.addRow(new Object[] {
-                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-                    product.getPrice(), categoryName
-            });
-        }        
-    }
-    
-    private void showSearchResultByid(String id, boolean none, boolean name, boolean id2, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
+    private void showSearchResult(String searchTxt, String optSearch, String optSort, String optCate) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
     	String categoryName = "";
     	categoryList = categoryService.getAllCate();
-        List<Product> searchResultList = productService.searchById(id, showSortTable(none, name, id2, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
+        List<Product> searchResultList = productService.getAllSearchResult(searchTxt, optSearch, optSort, optCate);
+        FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
         for(Product product : searchResultList) {
             for (Category category : categoryList){
                 if (category.getId() == product.getCategoryId()){
                     categoryName = category.getName();
-                }
-            }
-            detailTableModel.addRow(new Object[] {
-                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-                    product.getPrice(), categoryName
-            });
-        }
-        
-    }
-    
-    private void showSearchResultByQuality(String quality, boolean none, boolean name, boolean id2, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-    	String categoryName = "";
-    	categoryList = categoryService.getAllCate();
-        List<Product> searchResultList = productService.searchByQuality(quality, showSortTable(none, name, id2, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
-        for(Product product : searchResultList) {
-            for (Category category : categoryList){
-                if (category.getId() == product.getCategoryId()){
-                    categoryName = category.getName();
-                }
-            }
-            detailTableModel.addRow(new Object[] {
-                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
-                    product.getPrice(), categoryName
-            });
-        }
-        
-    }
-    private void showSearchResultByCategory(String categorySearch, boolean none, boolean name, boolean id2, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-    	String categoryName = "";
-    	categoryList = categoryService.getAllCate();
-        List<Product> searchResultList = productService.searchByCategory(categorySearch, showSortTable(none, name, id2,
-        		priceAsc, priceDes, qualityAsc, qualityDes));
-        for(Product product : searchResultList) {
-            for (Category category : categoryList){
-                if (category.getId() == product.getCategoryId()){
-                    categoryName = category.getName();
-                    break;
                 }
             }
             detailTableModel.addRow(new Object[] {
@@ -739,6 +469,7 @@ public class ProductGUI extends JPanel implements ActionListener{
             });
         }
     }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 

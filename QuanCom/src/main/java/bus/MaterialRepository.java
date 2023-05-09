@@ -2,6 +2,7 @@ package bus;
 
 import config.MySqlConfig;
 import model.Material;
+import model.Staff;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,7 +50,23 @@ public class MaterialRepository {
         }
         return isSuccess;
     }
-
+    public int addMaterial(int id, String name, String unit, int price, int amount){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "INSERT INTO materials(material_id, name, donvitinh, gia, soluong) values (?,?,?,?,?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            preparedStatement.setString(2,name);
+            preparedStatement.setString(3,unit);
+            preparedStatement.setInt(4,price);
+            preparedStatement.setInt(5,amount);
+            isSuccess = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error while adding material "+e.getMessage());
+        }
+        return isSuccess;
+    }
     public int deleteMaterial(int id){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
@@ -81,5 +98,60 @@ public class MaterialRepository {
             System.out.println("Error modify material "+e.getMessage());
         }
         return isSuccess;
+    }
+    //Search option
+    public List<Material> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<Material> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "material_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "name";
+        }
+        else if(optSearch.equalsIgnoreCase("Số lượng")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "soluong";
+        }
+        String query = "select * from materials where " + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã giảm dần")) {
+        	query = query + " order by material_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên")){
+        	query = query + " order by name asc";
+        }
+        else if(optSort.equalsIgnoreCase("Giá tăng dần")){
+        	query = query + " order by gia asc";
+        }
+        else if(optSort.equalsIgnoreCase("Giá giảm dần")){
+        	query = query + " order by gia desc";
+        }
+        else if(optSort.equalsIgnoreCase("Số lượng tăng dần")){
+        	query = query + " order by soluong asc";
+        }
+        else if(optSort.equalsIgnoreCase("Số lượng giảm dần")){
+        	query = query + " order by soluong desc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+            	Material material = new Material();
+                material.setId(resultSet.getInt("material_id"));
+                material.setName(resultSet.getString("name"));
+                material.setUnit(resultSet.getString("donvitinh"));
+                material.setPrice(resultSet.getInt("gia"));
+                material.setAmount(resultSet.getInt("soluong"));
+                searchList.add(material);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
     }
 }

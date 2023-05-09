@@ -18,34 +18,27 @@ import service.MaterialService;
 import service.ReceivedNoteService;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class DetailReceivingGUI extends JPanel implements MouseListener, ActionListener{
+public class DetailReceivingGUI extends JPanel implements ActionListener{
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-    private JPanel category;
     private JPanel btnField;
     static JButton preBtn;
     static JButton nextBtn;
     private JPanel contentField;
-    private JTextField nameFindText;
-    private JTextField priceFrom;
-    private JTextField priceTo;
     public JTextField idPNTxt;
     public JTextField idNCCTxt;
     public JTextField idStaffCreatePNTxt;
     public JTextField totalPricePNTxt;
     public JDateChooser datePNChooser;
-    private JComboBox<String> sortCbb;
     private JPanel deltailOrderPanel;
     private JTable ctPNTable;
     private DefaultTableModel detailTableModel;
@@ -54,16 +47,13 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
     private JTextField nameMaterialTxt;
     private JTextField soLuongNhapTxt;
     private JTextField priceMaterialTxt;
-    private JLabel vndSign1;
-    private JSeparator separator_3;
-    private JButton subFindBtn;
-    private JButton rmFindBtn;
     private DefaultTableCellRenderer centerRenderer;
     private JPanel infoDetailOrderPanel;
     private JButton addReceivingBtn;
     private JButton updateReceivingBtn;
     private JButton delReceivingBtn;
     private JButton clearInfoBtn;
+    private JButton checkBtn;
     private JComboBox<String> unitMaterialCbB = new JComboBox<>();
     Component[] components1;
     Component[] components2;
@@ -78,6 +68,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
     ReceivedNote noteStatic = ReceivingGUI.noteStatic;
     ProductGUI productGUI = new ProductGUI();
     int tempId = 0;
+    int S;
     /**
      * Create the panel.
      */
@@ -90,92 +81,13 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-
-        //Tìm kiếm
-        category = new JPanel(null);
-        category.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        category.setPreferredSize(new Dimension(1080, 100));
-        this.add(category, BorderLayout.NORTH);
-
-
-        JLabel findLabel = new JLabel("TÌM KIẾM");
-        findLabel.setForeground(new Color(255, 255, 255));
-        findLabel.setBounds(0, 30, 120, 40);
-        category.add(findLabel);
-        findLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        findLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JLabel findNameProduct = new JLabel("Nhập ");
-        findNameProduct.setBounds(160, 10, 73, 30);
-        category.add(findNameProduct);
-        findNameProduct.setFont(new Font("Arial", Font.BOLD, 13));
-
-        nameFindText = new JTextField();
-        nameFindText.setBounds(243, 10, 167, 30);
-        category.add(nameFindText);
-        nameFindText.setFont(new Font("Arial", Font.PLAIN, 13));
-        nameFindText.setColumns(10);
-
-        JLabel sortProducts = new JLabel("Sắp xếp");
-        sortProducts.setBounds(440, 10, 73, 30);
-        category.add(sortProducts);
-        sortProducts.setFont(new Font("Arial", Font.BOLD, 13));
-
-        sortCbb = new JComboBox<String>();
-        sortCbb.setBounds(522, 10, 120, 30);
-        category.add(sortCbb);
-        sortCbb.setFont(new Font("Arial", Font.PLAIN, 13));
-
-        JLabel priceProduct = new JLabel("Giá ~");
-        priceProduct.setBounds(686, 36, 47, 30);
-        category.add(priceProduct);
-        priceProduct.setFont(new Font("Arial", Font.BOLD, 13));
-
-        priceFrom = new JTextField();
-        priceFrom.setBounds(743, 10, 120, 30);
-        category.add(priceFrom);
-        priceFrom.setFont(new Font("Arial", Font.PLAIN, 13));
-        priceFrom.setColumns(10);
-
-        priceTo = new JTextField();
-        priceTo.setBounds(743, 59, 120, 30);
-        category.add(priceTo);
-        priceTo.setFont(new Font("Arial", Font.PLAIN, 13));
-        priceTo.setColumns(10);
-
-        subFindBtn = new JButton("OK");
-        subFindBtn.setBounds(950, 9, 90, 35);
-        category.add(subFindBtn);
-        subFindBtn.setFont(new Font("Arial", Font.BOLD, 13));
-
-        rmFindBtn = new JButton("Hủy");
-        rmFindBtn.setBounds(950, 54, 90, 35);
-        category.add(rmFindBtn);
-        rmFindBtn.setFont(new Font("Arial", Font.BOLD, 13));
-
-        vndSign1 = new JLabel("(VNĐ)");
-        vndSign1.setBounds(873, 36, 37, 30);
-        category.add(vndSign1);
-
-        JLabel MutualCategoryLabel = new JLabel("Foods/Drinks");
-        MutualCategoryLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        MutualCategoryLabel.setBounds(160, 59, 100, 30);
-        category.add(MutualCategoryLabel);
-
-        JComboBox<String> MutualCategoryCbb = new JComboBox<String>();
-        MutualCategoryCbb.setFont(new Font("Arial", Font.PLAIN, 13));
-        MutualCategoryCbb.setBounds(290, 59, 120, 30);
-        category.add(MutualCategoryCbb);
-
-        JComboBox<String> categoryCbb = new JComboBox<String>();
-        categoryCbb.setFont(new Font("Arial", Font.PLAIN, 13));
-        categoryCbb.setBounds(522, 59, 120, 30);
-        category.add(categoryCbb);
-
-        JLabel categoryLabel = new JLabel("Phân loại");
-        categoryLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        categoryLabel.setBounds(440, 59, 73, 30);
-        category.add(categoryLabel);
+        
+        S = materialList.get(0).getId();
+        for(Material j : materialList) {
+			if(j.getId() > S) {
+				S = j.getId();
+			}
+		}
         //End
 
 
@@ -186,7 +98,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 
         //Panel chi tiết hóa đơn
         deltailOrderPanel = new JPanel(null);
-        deltailOrderPanel.setBounds(0, 0, 1080, 360);
+        deltailOrderPanel.setBounds(0, 0, 1080, 460);
 
         contentField.add(deltailOrderPanel, "hello2");
 
@@ -232,75 +144,71 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 
         ctpnScrollPane = new JScrollPane(ctPNTable);
         ctpnScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        ctpnScrollPane.setBounds(0, 0, 800, 360);
+        ctpnScrollPane.setBounds(0, 0, 750, 460);
         deltailOrderPanel.add(ctpnScrollPane);
 
         infoDetailOrderPanel = new JPanel(null);
         infoDetailOrderPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        infoDetailOrderPanel.setBounds(800, 0, 280, 360);
+        infoDetailOrderPanel.setBounds(750, 0, 330, 460);
         deltailOrderPanel.add(infoDetailOrderPanel);
 
         JLabel idCTPNLabel = new JLabel("Mã n.liệu");
         idCTPNLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idCTPNLabel.setBounds(10, 72, 73, 30);
+        idCTPNLabel.setBounds(10, 103, 73, 30);
         infoDetailOrderPanel.add(idCTPNLabel);
 
         idMaterialTxt = new JTextField();
         idMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idMaterialTxt.setColumns(10);
-        idMaterialTxt.setBounds(93, 72, 177, 30);
+        idMaterialTxt.setBounds(119, 103, 201, 30);
         idMaterialTxt.setEditable(false);
         infoDetailOrderPanel.add(idMaterialTxt);
 
         JLabel nameCTPNLabel = new JLabel("Tên n.liệu");
         nameCTPNLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameCTPNLabel.setBounds(10, 124, 73, 30);
+        nameCTPNLabel.setBounds(10, 163, 73, 30);
         infoDetailOrderPanel.add(nameCTPNLabel);
 
         nameMaterialTxt = new JTextField();
         nameMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameMaterialTxt.setColumns(10);
-        nameMaterialTxt.setBounds(93, 124, 121, 30);
+        nameMaterialTxt.setBounds(119, 163, 161, 30);
         infoDetailOrderPanel.add(nameMaterialTxt);
 
         JLabel soLuongNhapLabel = new JLabel("Số lượng nhập");
         soLuongNhapLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        soLuongNhapLabel.setBounds(10, 180, 107, 30);
+        soLuongNhapLabel.setBounds(10, 224, 107, 30);
         infoDetailOrderPanel.add(soLuongNhapLabel);
 
         soLuongNhapTxt = new JTextField();
         soLuongNhapTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         soLuongNhapTxt.setColumns(10);
-        soLuongNhapTxt.setBounds(127, 180, 61, 30);
+        soLuongNhapTxt.setBounds(119, 224, 119, 30);
         infoDetailOrderPanel.add(soLuongNhapTxt);
 
         UnitMaterial unitMaterial = new UnitMaterial();
         unitMaterialCbB = new JComboBox<String>();
         unitMaterialCbB.setModel(new DefaultComboBoxModel<String>(unitMaterial.unitArray));
         unitMaterialCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        unitMaterialCbB.setBounds(197, 180, 73, 30);
+        unitMaterialCbB.setBounds(250, 224, 70, 30);
         infoDetailOrderPanel.add(unitMaterialCbB);
 
-        JLabel priceCTPNLabel = new JLabel("Giá nhập");
+        JLabel priceCTPNLabel = new JLabel("Đơn giá");
         priceCTPNLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        priceCTPNLabel.setBounds(10, 232, 73, 30);
+        priceCTPNLabel.setBounds(10, 283, 73, 30);
         infoDetailOrderPanel.add(priceCTPNLabel);
 
         priceMaterialTxt = new JTextField();
         priceMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         priceMaterialTxt.setColumns(10);
-        priceMaterialTxt.setBounds(93, 232, 177, 30);
+        priceMaterialTxt.setBounds(119, 283, 201, 30);
         infoDetailOrderPanel.add(priceMaterialTxt);
 
         JLabel thongtinHDLabel_1 = new JLabel("THÔNG TIN NGUYÊN LIỆU");
         thongtinHDLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
         thongtinHDLabel_1.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 14));
-        thongtinHDLabel_1.setBounds(53, 11, 176, 30);
+        thongtinHDLabel_1.setBounds(75, 11, 176, 30);
         infoDetailOrderPanel.add(thongtinHDLabel_1);
-
-        separator_3 = new JSeparator();
-        separator_3.setBounds(0, 359, 280, 1);
-        infoDetailOrderPanel.add(separator_3);
 
         addReceivingBtn = new JButton("Thêm");
         addReceivingBtn.addActionListener(new ActionListener() {
@@ -321,13 +229,18 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                     tempMaterialList.add(material);
                     //tempId++;
                     showTempMaterial();
-
+                    checkBtn.setEnabled(true);
                     JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    ctPNTable.clearSelection();
+                    idMaterialTxt.setText(null);
+                    nameMaterialTxt.setText(null);
+                    soLuongNhapTxt.setText(null);
+                    priceMaterialTxt.setText(null);
                 }
             }
         });
         addReceivingBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addReceivingBtn.setBounds(10, 290, 90, 35);
+        addReceivingBtn.setBounds(33, 400, 90, 35);
         infoDetailOrderPanel.add(addReceivingBtn);
 
         clearInfoBtn = new JButton("Clear");
@@ -339,10 +252,15 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                 nameMaterialTxt.setText(null);
                 soLuongNhapTxt.setText(null);
                 priceMaterialTxt.setText(null);
+                checkBtn.setEnabled(true);
+//                if(tempMaterialList.isEmpty()) {
+//                	S = S - 1;
+//                }
+                S = S - 1;
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(98, 290, 90, 35);
+        clearInfoBtn.setBounds(121, 400, 90, 35);
         infoDetailOrderPanel.add(clearInfoBtn);
 
 //        updateReceivingBtn = new JButton("Cập nhật");
@@ -351,7 +269,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
 //        infoDetailOrderPanel.add(updateReceivingBtn);
 
         delReceivingBtn = new JButton("Xóa");
-        delReceivingBtn.setEnabled(false);
+        //delReceivingBtn.setEnabled(false);
         delReceivingBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -370,10 +288,11 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
             }
         });
         delReceivingBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delReceivingBtn.setBounds(185, 290, 90, 35);
+        delReceivingBtn.setBounds(208, 400, 90, 35);
         infoDetailOrderPanel.add(delReceivingBtn);
         
-        JButton checkBtn = new JButton("Check");
+        checkBtn = new JButton("");
+        checkBtn.setIcon(new ImageIcon("C:\\Users\\Magaki\\Downloads\\Java Downloads\\arrow-right-circle-icon-512x512-2p1e2aaw.png"));
         checkBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -386,7 +305,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
         
         //checkMaterial
         checkBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        checkBtn.setBounds(224, 124, 46, 30);
+        checkBtn.setBounds(290, 163, 30, 30);
         infoDetailOrderPanel.add(checkBtn);
 
         //End
@@ -395,61 +314,61 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
         //Tạo hóa đơn
         JLabel orderInfoLabel = new JLabel("THÔNG TIN PHIẾU NHẬP");
         orderInfoLabel.setFont(new Font("Arial", Font.BOLD, 15));
-        orderInfoLabel.setBounds(10, 370, 200, 20);
+        orderInfoLabel.setBounds(10, 471, 200, 20);
         contentField.add(orderInfoLabel);
 
         JLabel idPNLable = new JLabel("Mã phiếu nhập");
         idPNLable.setFont(new Font("Arial", Font.BOLD, 13));
-        idPNLable.setBounds(30, 421, 120, 30);
+        idPNLable.setBounds(30, 522, 120, 30);
         contentField.add(idPNLable);
 
         idPNTxt = new JTextField();
         idPNTxt.setFont(new Font("Arial", Font.PLAIN, 13));
-        idPNTxt.setBounds(160, 421, 178, 30);
+        idPNTxt.setBounds(160, 522, 178, 30);
         idPNTxt.setEditable(false);
         contentField.add(idPNTxt);
         idPNTxt.setColumns(10);
 
         JLabel datePNLabel = new JLabel("Ngày tạo phiếu");
         datePNLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        datePNLabel.setBounds(30, 473, 120, 30);
+        datePNLabel.setBounds(30, 574, 120, 30);
         contentField.add(datePNLabel);
 
         datePNChooser = new JDateChooser();
-        datePNChooser.setBounds(160, 473, 178, 30);
+        datePNChooser.setBounds(160, 574, 178, 30);
         contentField.add(datePNChooser);
 
         JLabel idNCCLabel = new JLabel("Mã nhà cung cấp");
         idNCCLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idNCCLabel.setBounds(370, 421, 120, 30);
+        idNCCLabel.setBounds(370, 522, 120, 30);
         contentField.add(idNCCLabel);
 
         idNCCTxt = new JTextField();
         idNCCTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idNCCTxt.setColumns(10);
-        idNCCTxt.setBounds(532, 421, 178, 30);
+        idNCCTxt.setBounds(532, 522, 178, 30);
         contentField.add(idNCCTxt);
 
         JLabel idStaffCreateOrderLabel = new JLabel("Mã nhân viên tạo phiếu");
         idStaffCreateOrderLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idStaffCreateOrderLabel.setBounds(370, 473, 150, 30);
+        idStaffCreateOrderLabel.setBounds(370, 574, 150, 30);
         contentField.add(idStaffCreateOrderLabel);
 
         idStaffCreatePNTxt = new JTextField();
         idStaffCreatePNTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idStaffCreatePNTxt.setColumns(10);
-        idStaffCreatePNTxt.setBounds(530, 473, 180, 30);
+        idStaffCreatePNTxt.setBounds(530, 574, 180, 30);
         contentField.add(idStaffCreatePNTxt);
 
         JLabel totalPriceLabel = new JLabel("Tổng tiền");
         totalPriceLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        totalPriceLabel.setBounds(758, 421, 102, 30);
+        totalPriceLabel.setBounds(758, 522, 102, 30);
         contentField.add(totalPriceLabel);
 
         totalPricePNTxt = new JTextField();
         totalPricePNTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         totalPricePNTxt.setColumns(10);
-        totalPricePNTxt.setBounds(870, 421, 178, 30);
+        totalPricePNTxt.setBounds(870, 522, 178, 30);
         totalPricePNTxt.setEditable(false);
         contentField.add(totalPricePNTxt);
 
@@ -507,6 +426,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
         components2 = infoDetailOrderPanel.getComponents();
         totalComponents = Arrays.copyOf(components1, components1.length + components2.length);
         System.arraycopy(components2, 0, totalComponents, components1.length, components2.length);
+        
     }
 
     public void showTableReceiving(){
@@ -556,7 +476,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
         }
         for (Material material : tempMaterialList){
             //String id="";
-            totalPrice += material.getPrice();
+            totalPrice += material.getPrice()*material.getAmount();
             detailTableModel.addRow(new Object[] {
                     material.getId(),material.getName(),material.getAmount(), material.getUnit(), material.getPrice()
             });
@@ -569,53 +489,28 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
     	for(Material i : materialList) {
     		if(i.getName().equalsIgnoreCase(name)) {
     			idMaterialTxt.setText(String.valueOf(i.getId()));
+    			System.out.println(i.getId());
     			for(int j=0; j<unitMaterialCbB.getItemCount(); j++) {
     				if(unitMaterialCbB.getItemAt(j).toString().equals(i.getUnit())) {
     					unitMaterialCbB.setSelectedIndex(j);
     				}
     			}
-    			flag = true;
+    			flag = true;  
+    			S = S + 1;	
+    			break;
     		}
     		else {
     			idMaterialTxt.setText(null);
     		}
-    	}
-    	
-    	if(!flag) {
-    		int S = materialList.get(0).getId();
-			for(Material j : materialList) {
-				if(j.getId() > S) {
-					S = j.getId();
-				}
-			}
-			idMaterialTxt.setText(String.valueOf(S+1));
+    	}    	
+    	if(!flag) {   					
+			S = S + 1;			
+			System.out.println(S);
+			idMaterialTxt.setText(String.valueOf(S));
+			checkBtn.setEnabled(flag);			
     	}
     }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
@@ -647,7 +542,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                             
                         }
                         if (!check){
-                            materialService.addMaterial(material.getName(),material.getUnit(),material.getPrice(),material.getAmount());
+                            materialService.addMaterial(material.getId(), material.getName(),material.getUnit(),material.getPrice(),material.getAmount());
                         }
                         
                         detailReceiveService.addDetailNote(material.getId(),id,material.getName(),
@@ -662,6 +557,8 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                     delReceivingBtn.setEnabled(false);
                     tempMaterialList.clear();
                     JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    GiaoDien.phieuNhap.setVisible(true);
+                    GiaoDien.taoPhieu.setVisible(false);
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Nhà cung cấp hoặc nhân viên không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);

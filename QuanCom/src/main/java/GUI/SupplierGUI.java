@@ -1,9 +1,12 @@
 package GUI;
 
+import model.Staff;
 import model.Supplier;
 import service.SupplierService;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -12,8 +15,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
 
 public class SupplierGUI extends JPanel implements ActionListener{
 
@@ -47,16 +55,16 @@ public class SupplierGUI extends JPanel implements ActionListener{
     private JButton rmSearchButton;
     SupplierService supplierService = new SupplierService();
     List<Supplier> supplierList = supplierService.getAllSupplier();
+    Color defaultColor = new Color(0, 0, 0, 80);
     /**
      * Create the panel.
      */
-    public SupplierGUI() {
+    public SupplierGUI() {    	
         init();
     }
     private void init() {
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(1080, 700));
-
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         //End
@@ -64,12 +72,11 @@ public class SupplierGUI extends JPanel implements ActionListener{
 
         // Panel table
         contentField = new JPanel(null);
-
         this.add(contentField, BorderLayout.CENTER);
 
         //Panel table nhan vien
         staffListPanel = new JPanel(null);
-        staffListPanel.setBackground(new Color(30, 144, 255));
+        staffListPanel.setBackground(defaultColor);
         staffListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(staffListPanel);
@@ -103,70 +110,82 @@ public class SupplierGUI extends JPanel implements ActionListener{
                     phoneNumbTxt.setText(detailTableModel.getValueAt(row, 3).toString());
                 }
             }
-        });
+        });        
 
+        
         supplierScrollPane = new JScrollPane(supplierTable);
         supplierScrollPane.setBounds(5, 5, 1070, 350);
         staffListPanel.add(supplierScrollPane);
 
         staffInfoPanel = new JPanel();
+        staffInfoPanel.setBackground(defaultColor);
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         staffInfoPanel.setBounds(0, 50, 600, 290);
         contentField.add(staffInfoPanel);
         staffInfoPanel.setLayout(null);
 
         lblNewLabel = new JLabel("Thông tin nhà cung cấp");
+        lblNewLabel.setForeground(new Color(255, 255, 255));
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setBounds(200, 0, 200, 40);
         staffInfoPanel.add(lblNewLabel);
 
         JLabel idSupplierLabel = new JLabel("Mã NCC");
+        idSupplierLabel.setForeground(new Color(255, 255, 255));
         idSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         idSupplierLabel.setBounds(60, 50, 70, 30);
         staffInfoPanel.add(idSupplierLabel);
 
         idSupplierTxt = new JTextField();
+        idSupplierTxt.setBackground(new Color(255, 255, 255));
         idSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idSupplierTxt.setColumns(10);
-        idSupplierTxt.setBounds(143, 50, 167, 30);
+        idSupplierTxt.setBounds(143, 50, 167, 29);
         idSupplierTxt.setEditable(false);
         staffInfoPanel.add(idSupplierTxt);
 
-        nameSupplierTxt = new JTextField();
+        nameSupplierTxt = new JTextField();        
+        nameSupplierTxt.setBackground(new Color(255, 255, 255));
         nameSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameSupplierTxt.setColumns(10);
         nameSupplierTxt.setBounds(143, 110, 167, 30);
         staffInfoPanel.add(nameSupplierTxt);
 
         JLabel nameSupplierLabel = new JLabel("Tên NCC");
+        nameSupplierLabel.setForeground(new Color(255, 255, 255));
         nameSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         nameSupplierLabel.setBounds(60, 110, 70, 30);
         staffInfoPanel.add(nameSupplierLabel);
 
         JLabel addressSupplierLabel = new JLabel("Địa chỉ");
+        addressSupplierLabel.setForeground(new Color(255, 255, 255));
         addressSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         addressSupplierLabel.setBounds(60, 170, 70, 30);
         staffInfoPanel.add(addressSupplierLabel);
 
-        addressSupplierTxt = new JTextField();
+        addressSupplierTxt = new JTextField();        
+        addressSupplierTxt.setBackground(new Color(255, 255, 255));
         addressSupplierTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         addressSupplierTxt.setColumns(10);
         addressSupplierTxt.setBounds(143, 170, 167, 30);
         staffInfoPanel.add(addressSupplierTxt);
 
         JLabel phoneNumbLabel = new JLabel("SĐT");
+        phoneNumbLabel.setForeground(new Color(255, 255, 255));
         phoneNumbLabel.setFont(new Font("Arial", Font.BOLD, 13));
         phoneNumbLabel.setBounds(60, 230, 70, 30);
         staffInfoPanel.add(phoneNumbLabel);
 
         phoneNumbTxt = new JTextField();
+        phoneNumbTxt.setBackground(new Color(255, 255, 255));
         phoneNumbTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         phoneNumbTxt.setColumns(10);
         phoneNumbTxt.setBounds(143, 230, 167, 30);
         staffInfoPanel.add(phoneNumbTxt);
 
         addSupplierBtn = new JButton("Thêm");
+        addSupplierBtn.setBorder(null);
         addSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!idSupplierTxt.getText().equals("")){
@@ -185,12 +204,13 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        addSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        addSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
         addSupplierBtn.setBounds(400, 50, 90, 35);
         staffInfoPanel.add(addSupplierBtn);
 
         //Clear Information
         clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.setBorder(null);
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 supplierTable.clearSelection();
@@ -200,11 +220,12 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 addressSupplierTxt.setText(null);
             }
         });
-        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        clearInfoBtn.setFont(new Font("Arial", Font.BOLD, 13));
         clearInfoBtn.setBounds(400, 232, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
         fixSupplierBtn = new JButton("Cập nhật");
+        fixSupplierBtn.setBorder(null);
         fixSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idSupplierTxt.getText().equals("")){
@@ -224,11 +245,12 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        fixSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        fixSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
         fixSupplierBtn.setBounds(400, 112, 90, 35);
         staffInfoPanel.add(fixSupplierBtn);
 
         delSupplierBtn = new JButton("Xóa");
+        delSupplierBtn.setBorder(null);
         delSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idSupplierTxt.getText().equals("")){
@@ -246,17 +268,19 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        delSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        delSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
         delSupplierBtn.setBounds(400, 172, 90, 35);
         staffInfoPanel.add(delSupplierBtn);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(defaultColor);
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("NHÀ CUNG CẤP");
+        supplierLabel.setForeground(new Color(255, 255, 255));
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -264,6 +288,7 @@ public class SupplierGUI extends JPanel implements ActionListener{
 
         searchPanel = new JPanel();
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        searchPanel.setBackground(defaultColor);
         searchPanel.setBounds(600, 50, 480, 290);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
@@ -271,7 +296,7 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
         searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã NCC", "Tên NCC", "Số điện thoại"}));
-        searchCbB.setBounds(130, 75, 101, 40);
+        searchCbB.setBounds(101, 75, 130, 40);
         searchPanel.add(searchCbB);
 
         searchTxt = new JTextField();
@@ -281,77 +306,29 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setForeground(new Color(255, 255, 255));
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(130, 145, 80, 40);
+        lblSpXp.setBounds(101, 145, 130, 40);
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
         sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã NCC giảm dần", "Tên NCC"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
         sortCbB.setBounds(241, 145, 149, 40);
-//        sortCbB.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
-//                    supplierService.quickSort(supplierList,"id");
-//                }
-//                else if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(1))){
-//                    supplierService.quickSort(supplierList,"name");
-//                }
-//                else {
-//                    supplierService.quickSort(supplierList,"address");
-//                }
-//                //display on screen after sorting
-//                while (detailTableModel.getRowCount() != 0){
-//                    detailTableModel.removeRow(0);
-//                }
-//                for(Supplier supplier : supplierList) {
-//                    detailTableModel.addRow(new Object[] {
-//                            supplier.getId(), supplier.getName(), supplier.getAddress()
-//                    });
-//                }
-//            }
-//        });
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim.setForeground(new Color(255, 255, 255));
         lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
         lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
-        lblTmKim.setBounds(185, 11, 120, 40);
+        lblTmKim.setBounds(184, 0, 120, 40);
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
+        searchButton.setBorder(null);
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean id = false;
-                boolean name = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã NCC giảm dần")) {
-                	id = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Tên NCC")) {
-                	name = true;
-                }                
-        		if(searchCbB.getSelectedItem().toString().equals("Mã NCC")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultById(searchTxt.getText(), none, name, id);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên NCC")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByName(searchTxt.getText(), none, name, id);
-    				}
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Số điện thoại")) {
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByPhoneNumber(searchTxt.getText(), none, name, id);
-    				}
-    			}
-    			if(searchTxt.getText().equals("")) {
-    				showSortTable(none, name, id);    				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -359,16 +336,23 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchPanel.add(searchButton);
         
         rmSearchButton = new JButton("Hủy");
+        rmSearchButton.setBorder(null);
         rmSearchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
-        		showSortTable(true, false, false);
+        		showTableSupplier();
         		sortCbB.setSelectedIndex(0);
         	}
         });
         rmSearchButton.setFont(new Font("Arial", Font.PLAIN, 13));
         rmSearchButton.setBounds(259, 229, 100, 50);
         searchPanel.add(rmSearchButton);
+        
+        JLabel imageLabel = new JLabel("New label");
+        imageLabel.setIcon(new ImageIcon("C:\\Users\\Magaki\\Downloads\\Java Downloads\\5374796.png"));
+        imageLabel.setBounds(0, 0, 1080, 700);
+        contentField.add(imageLabel);
+        
         //End
         showTableSupplier();
 
@@ -386,72 +370,14 @@ public class SupplierGUI extends JPanel implements ActionListener{
         }
     }
     
-    private List<Supplier> showSortTable(boolean none, boolean name, boolean id) {
-    	List<Supplier> sortResultList = null;
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-    	if(none) {
-    		sortResultList = supplierService.getAllSupplier();
-    		if(searchTxt.getText().equals("")) {
-    			showTableSupplier();
-    		}
-    	}
-    	if(name) {
-    		sortResultList = supplierService.sortByName(supplierList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Supplier i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
-    	            });
-                }
-    		}
-    	}
-    	if(id) {
-    		sortResultList = supplierService.sortById(supplierList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Supplier i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
-    	            });
-                }
-    		}		
-    	}
-		return sortResultList;
-    }
-    
-    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Supplier> searchResultList = supplierService.searchByName(name, showSortTable(none, name2, id));
-        for(Supplier i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
-            });
-        }
-    }
-    
-    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Supplier> searchResultList = supplierService.searchById(id, showSortTable(none, name, id2));
-        for(Supplier i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
-            });
-        }
-    }
-    
-    private void showSearchResultByPhoneNumber(String phoneNumber, boolean none, boolean name, boolean id) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Supplier> searchResultList = supplierService.searchByPhoneNumber(phoneNumber, showSortTable(none, name, id));
-        for(Supplier i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getAddress(), i.getPhone()
+        List<Supplier> searchResultList = supplierService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(Supplier supplier : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    supplier.getId(), supplier.getName(), supplier.getAddress(), supplier.getPhone()
             });
         }
     }
@@ -461,3 +387,4 @@ public class SupplierGUI extends JPanel implements ActionListener{
 
     }
 }
+

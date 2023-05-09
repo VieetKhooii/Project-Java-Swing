@@ -149,7 +149,7 @@ public class RolesGUI extends JPanel implements ActionListener{
         ///////////////////////////////////////////////////////////////////
         staffInfoPanel = new JPanel();
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        staffInfoPanel.setBounds(0, 50, 800, 330);
+        staffInfoPanel.setBounds(0, 50, 740, 330);
         contentField.add(staffInfoPanel);
         staffInfoPanel.setLayout(null);
 
@@ -161,25 +161,25 @@ public class RolesGUI extends JPanel implements ActionListener{
 
         JLabel idRoleLabel = new JLabel("Mã quyền");
         idRoleLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idRoleLabel.setBounds(110, 51, 70, 30);
+        idRoleLabel.setBounds(80, 52, 70, 30);
         staffInfoPanel.add(idRoleLabel);
 
         idRoleTxt = new JTextField();
         idRoleTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idRoleTxt.setColumns(10);
-        idRoleTxt.setBounds(190, 51, 170, 30);
+        idRoleTxt.setBounds(160, 52, 170, 30);
         idRoleTxt.setEditable(false);
         staffInfoPanel.add(idRoleTxt);
 
         nameRoleTxt = new JTextField();
         nameRoleTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameRoleTxt.setColumns(10);
-        nameRoleTxt.setBounds(190, 101, 170, 30);
+        nameRoleTxt.setBounds(160, 102, 170, 30);
         staffInfoPanel.add(nameRoleTxt);
 
         JLabel nameRoleLabel = new JLabel("Tên quyền");
         nameRoleLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameRoleLabel.setBounds(110, 101, 70, 30);
+        nameRoleLabel.setBounds(80, 102, 70, 30);
         staffInfoPanel.add(nameRoleLabel);
 
         /////////////////////////////////////////////////////////
@@ -187,43 +187,43 @@ public class RolesGUI extends JPanel implements ActionListener{
 
         createOrderCB = new JCheckBox("Đơn hàng");
         createOrderCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        createOrderCB.setBounds(445, 80, 110, 25);
+        createOrderCB.setBounds(415, 81, 110, 25);
         staffInfoPanel.add(createOrderCB);
         checkBoxList.add(createOrderCB);
 
         createReceivingCB = new JCheckBox("Nhập hàng");
         createReceivingCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        createReceivingCB.setBounds(595, 80, 110, 25);
+        createReceivingCB.setBounds(565, 81, 110, 25);
         staffInfoPanel.add(createReceivingCB);
         checkBoxList.add(createReceivingCB);
 
         productsCB = new JCheckBox("Món ăn");
         productsCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        productsCB.setBounds(445, 125, 110, 25);
+        productsCB.setBounds(415, 126, 110, 25);
         staffInfoPanel.add(productsCB);
         checkBoxList.add(productsCB);
 
         accountCB = new JCheckBox("Tài khoản");
         accountCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        accountCB.setBounds(445, 170, 110, 25);
+        accountCB.setBounds(415, 171, 110, 25);
         staffInfoPanel.add(accountCB);
         checkBoxList.add(accountCB);
 
         materialCB = new JCheckBox("Nguyên liệu");
         materialCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        materialCB.setBounds(595, 125, 110, 25);
+        materialCB.setBounds(565, 126, 110, 25);
         staffInfoPanel.add(materialCB);
         checkBoxList.add(materialCB);
 
         supplierCB = new JCheckBox("Nhà cung cấp");
         supplierCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        supplierCB.setBounds(445, 215, 110, 25);
+        supplierCB.setBounds(415, 216, 110, 25);
         staffInfoPanel.add(supplierCB);
         checkBoxList.add(supplierCB);
 
         staffCB = new JCheckBox("Nhân viên");
         staffCB.setFont(new Font("Arial", Font.PLAIN, 12));
-        staffCB.setBounds(595, 170, 110, 25);
+        staffCB.setBounds(565, 171, 110, 25);
         staffInfoPanel.add(staffCB);
         checkBoxList.add(staffCB);
 
@@ -264,7 +264,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         addAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addAccBtn.setBounds(222, 284, 90, 35);
+        addAccBtn.setBounds(192, 285, 90, 35);
         staffInfoPanel.add(addAccBtn);
 
         //Clear Information
@@ -281,7 +281,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(486, 284, 90, 35);
+        clearInfoBtn.setBounds(456, 285, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
         fixAccBtn = new JButton("Cập nhật");
@@ -328,7 +328,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         fixAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixAccBtn.setBounds(310, 284, 90, 35);
+        fixAccBtn.setBounds(280, 285, 90, 35);
         staffInfoPanel.add(fixAccBtn);
 
         delAccBtn = new JButton("Xóa");
@@ -356,25 +356,25 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
         delAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delAccBtn.setBounds(397, 284, 90, 35);
+        delAccBtn.setBounds(367, 285, 90, 35);
         staffInfoPanel.add(delAccBtn);
 
         //////////////////////////////////////
 
         descriptionTextArea = new JTextArea();
-        descriptionTextArea.setBounds(190, 151, 170, 80);
+        descriptionTextArea.setBounds(160, 152, 170, 80);
         descriptionTextArea.setBorder(BorderFactory.createLineBorder(Color.gray));
         descriptionTextArea.setRows(10);
         staffInfoPanel.add(descriptionTextArea);
 
         JLabel lblNewLabel_1 = new JLabel("Mô tả");
         lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 13));
-        lblNewLabel_1.setBounds(110, 151, 70, 30);
+        lblNewLabel_1.setBounds(80, 152, 70, 30);
         staffInfoPanel.add(lblNewLabel_1);
 
         JLabel lblNewLabel_2 = new JLabel("Chức năng");
         lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 13));
-        lblNewLabel_2.setBounds(445, 50, 70, 20);
+        lblNewLabel_2.setBounds(415, 51, 70, 20);
         staffInfoPanel.add(lblNewLabel_2);
 
         JPanel bigNamePanel = new JPanel();
@@ -391,7 +391,7 @@ public class RolesGUI extends JPanel implements ActionListener{
 
         searchPanel = new JPanel();
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        searchPanel.setBounds(800, 50, 280, 330);
+        searchPanel.setBounds(740, 50, 340, 330);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
 
@@ -404,89 +404,46 @@ public class RolesGUI extends JPanel implements ActionListener{
         searchCbB = new JComboBox<String>();
         searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã quyền", "Tên quyền"}));
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setBounds(10, 70, 101, 40);
+        searchCbB.setBounds(10, 70, 120, 40);
         searchPanel.add(searchCbB);
 
         searchTxt = new JTextField();
         searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         searchTxt.setColumns(10);
-        searchTxt.setBounds(121, 70, 149, 40);
+        searchTxt.setBounds(144, 70, 186, 40);
         searchPanel.add(searchTxt);
 
         JLabel lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(10, 140, 80, 40);
+        lblSpXp.setBounds(10, 140, 120, 40);
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
         sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã quyền giảm dần", "Tên quyền"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(121, 140, 100, 40);
-//        sortCbB.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                if (sortCbB.getSelectedItem().equals(sortCbB.getItemAt(0))){
-//                    roleService.quickSort(rolesList,true);
-//                }
-//                else {
-//                    roleService.quickSort(rolesList,false);
-//                }
-//                //display on screen after sorting
-//                while (detailTableModel.getRowCount() != 0){
-//                    detailTableModel.removeRow(0);
-//                }
-//                for(Roles roles : rolesList) {
-//                    detailTableModel.addRow(new Object[] {
-//                            roles.getId(), roles.getName(), roles.getDescription()
-//                    });
-//                }
-//            }
-//        });
+        sortCbB.setBounds(144, 140, 186, 40);
         searchPanel.add(sortCbB);
         
         searchButton = new JButton("OK");
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean id = false;
-                boolean name = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã quyền giảm dần")) {
-                	id = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Tên quyền")) {
-                	name = true;
-                }                
-        		if(searchCbB.getSelectedItem().toString().equals("Mã quyền")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultById(searchTxt.getText(), none, name, id);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên quyền")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByName(searchTxt.getText(), none, name, id);
-    				}
-    			}
-    			if(searchTxt.getText().equals("")) {
-    				showSortTable(none, name, id);    				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(45, 269, 100, 50);
+        searchButton.setBounds(70, 269, 100, 50);
         searchPanel.add(searchButton);
         
         JButton rmSearchBtn = new JButton("Hủy");
         rmSearchBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
-        		showSortTable(true, false, false);
+        		showTableRoles();
         		sortCbB.setSelectedIndex(0);
         	}
         });
         rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        rmSearchBtn.setBounds(144, 269, 100, 50);
+        rmSearchBtn.setBounds(169, 269, 100, 50);
         searchPanel.add(rmSearchBtn);
         //End
         showTableRoles();
@@ -507,62 +464,20 @@ public class RolesGUI extends JPanel implements ActionListener{
         }
     }
     
-    private List<Roles> showSortTable(boolean none, boolean name, boolean id) {
-    	List<Roles> sortResultList = null;
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-    	if(none) {
-    		sortResultList = roleService.getAllRoles();
-    		if(searchTxt.getText().equals("")) {
-    			showTableRoles();
-    		}
-    	}
-    	if(name) {
-    		sortResultList = roleService.sortByName(rolesList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Roles i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getDescription()
-    	            });
-                }
-    		}
-    	}
-    	if(id) {
-    		sortResultList = roleService.sortById(rolesList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Roles i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getDescription()
-    	            });
-                }
-    		} 		
-    	}
-		return sortResultList;
-    }
-    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Roles> searchResultList = roleService.searchByName(name, showSortTable(none, name2, id));
-        for(Roles i : searchResultList) {
-			detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getDescription()
-            });
-        }
+    	functionsList = functionService.getAllFunctions();
+        List<Roles> searchResultList = roleService.getAllSearchResult(searchTxt, optSearch, optSort);
         
-    }
-    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Roles> searchResultList = roleService.searchById(id, showSortTable(none, name, id2));
-        for(Roles i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getDescription()
+        for(Roles roles : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    roles.getId(), roles.getName(), roles.getDescription()
             });
         }
     }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 

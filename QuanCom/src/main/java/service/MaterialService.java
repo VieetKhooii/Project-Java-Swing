@@ -1,7 +1,9 @@
 package service;
 
 import bus.MaterialRepository;
+import bus.StaffRepository;
 import model.Material;
+import model.Staff;
 import model.Material;
 import model.Material;
 
@@ -24,6 +26,11 @@ public class MaterialService {
         return  materialRepository.addMaterial(name,unit,price,amount) >= 1;
     }
 
+    public boolean addMaterial(int id, String name, String unit, int price, int amount){
+        MaterialRepository materialRepository = new MaterialRepository();
+        return  materialRepository.addMaterial(id,name,unit,price,amount) >= 1;
+    }
+    
     public boolean deleteMaterial(int id){
         MaterialRepository materialRepository = new MaterialRepository();
         return materialRepository.deleteMaterial(id) >= 1;
@@ -34,134 +41,10 @@ public class MaterialService {
         return materialRepository.modifyMaterial(id, name, unit, price, amount) >= 1;
     }
     
+    //search list
+    public List<Material> getAllSearchResult(String searchTxt, String optSearch, String optSort){
+    	MaterialRepository materialRepository = new MaterialRepository();
+        return materialRepository.searchByOption(searchTxt, optSearch, optSort);
+    }
     
-    //Search by id
-    public List<Material> searchById(String id, List<Material> materialList){
-    	List<Material> searchList = new ArrayList<>();  
-    	for(Material i : materialList) {
-    		Pattern pattern = Pattern.compile(".*"+id+".*");              
-            Matcher matcher = pattern.matcher(String.valueOf(i.getId()));
-            if(matcher.find()) {
-            	searchList.add(i);
-        	}           
-    	}
-    	return searchList;
-    }
-    //Search by name
-    public List<Material> searchByName(String name, List<Material> materialList){
-    	List<Material> searchList = new ArrayList<>();  
-    	for(Material i : materialList) {
-    		Pattern pattern = Pattern.compile("(?i).*"+Normalizer.normalize(name, Normalizer.Form.NFD)
-            .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")+".*");
-    		String vietnameseString = Normalizer.normalize(i.getName(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
-    		String search = vietnameseString.toLowerCase().replaceAll("[đ]", "d")                          
-                    .replaceAll("[ư]", "u")                                      
-                    .replaceAll("[ô]", "o")
-                    .replaceAll("[ơ]", "o")
-                    .replaceAll("[ê]", "e")
-                    .replaceAll("[ă]", "a")
-                    .replaceAll("[â]", "a");                
-            Matcher matcher = pattern.matcher(search);
-            if(matcher.find()) {
-            	searchList.add(i);
-        	}           
-    	}
-    	return searchList;
-    }
-    //search by quality
-    public List<Material> searchByQuality(String quality, List<Material> materialList){
-    	List<Material> searchList = new ArrayList<>();  
-    	for(Material i : materialList) {
-    		Pattern pattern = Pattern.compile(".*"+quality+".*");              
-            Matcher matcher = pattern.matcher(String.valueOf(i.getAmount()));
-            if(matcher.find()) {
-            	searchList.add(i);
-        	}           
-    	}
-    	return searchList;
-    }
-    //sort by id
-    public List<Material> sortById(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o2.getId() - o1.getId();
-			}
-    		
-    	});
-    	return sortList;
-    }
-    //sort by name
-    public List<Material> sortByName(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-			}
-    		
-    	});
-    	return sortList;
-    }
-    //sort by quality asc
-    public List<Material> sortByQualityAsc(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o1.getAmount() - o2.getAmount();
-			}
-    		
-    	});
-    	return sortList;
-    }
-    //sort by quality des
-    public List<Material> sortByQualityDes(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o2.getAmount() - o1.getAmount();
-			}
-    		
-    	});
-    	return sortList;
-    }
-    // sort by price asc
-    public List<Material> sortByPriceAsc(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o1.getPrice() - o2.getPrice();
-			}
-    		
-    	});
-    	return sortList;
-    }
-    // sort by price des
-    public List<Material> sortByPriceDes(List<Material> materialList){
-    	List<Material> sortList = materialList;  
-    	Collections.sort(sortList, new Comparator<Material>() {
-
-			@Override
-			public int compare(Material o1, Material o2) {
-				// TODO Auto-generated method stub
-				return o2.getPrice() - o1.getPrice();
-			}
-    		
-    	});
-    	return sortList;
-    }
 }

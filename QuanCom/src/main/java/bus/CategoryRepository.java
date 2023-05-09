@@ -2,6 +2,7 @@ package bus;
 
 import config.MySqlConfig;
 import model.Category;
+import model.Staff;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -74,5 +75,42 @@ public class CategoryRepository {
             System.out.println("Error modifying cate in CategoryRepository "+e.getMessage());
         }
         return isSuccess;
+    }
+    //search option
+    public List<Category> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<Category> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã loại")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "cate_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên loại")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "cate_name";
+        }
+        String query = "select * from category where " + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã loại giảm dần")) {
+        	query = query + " order by cate_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên loại")){
+        	query = query + " order by cate_name asc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+            	Category category = new Category();
+                category.setId(resultSet.getInt("cate_id"));
+                category.setName(resultSet.getString("cate_name"));
+                category.setDescription(resultSet.getString("description"));
+                searchList.add(category);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
     }
 }

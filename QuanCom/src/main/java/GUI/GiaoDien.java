@@ -2,6 +2,9 @@ package GUI;
 
 import javax.swing.*;
 
+import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 //import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import enumm.UnitMaterial;
@@ -45,11 +48,9 @@ public class GiaoDien extends JFrame {
     static JComboBox<String> unitMaterialBox = new JComboBox<String>();
 
     public GiaoDien() {
-        try {
-            FlatMacLightLaf.setup();
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
+    	
+    	
+    	FlatMacLightLaf.setup();
         init();
         this.setVisible(true);
     }
@@ -59,6 +60,7 @@ public class GiaoDien extends JFrame {
         this.setLocationRelativeTo(null);
         this.setUndecorated(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         setTitle("Giao diện bán hàng");
 
         //Tieu de
@@ -189,12 +191,5 @@ public class GiaoDien extends JFrame {
     }
 
 
-    public static void main(String[] args) {
-        try {
-            FlatMacLightLaf.setup();
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
-        JFrame a = new GiaoDien();
-    }
+    
 }

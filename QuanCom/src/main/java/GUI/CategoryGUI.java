@@ -3,6 +3,7 @@ package GUI;
 import model.Category;
 import model.Product;
 import model.Roles;
+import model.Staff;
 import service.CategoryService;
 import service.ProductService;
 
@@ -160,11 +161,11 @@ public class CategoryGUI extends JPanel implements ActionListener{
                 if (!idCategoryTxt.getText().equalsIgnoreCase("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn phân loại đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameCategoryTxt.getText().equals("") || descriptionTxt.getText().equals("")) {
+                else if(nameCategoryTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    categoryService.addCate(nameCategoryTxt.getText(),descriptionTxt.getText());
+                    categoryService.addCate(chuanHoa(nameCategoryTxt.getText()),descriptionTxt.getText());
                     showCate();
                     JOptionPane.showMessageDialog(null, "Đã thêm phân loại!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -194,11 +195,11 @@ public class CategoryGUI extends JPanel implements ActionListener{
                 if (idCategoryTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 phân loại và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameCategoryTxt.getText().equals("") || descriptionTxt.getText().equals("")) {
+                else if(nameCategoryTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    categoryService.cateModify(Integer.parseInt(idCategoryTxt.getText()),nameCategoryTxt.getText(),descriptionTxt.getText());
+                    categoryService.cateModify(Integer.parseInt(idCategoryTxt.getText()),chuanHoa(nameCategoryTxt.getText()),descriptionTxt.getText());
                     showCate();
                     JOptionPane.showMessageDialog(null, "Cập nhật thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -287,31 +288,7 @@ public class CategoryGUI extends JPanel implements ActionListener{
         searchButton = new JButton("OK");
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean id = false;
-                boolean name = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã loại giảm dần")) {
-                	id = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Tên loại")) {
-                	name = true;
-                }                
-        		if(searchCbB.getSelectedItem().toString().equals("Mã loại")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultById(searchTxt.getText(), none, name, id);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên loại")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByName(searchTxt.getText(), none, name, id);
-    				}
-    			}
-    			if(searchTxt.getText().equals("")) {
-    				showSortTable(none, name, id);    				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -322,7 +299,7 @@ public class CategoryGUI extends JPanel implements ActionListener{
         rmSearchBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
-        		showSortTable(true, false, false);
+        		showCate();
         		sortCbB.setSelectedIndex(0);
         	}
         });
@@ -347,65 +324,39 @@ public class CategoryGUI extends JPanel implements ActionListener{
         }
     }
 
-    private List<Category> showSortTable(boolean none, boolean name, boolean id) {
-    	List<Category> sortResultList = null;
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-    	if(none) {
-    		sortResultList = categoryService.getAllCate();
-    		if(searchTxt.getText().equals("")) {
-    			showCate();
-    		}
-    	}
-    	if(name) {
-    		sortResultList = categoryService.sortByName(categoryList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Category i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getDescription()
-    	            });
-                }
-    		}
-    	}
-    	if(id) {
-    		sortResultList = categoryService.sortById(categoryList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Category i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getDescription()
-    	            });
-                }
-    		} 		
-    	}
-		return sortResultList;
-    }
-    
-    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Category> searchResultList = categoryService.searchByName(name, showSortTable(none, name2, id));
-        for(Category i : searchResultList) {
-			detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getDescription()
+        List<Category> searchResultList = categoryService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(Category category : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    category.getId(), category.getName(), category.getDescription()
             });
         }
     }
     
-    private void showSearchResultById(String id, boolean none, boolean name, boolean id2) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Category> searchResultList = categoryService.searchById(id, showSortTable(none, name, id2));
-        for(Category i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getDescription()
-            });
-        }
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+    
+    public String chuanHoa(String message) {
+    	message = message.toLowerCase();
+	    char[] charArray = message.toCharArray();
+	    boolean foundSpace = true;
+	    for(int i = 0; i < charArray.length; i++) {
+	      if(Character.isLetter(charArray[i])) {   
+	        if(foundSpace) {	          
+	          charArray[i] = Character.toUpperCase(charArray[i]);
+	          foundSpace = false;
+	        }
+	      }
+	      else {
+	        foundSpace = true;
+	      }
+	    }
+	    message = String.valueOf(charArray);
+	    return message;
     }
 }

@@ -2,7 +2,6 @@ package service;
 
 import bus.ReceivedNoteRepo;
 import model.ReceivedNote;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -25,5 +24,12 @@ public class ReceivedNoteService {
     public int getTotalPrice(int id){
         ReceivedNoteRepo repo = new ReceivedNoteRepo();
         return repo.getTotalPrice(id);
+    }
+    
+    //Search list
+    public List<ReceivedNote> getAllSearchResult(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+    		,java.util.Date dateFrome, java.util.Date dateTo ){
+    	ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.searchByOption(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrome, dateTo);
     }
 }

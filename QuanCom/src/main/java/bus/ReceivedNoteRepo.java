@@ -2,6 +2,7 @@ package bus;
 
 import config.MySqlConfig;
 import model.ReceivedNote;
+import model.Staff;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -96,5 +97,79 @@ public class ReceivedNoteRepo {
             System.out.println("ReceivedNoteRepo: Error getting total price "+e.getMessage());
         }
         return totalPrice;
+    }
+    
+    //Search by option
+    public List<ReceivedNote> searchByOption(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+    		, java.util.Date dateFrom, java.util.Date dateTo){
+        List<ReceivedNote> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã phiếu nhập")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "phieu_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Mã nhân viên")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "staff_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Mã nhà cung cấp")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "sup_id";
+        }
+        String query = "select * from phieunhap where " + searchColumn +" like " + searchString;
+        if(!priceFrom.equals("") && !priceTo.equals("")) {
+        	query = query + " and tonggia >= " + Integer.parseInt(priceFrom) + " and tonggia <="  + Integer.parseInt(priceTo);
+        }
+        if(dateFrom != null && dateTo != null) {
+        	java.sql.Date sqlDateFrom = new Date(dateFrom.getTime());
+        	java.sql.Date sqlDateTo = new Date(dateTo.getTime());
+        	query = query + " and date between '" + sqlDateFrom + "' and '" + sqlDateTo + "'";
+        }
+        if(optSort.equalsIgnoreCase("Mã PN giảm dần")) {
+        	query = query + " order by phieu_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NV tăng dần")){
+        	query = query + " order by staff_id asc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NV giảm dần")){
+        	query = query + " order by staff_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NCC tăng dần")){
+        	query = query + " order by sup_id asc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NCC giảm dần")){
+        	query = query + " order by sup_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Mới nhất")){
+        	query = query + " order by date desc";
+        }
+        else if(optSort.equalsIgnoreCase("Cũ nhất")){
+        	query = query + " order by date asc";
+        }
+        else if(optSort.equalsIgnoreCase("Tổng giá tăng dần")){
+        	query = query + " order by tonggia asc";
+        }
+        else if(optSort.equalsIgnoreCase("Tổng giá giảm dần")){
+        	query = query + " order by tonggia desc";
+        }        
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+            	ReceivedNote receivedNote = new ReceivedNote();
+                receivedNote.setId(resultSet.getInt("phieu_id"));
+                receivedNote.setStaffId(resultSet.getInt("staff_id"));
+                receivedNote.setSupplierId(resultSet.getInt("sup_id"));
+                receivedNote.setTotalPrice(resultSet.getInt("tonggia"));
+                receivedNote.setDate(resultSet.getDate("date"));
+                searchList.add(receivedNote);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
     }
 }

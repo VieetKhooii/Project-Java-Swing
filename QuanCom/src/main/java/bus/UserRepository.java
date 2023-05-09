@@ -1,6 +1,7 @@
 package bus;
 
 import config.MySqlConfig;
+import model.Staff;
 import model.User;
 
 import java.sql.Connection;
@@ -111,5 +112,53 @@ public class UserRepository {
             System.out.println("Error while modify user "+e.getMessage());
         }
         return isSuccess;
+    }
+    
+  //Search by option
+    public List<User> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<User> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã tài khoản")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "user_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên đăng nhập")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "username";
+        }
+        else if(optSearch.equalsIgnoreCase("Quyền")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "role_name";
+        }
+        String query = "select u.user_id, u.username, u.password, email, u.role_id, r.role_name from users as u join roles as r on u.role_id = r.role_id and "
+        + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã tài khoản giảm dần")) {
+        	query = query + " order by u.user_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên đăng nhập")){
+        	query = query + " order by u.username asc";
+        }
+        else if(optSort.equalsIgnoreCase("Quyền")){
+        	query = query + " order by r.role_name asc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+            	User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setName(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setRoleId(resultSet.getInt("role_id"));
+                searchList.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
     }
 }

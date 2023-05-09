@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
@@ -22,7 +23,6 @@ public class Login extends JFrame implements ActionListener{
      */
     private static final long serialVersionUID = 1L;
     Font userFont = new Font("Arial", Font.PLAIN, 18);
-    private JLabel logo;
     private JPanel loginField;
     private JPanel inside_wrap;
     private JLabel userIcon;
@@ -43,24 +43,16 @@ public class Login extends JFrame implements ActionListener{
         this.setTitle("Login");
         getContentPane().setLayout(null);
         this.setResizable(false);
-        //this.setUndecorated(true);
-        //Logo
-        logo = new JLabel();
-        logo.setForeground(Color.PINK);
-        logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setFont(new Font("Ravie", Font.PLAIN, 26));
-        logo.setText("QUÁN CƠM JAVA");
-        logo.setBounds(50, 23, 300, 100);
         // Wrap login
         loginField = new JPanel();
         loginField.setLayout(null);
-        loginField.setBounds(0, 20, 400, 700);
+        loginField.setBounds(0, 20, 400, 450);
         loginField.setBackground(Color.white);
 
         // Be wraped login
         inside_wrap = new JPanel();
         inside_wrap.setLayout(null);
-        inside_wrap.setBounds(50, 140, 300, 400);
+        inside_wrap.setBounds(50, 60, 300, 350);
         inside_wrap.setBackground(Color.WHITE);
         // Login label
         JLabel loginLabel = new JLabel();
@@ -124,9 +116,9 @@ public class Login extends JFrame implements ActionListener{
         messageLb.setBackground(null);
         messageLb.setFocusable(false);
         // Login button
-        loginBtn = new JButton("GO!");
+        loginBtn = new JButton("GO!");       
         loginBtn.setFont(userFont);
-        loginBtn.setBounds(90, 290, 120, 60);
+        loginBtn.setBounds(0, 240, 300, 60);
         loginBtn.setBackground(new Color(255, 204, 153));
         loginBtn.setBorder(null);
         loginBtn.setFocusPainted(false);
@@ -149,6 +141,7 @@ public class Login extends JFrame implements ActionListener{
                 else messageLb.setText("*Sai tên đăng nhập hoặc mật khẩu");
             }
         });
+        
         loginBtn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 loginBtn.setBackground(new Color(255, 153, 51));
@@ -169,7 +162,6 @@ public class Login extends JFrame implements ActionListener{
         inside_wrap.add(separator2);
         // End be wraped login
         loginField.add(inside_wrap);
-        loginField.add(logo);
         //End Wraped login
 
         // Tao thanh tieu de
@@ -186,7 +178,7 @@ public class Login extends JFrame implements ActionListener{
         getContentPane().add(loginField);
         this.setFocusable(true);
         this.requestFocusInWindow();
-        this.setSize(400, 632);
+        this.setSize(400, 450);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -197,6 +189,7 @@ public class Login extends JFrame implements ActionListener{
 
     }
     public static void main(String[] args) {
+    	
         new Login();
     }
 

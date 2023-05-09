@@ -2,6 +2,7 @@ package bus;
 
 import config.MySqlConfig;
 import model.Roles;
+import model.Staff;
 import model.Supplier;
 
 import java.sql.Connection;
@@ -78,5 +79,48 @@ public class SupplierRepository {
             System.out.println("Error modify supplier "+e.getMessage());
         }
         return isSuccess;
+    }
+    
+    //Search by option
+    public List<Supplier> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<Supplier> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã NCC")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "sup_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên NCC")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "sup_name";
+        }
+        else if(optSearch.equalsIgnoreCase("Số điện thoại")) {
+        	searchString = "'%" + searchTxt.trim() + "%'";
+        	searchColumn = "supp_phone";
+        }
+        String query = "select * from supplier where " + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã NCC giảm dần")) {
+        	query = query + " order by sup_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên NCC")){
+        	query = query + " order by sup_name asc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+            	Supplier supplier = new Supplier();
+                supplier.setId(resultSet.getInt("sup_id"));
+                supplier.setName(resultSet.getString("sup_name"));
+                supplier.setAddress(resultSet.getString("sup_address"));
+                supplier.setPhone(resultSet.getString("supp_phone"));
+                searchList.add(supplier);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }        
+        return searchList;
     }
 }

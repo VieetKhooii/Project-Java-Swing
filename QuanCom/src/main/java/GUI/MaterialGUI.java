@@ -1,8 +1,14 @@
 package GUI;
 
 import model.Material;
+import model.Product;
+import model.Recipe;
+import model.Staff;
 import model.UnitMaterial;
+import service.FoodCalculation;
 import service.MaterialService;
+import service.ProductService;
+import service.RecipeService;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -48,6 +54,10 @@ public class MaterialGUI extends JPanel implements ActionListener{
     private JButton clearInfoBtn;
     MaterialService materialService = new MaterialService();
     List<Material> materialList = materialService.getAllMaterial();
+    ProductService productService = new ProductService();
+    RecipeService recipeService = new RecipeService();
+    List<Product> productList = productService.getAllProduct();
+    List<Recipe> recipeList = recipeService.getAllRecipe();
     /**
      * Create the panel.
      */
@@ -246,10 +256,12 @@ public class MaterialGUI extends JPanel implements ActionListener{
                             break;
                         }
                     }
-                    materialService.modifyMaterial(chuanHoa(nameMaterialTxt.getText()),unit,Integer.parseInt(priceMaterialTxt.getText()),
-                    		0, Integer.parseInt(idMaterialTxt.getText()));
+                    productList = productService.getAllProduct();
+                    materialService.modifyMaterial(nameMaterialTxt.getText(),unit,Integer.parseInt(priceMaterialTxt.getText()),Integer.parseInt(soluongMaterialTxt.getText()), Integer.parseInt(idMaterialTxt.getText()));
+                    FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
                     showTableMaterial();
-                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    GiaoDien.taoDon.showTableProduct();
+                    JOptionPane.showMessageDialog(null, "Đã sửa nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
@@ -306,7 +318,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
         searchTxt = new JTextField();
         searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         searchTxt.setColumns(10);
-        searchTxt.setBounds(230, 76, 149, 40);
+        searchTxt.setBounds(230, 76, 170, 40);
         searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
@@ -317,7 +329,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
         sortCbB = new JComboBox<String>();
         sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã giảm dần", "Tên", "Giá tăng dần", "Giá giảm dần", "Số lượng tăng dần", "Số lượng giảm dần"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(230, 136, 149, 40);
+        sortCbB.setBounds(230, 136, 170, 40);
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
@@ -329,56 +341,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
         searchButton = new JButton("OK");
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
-        		boolean none = false;
-                boolean id = false;
-                boolean name = false;
-                boolean priceAsc = false;
-                boolean priceDes = false;
-                boolean qualityAsc = false;
-                boolean qualityDes = false;
-                if(sortCbB.getSelectedItem().toString().equals("None")) {
-                	none = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Mã giảm dần")) {
-                	id = true;
-                }
-                else if(sortCbB.getSelectedItem().toString().equals("Tên")) {
-                	name = true;
-                }                
-                else if(sortCbB.getSelectedItem().toString().equals("Giá tăng dần")) {
-                	priceAsc = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Giá giảm dần")) {
-                	priceDes = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Số lượng tăng dần")) {
-                	qualityAsc = true;
-                } 
-                else if(sortCbB.getSelectedItem().toString().equals("Số lượng giảm dần")) {
-                	qualityAsc = true;
-                } 
-        		if(searchCbB.getSelectedItem().toString().equals("Mã")) {
-        			if(!searchTxt.getText().equals("")) {
-        				showSearchResultByid(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-        			}        			
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Tên")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByName(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-    				}
-    			}
-    			if(searchCbB.getSelectedItem().toString().equals("Số lượng")){   				
-    				if(!searchTxt.getText().equals("")) {
-    					showSearchResultByQuality(searchTxt.getText(), none, name, id, priceAsc,
-        		        		priceDes, qualityAsc, qualityDes);
-    				}
-    			}
-    			if(searchTxt.getText().equals("")) {
-    				showSortTable(none, name, id, priceAsc,
-    		        		priceDes, qualityAsc, qualityDes);    				
-    			}
+        		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
         	}
         });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -389,7 +352,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
         rmSearchBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
-        		showSortTable(true, false, false, false, false, false, false);
+        		showTableMaterial();
         		sortCbB.setSelectedIndex(0);
         	}
         });
@@ -414,133 +377,20 @@ public class MaterialGUI extends JPanel implements ActionListener{
             });
         }
     }
-
-    private List<Material> showSortTable(boolean none, boolean name, boolean id, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes) {
-    	List<Material> sortResultList = null;
+    
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {   	
     	while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-    	if(none) {
-    		sortResultList = materialService.getAllMaterial();
-    		if(searchTxt.getText().equals("")) {
-    			showTableMaterial();
-    		}
-    	}
-    	if(name) {
-    		sortResultList = materialService.sortByName(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}
-    	}
-    	if(id) {
-    		sortResultList = materialService.sortById(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}   		
-    	}
-    	if(priceAsc) {
-    		sortResultList = materialService.sortByPriceAsc(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}   
-    	}
-    	if(priceDes) {
-    		sortResultList = materialService.sortByPriceDes(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}   
-    	}
-    	if(qualityAsc) {
-    		sortResultList = materialService.sortByQualityAsc(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}   
-    	}
-    	if(qualityDes) {
-    		sortResultList = materialService.sortByQualityDes(materialList);
-    		if(searchTxt.getText().equals("")) {
-    			for(Material i : sortResultList) {
-    				detailTableModel.addRow(new Object[] {
-    	                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-    	                    i.getPrice(),
-    	            });
-                }
-    		}   
-    	}
-		return sortResultList;
+        List<Material> searchResultList = materialService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(Material material : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    material.getId(), material.getName(), material.getUnit(), material.getAmount(),
+                    material.getPrice(),
+            });
+        }
     }
     
-    private void showSearchResultByName(String name, boolean none, boolean name2, boolean id, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Material> searchResultList = materialService.searchByName(name, showSortTable(none, name2, id, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
-        for(Material i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-                    i.getPrice(),
-            });
-        }
-        
-    }
-    private void showSearchResultByid(String id, boolean none, boolean name, boolean id2, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Material> searchResultList = materialService.searchById(id, showSortTable(none, name, id2, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
-        for(Material i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-                    i.getPrice(),
-            });
-        }
-        
-    }
-    private void showSearchResultByQuality(String quality, boolean none, boolean name, boolean id2, boolean 
-    		priceAsc, boolean priceDes, boolean qualityAsc, boolean qualityDes ) {   	
-    	while (detailTableModel.getRowCount() != 0){
-            detailTableModel.removeRow(0);
-        }
-        List<Material> searchResultList = materialService.searchByQuality(quality, showSortTable(none, name, id2, priceAsc,
-        		priceDes, qualityAsc, qualityDes));
-        for(Material i : searchResultList) {
-        	detailTableModel.addRow(new Object[] {
-                    i.getId(), i.getName(), i.getUnit(), i.getAmount(),
-                    i.getPrice(),
-            });
-        }
-        
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
