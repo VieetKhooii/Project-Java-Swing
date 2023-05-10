@@ -35,7 +35,6 @@ public class FoodCalculation {
             else {
                 product.setAmount(min);
             }
-
             if (database){
                 productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
                         product.getPrice(),product.getCategoryId(),product.getId());
@@ -44,7 +43,7 @@ public class FoodCalculation {
         }
     }
 
-    public static void materialConsumption(int id,
+    public static void materialConsumption(int orderId,
                                            List<Product> cart,
                                            List<Product> productList,
                                            List<Recipe> recipeList,
@@ -52,22 +51,20 @@ public class FoodCalculation {
                                            DetailOrderService detailOrderService,
                                            MaterialService materialService){
         for (Product product : cart){
-            int materialCostAmount=0;
-            boolean checkIfTrue = false;
-            detailOrderService.addDetailOrder(id,product.getId(),product.getName(),product.getAmount()
+            detailOrderService.addDetailOrder(orderId,product.getId(),product.getName(),product.getAmount()
                     ,product.getPrice());
             for (Product product1 : productList){
                 if (product1.getId() == product.getId()){
                     for (Recipe recipe : recipeList){
                         if (recipe.getProductId() == product1.getId()){
-                            materialCostAmount = recipe.getAmount() * product.getAmount();
                             for (Material material : materialList){
                                 if (material.getId() == recipe.getMaterialId()){
                                     materialService.modifyMaterial(
                                             material.getName(),
                                             material.getUnit(),
                                             material.getPrice(),
-                                            material.getAmount()-materialCostAmount,material.getId()
+                                            material.getAmount(),
+                                            material.getId()
                                     );
                                     break;
                                 }
@@ -80,28 +77,55 @@ public class FoodCalculation {
     }
 
     public static void calculateSameRecipeFood(int amount,
-                                               int id,
+                                               int productId,
                                                List<Product> productList,
                                                List<Recipe> recipeList,
                                                List<Material> materialList,
                                                ProductService productService){
-        int consumption=0;
+        if (amount != 0){
+            int consumption=0;
+            for (Product product : productList){
+                if (product.getId() == productId){
+                    for (Recipe recipe : recipeList){
+                        if (recipe.getProductId() == productId){
+                            consumption = recipe.getAmount()*amount;
+                            for (Material material : materialList){
+                                if (material.getId() == recipe.getMaterialId()){
+//                                    System.out.println("hi");
+                                    material.setAmount(material.getAmount()-consumption);
+//                                    System.out.println("after consump: "+material.getAmount());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                productAmountCal(productList,recipeList,materialList,productService,false);
+            }
+        }
+    }
+
+    public static void returnMaterial(int amount, int productId, List<Material> materialList,
+                                      List<Product> productList, List<Recipe> recipeList,ProductService productService){
         for (Product product : productList){
-            if (product.getId() == id){
+            if (product.getId() == productId){
                 for (Recipe recipe : recipeList){
-                    if (recipe.getProductId() == id){
-                        consumption = recipe.getAmount()*amount;
+                    if (recipe.getProductId() == productId){
+                        int returnAmount=0;
+                        returnAmount = recipe.getAmount()*amount;
                         for (Material material : materialList){
                             if (material.getId() == recipe.getMaterialId()){
-                                material.setAmount(material.getAmount()-consumption);
+//                                System.out.println(returnAmount);
+//                                System.out.println("get amount old: "+material.getAmount());
+                                material.setAmount(material.getAmount()+returnAmount);
+//                                System.out.println("get amount: "+material.getAmount());
                                 break;
                             }
                         }
-                        break;
                     }
                 }
+                productAmountCal(productList,recipeList,materialList,productService,false);
             }
-            productAmountCal(productList,recipeList,materialList,productService,false);
         }
     }
 }

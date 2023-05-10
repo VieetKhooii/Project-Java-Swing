@@ -6,7 +6,7 @@ from products p join chitietcongthuc ct on p.product_id = ct.product_id
 	 join materials m on m.material_id = ct.material_id
 order by p.product_name;
 
-
+select count(*) as count from orders where staff_id = 2;
 CREATE TABLE functions(
 	func_id INT NOT NULL,
 	func_name varchar(50),

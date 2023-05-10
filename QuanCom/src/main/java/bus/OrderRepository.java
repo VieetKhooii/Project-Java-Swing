@@ -74,4 +74,19 @@ public class OrderRepository {
         }
         return  isSuccess;
     }
+
+    public int numberOfBillOfAStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "select count(*) as count from orders where staff_id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            isSuccess = resultSet.getInt("count");
+        } catch (SQLException e) {
+            System.out.println("OrderRepository: Error while deleting order");
+        }
+        return isSuccess;
+    }
 }

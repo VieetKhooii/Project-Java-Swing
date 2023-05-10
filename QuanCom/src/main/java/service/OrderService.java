@@ -25,4 +25,8 @@ public class OrderService {
         OrderRepository orderRepository = new OrderRepository();
         return orderRepository.delOrder(orderId) >= 1;
     }
+    public int billOfStaff(int staffId){
+        OrderRepository orderRepository = new OrderRepository();
+        return orderRepository.numberOfBillOfAStaff(staffId);
+    }
 }
