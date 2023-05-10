@@ -50,4 +50,13 @@ public class User {
     public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
+    private int staffId;
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(int staffId) {
+        this.staffId = staffId;
+    }
 }

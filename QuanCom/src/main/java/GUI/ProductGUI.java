@@ -20,6 +20,7 @@ import enumm.ProductUnit;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductGUI extends JPanel implements ActionListener{
@@ -46,12 +47,13 @@ public class ProductGUI extends JPanel implements ActionListener{
     private JTextField nameProductTxt;
     private JTextField soLuongProductTxt;
     private JComboBox<String> unitProductCbB;
-    private JComboBox<String> categoryProductCbB;
+    public JComboBox<String> categoryProductCbB;
     private JButton addProductBtn;
     private JButton fixProductBtn;
     private JButton delProductBtn;
     private JButton browsePhoto;
     private JButton clearInfoBtn;
+    private JPanel staffInfoPanel;
     ProductService productService = new ProductService();
     CategoryService categoryService = new CategoryService();
     MaterialService materialService = new MaterialService();
@@ -60,6 +62,8 @@ public class ProductGUI extends JPanel implements ActionListener{
     List<Category> categoryList = categoryService.getAllCate();
     List<Material> materialList = materialService.getAllMaterial();
     List<Recipe> recipeList = recipeService.getAllRecipe();
+    String filePath = "";
+    JLabel productPhoto;
     /**
      * Create the panel.
      */
@@ -82,13 +86,13 @@ public class ProductGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         productListPanel = new JPanel(null);
-        productListPanel.setBackground(new Color(30, 144, 255));
+        productListPanel.setBackground(new Color(0,0,0,80));
         productListPanel.setBounds(0, 380, 1080, 290);
 
         contentField.add(productListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Đơn vị tính", "Số lượng", "Giá", "Phân loại"}, 0);
-        productTable = new JTable(detailTableModel);
+        productTable = new MacOSStyleTable(detailTableModel);
         productTable.setFont(new Font("Arial", Font.PLAIN, 14));
         productTable.setDefaultRenderer(String.class, centerRenderer);
         productTable.setRowHeight(30);
@@ -126,22 +130,31 @@ public class ProductGUI extends JPanel implements ActionListener{
                             break;
                         }
                     }
+                    for(Product i : productList) {
+                    	if(i.getId() == Integer.parseInt(idProductTxt.getText())) {
+                    		productPhoto.setIcon(new ImageIcon(i.getImage()));
+                    		System.out.println(i.getImage());
+                    		break;
+                    	}                   	
+                    }
                 }
             }
         });
 
 
-        productScrollPane = new JScrollPane(productTable);
+        productScrollPane = new CustomScrollPane(productTable);
         productScrollPane.setBounds(5, 5, 1070, 280);
         productListPanel.add(productScrollPane);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("MÓN ĂN");
+        staffLabel.setForeground(SystemColor.text);
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -220,18 +233,18 @@ public class ProductGUI extends JPanel implements ActionListener{
         rmSearchBtn.setBounds(139, 269, 100, 50);
         searchPanel.add(rmSearchBtn);
         // Thông tin món ăn
-        JPanel staffInfoPanel = new JPanel();
+        staffInfoPanel = new JPanel();
         staffInfoPanel.setLayout(null);
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         staffInfoPanel.setBounds(0, 50, 800, 330);
         contentField.add(staffInfoPanel);
 
-        JLabel staffPhoto = new JLabel("Ảnh");
-        staffPhoto.setHorizontalAlignment(SwingConstants.CENTER);
-        staffPhoto.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        staffPhoto.setBackground(Color.WHITE);
-        staffPhoto.setBounds(41, 70, 140, 130);
-        staffInfoPanel.add(staffPhoto);
+        productPhoto = new JLabel("Ảnh");
+        productPhoto.setHorizontalAlignment(SwingConstants.CENTER);
+        productPhoto.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        productPhoto.setBackground(Color.WHITE);
+        productPhoto.setBounds(41, 70, 140, 140);
+        staffInfoPanel.add(productPhoto);
 
         JLabel lblThngTinMn = new JLabel("Thông tin món ăn");
         lblThngTinMn.setHorizontalAlignment(SwingConstants.CENTER);
@@ -254,15 +267,16 @@ public class ProductGUI extends JPanel implements ActionListener{
                 else {
                     int id=0;
                     for (Category category : categoryList){
-                        if (category.getName().equalsIgnoreCase((String) categoryProductCbB.getSelectedItem())){
+                        if (category.getName().equalsIgnoreCase(categoryProductCbB.getSelectedItem().toString())){
                             id = category.getId();
+                            //System.out.println(category.getName() + "Thêm");
                             break;
                         }
                     }
                     productService.addProduct(chuanHoa(nameProductTxt.getText()),
                             0,(String) unitProductCbB.getSelectedItem(),
                             Integer.parseInt(priceProductTxt.getText()),
-                            id);
+                            id, filePath);
                     showTableProduct();
                     JOptionPane.showMessageDialog(null, "Đã thêm món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -310,7 +324,7 @@ public class ProductGUI extends JPanel implements ActionListener{
                     productService.modifyProduct(chuanHoa(nameProductTxt.getText()),
                             Integer.parseInt(soLuongProductTxt.getText()),
                             (String) unitProductCbB.getSelectedItem(),Integer.parseInt(priceProductTxt.getText()),
-                            id,Integer.parseInt(idProductTxt.getText()));
+                            id,Integer.parseInt(idProductTxt.getText()), filePath);
                     showTableProduct();
                     JOptionPane.showMessageDialog(null, "Đã sửa thông tin món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
@@ -344,6 +358,20 @@ public class ProductGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(delProductBtn);
 
         browsePhoto = new JButton("Chọn");
+        browsePhoto.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JFileChooser fChooser = new JFileChooser();
+				int response = fChooser.showOpenDialog(null);
+				if(response == JFileChooser.APPROVE_OPTION) {
+					filePath = fChooser.getSelectedFile().getAbsolutePath();
+					productPhoto.setIcon(new ImageIcon(filePath));
+				}
+			}
+        	
+        });
         browsePhoto.setBounds(71, 220, 80, 30);
         staffInfoPanel.add(browsePhoto);
 
@@ -491,5 +519,20 @@ public class ProductGUI extends JPanel implements ActionListener{
 	    }
 	    message = String.valueOf(charArray);
 	    return message;
+    }
+    public void categoryReload() {
+    	categoryList = categoryService.getAllCate();
+//    	DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String [] {""});
+//    	categoryProductCbB.setModel(model);
+    	String[] namecbb = new String[categoryList.size()];	
+        for(int i = 0; i < categoryList.size(); i++) {
+        	namecbb[i] = categoryList.get(i).getName();
+        }
+        categoryProductCbB.setModel(new javax.swing.DefaultComboBoxModel<>(namecbb));
+        for(int i = 0; i < categoryProductCbB.getItemCount(); i++) {
+        	System.out.println(categoryProductCbB.getItemAt(i).toString());
+        } 
+        categoryProductCbB.revalidate();
+        categoryProductCbB.repaint();
     }
 }

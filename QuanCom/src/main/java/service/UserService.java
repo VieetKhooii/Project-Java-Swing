@@ -29,13 +29,15 @@ public class UserService {
     public boolean addUser(String userName,
                            String email,
                            String password,
-                           int roleId){
+                           int roleId,
+                           int staffId){
         UserRepository userRepository = new UserRepository();
         return userRepository.addUser(
                 userName,
                 email,
                 password,
-                roleId) >= 1;
+                roleId,
+                staffId) >= 1;
     }
 
     public boolean deleteUser(int id){
@@ -48,7 +50,8 @@ public class UserService {
             String userName,
             String email,
             String password,
-            int roleId
+            int roleId,
+            int staffId
     ){
         UserRepository userRepository = new UserRepository();
         return  userRepository.modifyUser(
@@ -56,7 +59,8 @@ public class UserService {
                 userName,
                 email,
                 password,
-                roleId
+                roleId,
+                staffId
         ) >= 1;
     }
     

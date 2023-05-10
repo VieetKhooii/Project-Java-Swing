@@ -61,7 +61,7 @@ public class CategoryGUI extends JPanel implements ActionListener{
     }
     private void init() {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(1080, 700));
+        this.setPreferredSize(new Dimension(1080, 670));
 
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -75,13 +75,13 @@ public class CategoryGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         categoryListPanel = new JPanel(null);
-        categoryListPanel.setBackground(new Color(30, 144, 255));
+        categoryListPanel.setBackground(new Color(0,0,0,80));
         categoryListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(categoryListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã loại", "Tên loại", "Mô tả"}, 0);
-        categoryTable = new JTable(detailTableModel);
+        categoryTable = new MacOSStyleTable(detailTableModel);
         categoryTable.setFont(new Font("Arial", Font.PLAIN, 14));
         categoryTable.setDefaultRenderer(String.class, centerRenderer);
         categoryTable.setRowHeight(30);
@@ -105,8 +105,8 @@ public class CategoryGUI extends JPanel implements ActionListener{
         });
         detailTableModel.addRow(new Object[] {"12", "1", "24"});
 
-        categoryScrollPane = new JScrollPane(categoryTable);
-        categoryScrollPane.setBounds(5, 5, 1070, 350);
+        categoryScrollPane = new CustomScrollPane(categoryTable);
+        categoryScrollPane.setBounds(5, 5, 1070, 320);
         categoryListPanel.add(categoryScrollPane);
 
         categoryInfoPanel = new JPanel();
@@ -168,6 +168,12 @@ public class CategoryGUI extends JPanel implements ActionListener{
                     categoryService.addCate(chuanHoa(nameCategoryTxt.getText()),descriptionTxt.getText());
                     showCate();
                     JOptionPane.showMessageDialog(null, "Đã thêm phân loại!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    ProductGUI productGUI = new ProductGUI();                  
+                    productGUI.categoryReload();    
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(CategoryGUI.this);
+                    frame.revalidate();
+                    frame.repaint();
+                    
                 }
             }
         });
@@ -239,12 +245,14 @@ public class CategoryGUI extends JPanel implements ActionListener{
         categoryInfoPanel.add(delCategoryBtn);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("BẢNG PHÂN LOẠI");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);

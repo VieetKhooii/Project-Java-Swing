@@ -85,13 +85,13 @@ public class ReceivingGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         receivingListPanel = new JPanel(null);
-        receivingListPanel.setBackground(new Color(30, 144, 255));
+        receivingListPanel.setBackground(new Color(0, 0, 0, 80));
         receivingListPanel.setBounds(0, 50, 800, 650);
 
         contentField.add(receivingListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo", "Tổng tiền"}, 0);
-        receivingTable = new JTable(detailTableModel);
+        receivingTable = new MacOSStyleTable(detailTableModel);
         receivingTable.setFont(new Font("Arial", Font.PLAIN, 14));
         receivingTable.setDefaultRenderer(String.class, centerRenderer);
         receivingTable.setRowHeight(40);
@@ -129,7 +129,7 @@ public class ReceivingGUI extends JPanel implements ActionListener{
             }
         });
 
-        receivingScrollPane = new JScrollPane(receivingTable);
+        receivingScrollPane = new CustomScrollPane(receivingTable);
         receivingScrollPane.setBounds(5, 5, 790, 640);
         receivingListPanel.add(receivingScrollPane);
 
@@ -141,6 +141,7 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("DANH SÁCH PHIẾU NHẬP");
+        staffLabel.setForeground(new Color(0x007AFF));
         staffLabel.setBackground(new Color(255, 255, 255));
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
@@ -207,6 +208,8 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         searchPanel.add(lblNhp);
         
         searchButton = new JButton("OK");
+        searchButton.setForeground(new Color(255, 255, 255));
+        searchButton.setBackground(new Color(0x007AFF));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) { 
             	if(priceFrom.getText().equals("") && priceTo.getText().equals("")) {
@@ -259,12 +262,15 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         searchPanel.add(dateTo);
 
         btnField = new JPanel();
+        btnField.setBackground(new Color(255, 255, 255));
         btnField.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         btnField.setBounds(800, 427, 280, 270);
         contentField.add(btnField);
         btnField.setLayout(null);
 
         viewBtn = new JButton("Xem chi tiết");
+        viewBtn.setBackground(new Color(0x007AFF));
+        viewBtn.setForeground(Color.white);
         viewBtn.setEnabled(false);
         viewBtn.setBounds(80, 70, 120, 40);
         viewBtn.addActionListener(new ActionListener() {
@@ -279,6 +285,8 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         btnField.add(viewBtn);
 
         createBtn = new JButton("Tạo mới");
+        createBtn.setBackground(new Color(0x007AFF));
+        createBtn.setForeground(Color.white);
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -289,6 +297,7 @@ public class ReceivingGUI extends JPanel implements ActionListener{
                 GiaoDien.taoPhieu.resetComponent();
                 GiaoDien.taoPhieu.showTableReceiving();
                 GiaoDien.taoPhieu.showTempMaterial();
+                GiaoDien.taoPhieu.idStaffCreatePNTxt.setText(Login.idStaffLogin);
             }
         });
         btnField.add(createBtn);
@@ -298,6 +307,8 @@ public class ReceivingGUI extends JPanel implements ActionListener{
 //        btnField.add(updateBtn);
 
         delBtn = new JButton("Xóa");
+        delBtn.setBackground(new Color(0x007AFF));
+        delBtn.setForeground(Color.white);
         delBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -333,7 +344,7 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         }
         receivedNoteList = receivedNoteService.getAllReceiving();
         for (ReceivedNote note : receivedNoteList){
-            note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
+            //note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
             detailTableModel.addRow(new Object[] {
                     note.getId(), note.getStaffId(), note.getSupplierId(), note.getDate(), note.getTotalPrice()
             });
@@ -347,7 +358,7 @@ public class ReceivingGUI extends JPanel implements ActionListener{
         }
         List<ReceivedNote> searchResultList = receivedNoteService.getAllSearchResult(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrom, dateTo);
         for (ReceivedNote note : searchResultList){
-            note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
+            //note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
             detailTableModel.addRow(new Object[] {
                     note.getId(), note.getStaffId(), note.getSupplierId(), note.getDate(), note.getTotalPrice()
             });

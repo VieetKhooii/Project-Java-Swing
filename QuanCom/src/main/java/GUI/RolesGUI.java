@@ -90,13 +90,13 @@ public class RolesGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         accListPanel = new JPanel(null);
-        accListPanel.setBackground(new Color(30, 144, 255));
+        accListPanel.setBackground(new Color(0, 0,0, 80));
         accListPanel.setBounds(0, 380, 1080, 290);
 
         contentField.add(accListPanel);
         /////////////////////////////////////////////////////////////////
         detailTableModel = new DefaultTableModel(new Object[]{"Mã quyền", "Tên quyền", "Mô tả"}, 0);
-        staffTable = new JTable(detailTableModel);
+        staffTable = new MacOSStyleTable(detailTableModel);
         staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
         staffTable.setDefaultRenderer(String.class, centerRenderer);
         staffTable.setRowHeight(30);
@@ -143,7 +143,7 @@ public class RolesGUI extends JPanel implements ActionListener{
             }
         });
 
-        accScrollPane = new JScrollPane(staffTable);
+        accScrollPane = new CustomScrollPane(staffTable);
         accScrollPane.setBounds(5, 5, 1070, 280);
         accListPanel.add(accScrollPane);
         ///////////////////////////////////////////////////////////////////
@@ -378,12 +378,14 @@ public class RolesGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(lblNewLabel_2);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("PHÂN QUYỀN TRUY CẬP");
+        staffLabel.setForeground(SystemColor.text);
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);

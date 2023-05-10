@@ -60,7 +60,7 @@ public class RecipeGUI extends JPanel implements ActionListener{
     }
     private void init() {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(1080, 700));
+        this.setPreferredSize(new Dimension(1080, 670));
 
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -74,13 +74,13 @@ public class RecipeGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         staffListPanel = new JPanel(null);
-        staffListPanel.setBackground(new Color(30, 144, 255));
+        staffListPanel.setBackground(new Color(0,0,0,80));
         staffListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(staffListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Mã nguyên liệu", "Số lượng"}, 0);
-        recipeTable = new JTable(detailTableModel);
+        recipeTable = new MacOSStyleTable(detailTableModel);
         recipeTable.setFont(new Font("Arial", Font.PLAIN, 14));
         recipeTable.setDefaultRenderer(String.class, centerRenderer);
         recipeTable.setRowHeight(30);
@@ -110,8 +110,8 @@ public class RecipeGUI extends JPanel implements ActionListener{
         });
         detailTableModel.addRow(new Object[] {"12", "1", "24", 3000000});
 
-        recipeScrollPane = new JScrollPane(recipeTable);
-        recipeScrollPane.setBounds(5, 5, 1070, 350);
+        recipeScrollPane = new CustomScrollPane(recipeTable);
+        recipeScrollPane.setBounds(5, 5, 1070, 320);
         staffListPanel.add(recipeScrollPane);
 
         recipeInfoPanel = new JPanel();
@@ -249,12 +249,14 @@ public class RecipeGUI extends JPanel implements ActionListener{
         recipeInfoPanel.add(delRecipeBtn);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("BẢNG CÔNG THỨC");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);

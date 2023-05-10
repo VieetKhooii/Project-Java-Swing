@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.List;
 
 public class OrderService {
-    public List<Orders> displayOrders(){
+	public List<Orders> displayOrders(){
         OrderRepository orderRepository = new OrderRepository();
         return orderRepository.displayOrders();
     }
@@ -23,6 +23,10 @@ public class OrderService {
     public boolean delOrder(int orderId){
         OrderRepository orderRepository = new OrderRepository();
         return orderRepository.delOrder(orderId) >= 1;
+    }
+    public int billOfStaff(int staffId){
+        OrderRepository orderRepository = new OrderRepository();
+        return orderRepository.numberOfBillOfAStaff(staffId);
     }
     //Search list
     public List<Orders> getAllSearchResult(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo

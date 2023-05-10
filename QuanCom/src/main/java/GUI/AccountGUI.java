@@ -53,6 +53,7 @@ public class AccountGUI extends JPanel implements ActionListener{
     List<Roles> rolesList = roleService.getAllRoles();
     private JButton rmSearchBtn;
     private JButton searchButton;
+    private JTextField idStaffTxt;
     /**
      * Create the panel.
      */
@@ -75,17 +76,17 @@ public class AccountGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         accListPanel = new JPanel(null);
-        accListPanel.setBackground(new Color(30, 144, 255));
+        accListPanel.setBackground(new Color(0, 0,0, 80));
         accListPanel.setBounds(0, 350, 1080, 320);
 
         contentField.add(accListPanel);
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập","Mật khẩu", "Email", "Quyền"}, 0);
-        UserTable = new JTable(detailTableModel);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập","Mật khẩu", "Email", "Quyền", "Mã nhân viên"}, 0);
+        UserTable = new MacOSStyleTable(detailTableModel);
         UserTable.setFont(new Font("Arial", Font.PLAIN, 14));
         UserTable.setDefaultRenderer(String.class, centerRenderer);
         UserTable.setRowHeight(30);
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 6; i++) {
             if(i == 1 || i == 3) {
                 UserTable.getColumnModel().getColumn(i).setPreferredWidth(150);
                 UserTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -113,11 +114,12 @@ public class AccountGUI extends JPanel implements ActionListener{
                             break;
                         }
                     }
+                    idStaffTxt.setText(detailTableModel.getValueAt(row, 5).toString());
                 }
             }
         });
 
-        accScrollPane = new JScrollPane(UserTable);
+        accScrollPane = new CustomScrollPane(UserTable);
         accScrollPane.setBounds(5, 5, 1070, 310);
         accListPanel.add(accScrollPane);
 
@@ -169,7 +171,7 @@ public class AccountGUI extends JPanel implements ActionListener{
 
         addAccBtn = new JButton("Thêm");
         addAccBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {            	
                 if (!idAccTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn tài khoản đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -187,7 +189,7 @@ public class AccountGUI extends JPanel implements ActionListener{
                             break;
                         }
                     }
-                    userService.addUser(nameAccTxt.getText(), emailTxt.getText(), passTxt.getText(),roleId);
+                    userService.addUser(nameAccTxt.getText(), emailTxt.getText(), passTxt.getText(),roleId, Integer.parseInt(idStaffTxt.getText()));
                     showTableAcc();
                     JOptionPane.showMessageDialog(null, "Đã thêm tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -233,9 +235,9 @@ public class AccountGUI extends JPanel implements ActionListener{
                                 break;
                             }
                         }
-                    userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole);
+                    userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole, Integer.parseInt(idStaffTxt.getText()));
                     showTableAcc();
-                    JOptionPane.showMessageDialog(null, "Đã sửa quyền!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
@@ -286,14 +288,27 @@ public class AccountGUI extends JPanel implements ActionListener{
         emailTxt = new JTextField();
         emailTxt.setBounds(149, 110, 170, 30);
         UserInfoPanel.add(emailTxt);
+        
+        JLabel idStaffLb = new JLabel("Mã NV");
+        idStaffLb.setFont(new Font("Arial", Font.BOLD, 13));
+        idStaffLb.setBounds(339, 161, 70, 30);
+        UserInfoPanel.add(idStaffLb);
+        
+        idStaffTxt = new JTextField();
+        idStaffTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        idStaffTxt.setColumns(10);
+        idStaffTxt.setBounds(409, 161, 170, 30);
+        UserInfoPanel.add(idStaffTxt);
 
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel UserLabel = new JLabel("TÀI KHOẢN");
+        UserLabel.setForeground(SystemColor.text);
         UserLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(UserLabel);
         UserLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -376,7 +391,7 @@ public class AccountGUI extends JPanel implements ActionListener{
                 }
             }
             detailTableModel.addRow(new Object[] {
-                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName
+                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName, user.getStaffId()
             });
         }
     }
@@ -395,7 +410,7 @@ public class AccountGUI extends JPanel implements ActionListener{
                 }
             }
             detailTableModel.addRow(new Object[] {
-                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName
+                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName, user.getStaffId()
             });
         }
     }

@@ -24,6 +24,7 @@ public class StaffRepository {
                 staff.setGender(resultSet.getString("gender"));
                 staff.setBirthDate(resultSet.getDate("date_of_birth"));
                 staff.setPhone(resultSet.getString("phonenumber"));
+                staff.setImage(resultSet.getString("image"));
                 list.add(staff);
             }
         } catch (SQLException e) {
@@ -32,11 +33,11 @@ public class StaffRepository {
         return list;
     }
 
-    public int addStaff(String name, String address, String phone, Date birthDate, String gender){
+    public int addStaff(String name, String address, String phone, Date birthDate, String gender, String image){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "INSERT INTO staffs(name, address, phonenumber, date_of_birth, gender) " +
-                "values (?,?,?,?,?)";
+        String query = "INSERT INTO staffs(name, address, phonenumber, date_of_birth, gender, image) " +
+                "values (?,?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,name);
@@ -44,6 +45,7 @@ public class StaffRepository {
             preparedStatement.setString(3,phone);
             preparedStatement.setDate(4,birthDate);
             preparedStatement.setString(5,gender);
+            preparedStatement.setString(6,image);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while adding staff "+e.getMessage());
@@ -51,10 +53,10 @@ public class StaffRepository {
         return isSuccess;
     }
 
-    public int modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender){
+    public int modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender, String image){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "update staffs set name = ?, address = ?, phonenumber = ?, date_of_birth = ?, gender = ?" +
+        String query = "update staffs set name = ?, address = ?, phonenumber = ?, date_of_birth = ?, gender = ?, image = ?" +
                 " where staff_id = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -63,7 +65,8 @@ public class StaffRepository {
             preparedStatement.setString(3,phone);
             preparedStatement.setDate(4,birthDate);
             preparedStatement.setString(5,gender);
-            preparedStatement.setInt(6,id);
+            preparedStatement.setString(6,image);
+            preparedStatement.setInt(7,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while modifying staff "+e.getMessage());
@@ -115,13 +118,14 @@ public class StaffRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                Staff staff = new Staff();
+            	Staff staff = new Staff();
                 staff.setId(resultSet.getInt("staff_id"));
                 staff.setName(resultSet.getString("name"));
                 staff.setAddress(resultSet.getString("address"));
                 staff.setGender(resultSet.getString("gender"));
                 staff.setBirthDate(resultSet.getDate("date_of_birth"));
                 staff.setPhone(resultSet.getString("phonenumber"));
+                staff.setImage(resultSet.getString("image"));
                 searchList.add(staff);
             }
         } catch (SQLException e) {

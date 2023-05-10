@@ -27,6 +27,7 @@ public class ProductRepository {
                 product.setUnit(resultSet.getString("donvitinh"));
                 product.setPrice(resultSet.getInt("gia"));
                 product.setCategoryId(resultSet.getInt("category_id"));
+                product.setImage(resultSet.getString("image"));
                 list.add(product);
             }
         } catch (SQLException e) {
@@ -35,11 +36,11 @@ public class ProductRepository {
         return list;
     }
 
-    public int addProduct(String name, int amount, String unit, int price, int cateId){
+    public int addProduct(String name, int amount, String unit, int price, int cateId, String image){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "INSERT INTO products(product_name, soluong, donvitinh, gia, category_id)" +
-                " values (?,?,?,?,?)";
+        String query = "INSERT INTO products(product_name, soluong, donvitinh, gia, category_id, image)" +
+                " values (?,?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,name);
@@ -47,6 +48,7 @@ public class ProductRepository {
             preparedStatement.setString(3,unit);
             preparedStatement.setInt(4,price);
             preparedStatement.setInt(5,cateId);
+            preparedStatement.setString(6,image);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("ProductRepository: Error while add product "+e.getMessage());
@@ -74,11 +76,12 @@ public class ProductRepository {
             String unit,
             int price,
             int cateId,
-            int productId){
+            int productId,
+            String image){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update products set product_name = ?, soluong = ?" +
-                ", donvitinh = ?, gia = ?, category_id = ? where product_id = ?";
+                ", donvitinh = ?, gia = ?, category_id = ?, image = ? where product_id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1,name);
@@ -86,7 +89,8 @@ public class ProductRepository {
             statement.setString(3,unit);
             statement.setInt(4,price);
             statement.setInt(5,cateId);
-            statement.setInt(6,productId);
+            statement.setString(6,image);
+            statement.setInt(7,productId);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("ProductRepository: Error modify product "+e.getMessage());
@@ -147,6 +151,7 @@ public class ProductRepository {
                 product.setUnit(resultSet.getString("donvitinh"));
                 product.setPrice(resultSet.getInt("gia"));
                 product.setCategoryId(resultSet.getInt("category_id"));
+                product.setImage(resultSet.getString("image"));
                 searchList.add(product);
             }
         } catch (SQLException e) {

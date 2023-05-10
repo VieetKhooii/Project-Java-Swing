@@ -190,6 +190,5 @@ public class GiaoDien extends JFrame {
 
     }
 
-
     
 }

@@ -80,13 +80,13 @@ public class MaterialGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         materialListPanel = new JPanel(null);
-        materialListPanel.setBackground(new Color(30, 144, 255));
+        materialListPanel.setBackground(new Color(0, 0, 0, 80));
         materialListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(materialListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã nguyên liệu", "Tên nguyên liệu", "Đơn vị", "Số lượng", "Giá"}, 0);
-        materialTable = new JTable(detailTableModel);
+        materialTable = new MacOSStyleTable(detailTableModel);
         materialTable.setFont(new Font("Arial", Font.PLAIN, 14));
         materialTable.setDefaultRenderer(String.class, centerRenderer);
         materialTable.setRowHeight(30);
@@ -121,7 +121,7 @@ public class MaterialGUI extends JPanel implements ActionListener{
             }
         });
 
-        materialScrollPane = new JScrollPane(materialTable);
+        materialScrollPane = new CustomScrollPane(materialTable);
         materialScrollPane.setBounds(5, 5, 1070, 350);
         materialListPanel.add(materialScrollPane);
 
@@ -294,10 +294,12 @@ public class MaterialGUI extends JPanel implements ActionListener{
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
+        bigNamePanel.setBackground(new Color(0x007AFF));
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("NGUYÊN LIỆU");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);

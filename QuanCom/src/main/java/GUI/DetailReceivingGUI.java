@@ -13,6 +13,7 @@ import enumm.UnitMaterial;
 import model.Material;
 import model.ReceivedNote;
 import model.ReceivedNoteDetail;
+import model.User;
 import service.DetailReceiveService;
 import service.MaterialService;
 import service.ReceivedNoteService;
@@ -102,8 +103,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
 
         contentField.add(deltailOrderPanel, "hello2");
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã nguyên liệu", "Tên nguyên liệu", "Số lượng nhập", "Đơn vị", "Giá"}, 0);
-        ctPNTable = new JTable(detailTableModel);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã ng.liệu", "Tên nguyên liệu", "Số lượng nhập", "Đơn vị", "Giá"}, 0);
+        ctPNTable = new MacOSStyleTable(detailTableModel);
         ctPNTable.setFont(new Font("Arial", Font.PLAIN, 14));
 
         ListSelectionModel listSelectionModel = ctPNTable.getSelectionModel();
@@ -132,7 +133,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         ctPNTable.setRowHeight(30);
         for(int i = 0; i < 5; i++) {
             if(i == 1) {
-                ctPNTable.getColumnModel().getColumn(i).setPreferredWidth(300);
+                ctPNTable.getColumnModel().getColumn(i).setPreferredWidth(250);
                 ctPNTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
             else {
@@ -142,7 +143,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         }
 
 
-        ctpnScrollPane = new JScrollPane(ctPNTable);
+        ctpnScrollPane = new CustomScrollPane(ctPNTable);
         ctpnScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         ctpnScrollPane.setBounds(0, 0, 750, 460);
         deltailOrderPanel.add(ctpnScrollPane);
@@ -183,14 +184,14 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         soLuongNhapTxt = new JTextField();
         soLuongNhapTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         soLuongNhapTxt.setColumns(10);
-        soLuongNhapTxt.setBounds(119, 224, 119, 30);
+        soLuongNhapTxt.setBounds(119, 224, 90, 30);
         infoDetailOrderPanel.add(soLuongNhapTxt);
 
         UnitMaterial unitMaterial = new UnitMaterial();
         unitMaterialCbB = new JComboBox<String>();
         unitMaterialCbB.setModel(new DefaultComboBoxModel<String>(unitMaterial.unitArray));
         unitMaterialCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        unitMaterialCbB.setBounds(250, 224, 70, 30);
+        unitMaterialCbB.setBounds(230, 224, 90, 30);
         infoDetailOrderPanel.add(unitMaterialCbB);
 
         JLabel priceCTPNLabel = new JLabel("Đơn giá");
@@ -211,6 +212,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         infoDetailOrderPanel.add(thongtinHDLabel_1);
 
         addReceivingBtn = new JButton("Thêm");
+        addReceivingBtn.setBackground(new Color(0x007AFF));
+        addReceivingBtn.setForeground(Color.white);
         addReceivingBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 //                if (!idMaterialTxt.getText().equals("")){
@@ -244,6 +247,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         infoDetailOrderPanel.add(addReceivingBtn);
 
         clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.setBackground(new Color(0x007AFF));
+        clearInfoBtn.setForeground(Color.white);
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 delReceivingBtn.setEnabled(false);
@@ -269,7 +274,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
 //        infoDetailOrderPanel.add(updateReceivingBtn);
 
         delReceivingBtn = new JButton("Xóa");
-        //delReceivingBtn.setEnabled(false);
+        delReceivingBtn.setBackground(new Color(0x007AFF));
+        delReceivingBtn.setForeground(Color.white);
         delReceivingBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -355,6 +361,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         contentField.add(idStaffCreateOrderLabel);
 
         idStaffCreatePNTxt = new JTextField();
+        idStaffCreatePNTxt.setEditable(false);
         idStaffCreatePNTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idStaffCreatePNTxt.setColumns(10);
         idStaffCreatePNTxt.setBounds(530, 574, 180, 30);
@@ -375,12 +382,15 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
 
         //Nút chuyển tiến trình
         btnField = new JPanel();
+        btnField.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         btnField.setPreferredSize(new Dimension(1080, 70));
         btnField.setLayout(null);
         this.add(btnField, BorderLayout.SOUTH);
 
         
         preBtn = new JButton("Quay lại");
+        preBtn.setBackground(new Color(0x007AFF));
+        preBtn.setForeground(Color.white);
         preBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -411,6 +421,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         btnField.add(preBtn);
 
         nextBtn = new JButton("Tiếp");
+        nextBtn.setBackground(new Color(0x007AFF));
+        nextBtn.setForeground(Color.white);
         nextBtn.setFont(new Font("Arial", Font.BOLD, 17));
         nextBtn.setBounds(910, 10, 100, 50);
         nextBtn.addActionListener(this);

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OrderRepository {
     public List<Orders> displayOrders(){
-        List<Orders> list = new ArrayList<>();
+    	List<Orders> list = new ArrayList<>();
         Connection connection = MySqlConfig.getConnection();
         String query = "select * from orders o";
         try {
@@ -73,6 +73,21 @@ public class OrderRepository {
             System.out.println("OrderRepository: Error while deleting order");
         }
         return  isSuccess;
+    }
+
+    public int numberOfBillOfAStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "select count(*) as count from orders where staff_id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            isSuccess = resultSet.getInt("count");
+        } catch (SQLException e) {
+            System.out.println("OrderRepository: Error while deleting order");
+        }
+        return isSuccess;
     }
     // search list
     public List<Orders> searchByOption(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo

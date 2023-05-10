@@ -76,13 +76,13 @@ public class OrdersGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         ordersListPanel = new JPanel(null);
-        ordersListPanel.setBackground(new Color(30, 144, 255));
+        ordersListPanel.setBackground(new Color(0, 0, 0, 80));
         ordersListPanel.setBounds(0, 50, 800, 650);
 
         contentField.add(ordersListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã hóa đơn", "Mã nhân viên", "Ngày tạo", "Tổng tiền"}, 0);
-        ordersTable = new JTable(detailTableModel);
+        ordersTable = new MacOSStyleTable(detailTableModel);
         ordersTable.setFont(new Font("Arial", Font.PLAIN, 14));
         ordersTable.setDefaultRenderer(String.class, centerRenderer);
         ordersTable.setRowHeight(30);
@@ -119,17 +119,18 @@ public class OrdersGUI extends JPanel implements ActionListener{
             }
         });
 
-        ordersScrollPane = new JScrollPane(ordersTable);
+        ordersScrollPane = new CustomScrollPane(ordersTable);
         ordersScrollPane.setBounds(5, 5, 790, 640);
         ordersListPanel.add(ordersScrollPane);
 
-        JPanel bigNamePanel = new JPanel();
+        JPanel bigNamePanel = new JPanel();        
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("DANH SÁCH HÓA ĐƠN");
+        staffLabel.setForeground(new Color(0x007AFF));
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -207,6 +208,8 @@ public class OrdersGUI extends JPanel implements ActionListener{
         searchPanel.add(sortCbB);
         
         JButton searchButton = new JButton("OK");
+        searchButton.setForeground(new Color(255, 255, 255));
+        searchButton.setBackground(new Color(0x007AFF));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) { 
             	if(priceFrom.getText().equals("") && priceTo.getText().equals("")) {
@@ -252,6 +255,8 @@ public class OrdersGUI extends JPanel implements ActionListener{
         btnField.setLayout(null);
 
         viewBtn = new JButton("Xem chi tiết");
+        viewBtn.setBackground(new Color(0x007AFF));
+        viewBtn.setForeground(Color.white);
         viewBtn.setEnabled(false);
         viewBtn.setBounds(80, 70, 120, 40);
         viewBtn.addActionListener(new ActionListener() {
@@ -265,6 +270,8 @@ public class OrdersGUI extends JPanel implements ActionListener{
         btnField.add(viewBtn);
 
         createBtn = new JButton("Tạo mới");
+        createBtn.setBackground(new Color(0x007AFF));
+        createBtn.setForeground(Color.white);
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -273,6 +280,7 @@ public class OrdersGUI extends JPanel implements ActionListener{
                 GiaoDien.taoDon.setVisible(true);
                 GiaoDien.taoDon.resetComponent();
                 GiaoDien.taoDon.showCart();
+                GiaoDien.taoDon.idStaffCreateOrderTxt.setText(Login.idStaffLogin);
             }
         });
         btnField.add(createBtn);
@@ -282,6 +290,8 @@ public class OrdersGUI extends JPanel implements ActionListener{
 //        btnField.add(updateBtn);
 
         delBtn = new JButton("Xóa");
+        delBtn.setBackground(new Color(0x007AFF));
+        delBtn.setForeground(Color.white);
         delBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);

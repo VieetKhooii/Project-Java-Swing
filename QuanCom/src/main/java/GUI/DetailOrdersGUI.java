@@ -110,7 +110,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         switchPanel.add(deltailOrderPanel, "hello2");
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng mua", " Giá"}, 0);
-        detailOrdersTable = new JTable(detailTableModel);
+        detailOrdersTable = new MacOSStyleTable(detailTableModel);
         detailOrdersTable.setFont(new Font("Arial", Font.PLAIN, 14));
         detailOrdersTable.setDefaultRenderer(String.class, centerRenderer);
         detailOrdersTable.setRowHeight(30);
@@ -140,12 +140,14 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                 delBtn.setEnabled(true);
             }
         });
-        detailOrderScrollPane = new JScrollPane(detailOrdersTable);
+        detailOrderScrollPane = new CustomScrollPane(detailOrdersTable);
         detailOrderScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         detailOrderScrollPane.setBounds(0, 0, 800, 460);
         deltailOrderPanel.add(detailOrderScrollPane);
 
         turnToSelectedItemTableBtn = new JButton(">>");
+        turnToSelectedItemTableBtn.setBackground(new Color(0x007AFF));
+        turnToSelectedItemTableBtn.setForeground(Color.white);
         turnToSelectedItemTableBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         turnToSelectedItemTableBtn.setForeground(new Color(0, 0, 0));
         turnToSelectedItemTableBtn.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -212,54 +214,81 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         infoDetailOrderPanel.add(priceDetailOrderTxt);
 
         updateBtn = new JButton("Cập nhật");
+        updateBtn.setBackground(new Color(0x007AFF));
+        updateBtn.setForeground(Color.white);
         updateBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                boolean flag=true;
-                int price=0;
+                boolean check = true;
                 for (Product product : cart){
                     if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
-                        List<Product> products = productService.getAllProduct();
-                        for (Product product1 : products){
-                            if (product1.getId() == product.getId()){
-                                if (product1.getAmount() < Integer.parseInt(soLuongMuaTxt.getText())){
-                                    JOptionPane.showMessageDialog(null, "Số lượng món ăn có thể làm không đủ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                                    flag=false;
+                        // nếu mua thêm sản phẩm
+                        if (Integer.parseInt(soLuongMuaTxt.getText()) > product.getAmount()){
+                            int amount = Integer.parseInt(soLuongMuaTxt.getText()) - product.getAmount();
+                            for (int i=0; i<productList.size(); i++){
+                                if (product.getId() == productList.get(i).getId()){
+                                    // nếu số lượng mua thêm nhiều hơn số lượng tồn
+                                    if (amount > productList.get(i).getAmount()){
+                                        soLuongMuaTxt.setText(String.valueOf(product.getAmount()));
+                                        JOptionPane.showMessageDialog(null, "Số lượng không đủ!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                        check = false;
+                                    }
+                                    // nếu số lượng hợp lí
+                                    else {
+                                        FoodCalculation.calculateSameRecipeFood(amount,
+                                                productList.get(i).getId(),productList,recipeList,materialList,productService);
+                                    }
                                     break;
                                 }
-                                price = product1.getPrice();
                             }
                         }
-                        if (flag){
-                            product.setAmount(Integer.parseInt(soLuongMuaTxt.getText()));
-                            if (product.getAmount()==0){
-                                cart.remove(product);
-                            }
-                            else {
-                                product.setPrice(product.getAmount() * price);
-                            }
-                            showCart();
-                            productList = productService.getAllProduct();
-//                            FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,false);
-                            GiaoDien.taoDon.showTableProduct();
+                        // nếu số lượng sau cập nhật nhỏ hơn hay bằng 0
+                        else if(Integer.parseInt(soLuongMuaTxt.getText()) <= 0){
+                            soLuongMuaTxt.setText(String.valueOf(product.getAmount()));
+                            JOptionPane.showMessageDialog(null, "Số lượng phải nhiều hơn 0!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            check = false;
+
+                        }
+                        // nếu giảm sản phẩm trong giỏ
+                        else {
+                            int amount = product.getAmount() - Integer.parseInt(soLuongMuaTxt.getText());
+                            // nếu số lượng sau khi sửa phù hợp
                             for (int i=0; i<productList.size(); i++){
-                                if (productList.get(i).getId() == Integer.parseInt(idDetailOrderTxt.getText())) {
-                                    FoodCalculation.calculateSameRecipeFood(Integer.parseInt(soLuongMuaTxt.getText()),
-                                            productList.get(i).getId(), productList, recipeList, materialList, productService);
+                                if (product.getId() == productList.get(i).getId()){
+                                    FoodCalculation.returnMaterial(amount,productList.get(i).getId(),
+                                            materialList,productList,recipeList,productService);
                                     break;
                                 }
                             }
-                            for (int i=0; i<productList.size(); i++){
-                                if (productList.get(i).getId() == Integer.parseInt(idDetailOrderTxt.getText())){
-                                    model.setValueAt(soLuongMuaTxt.getText(),i,4);
-                                }
-                                model.setValueAt(productList.get(i).getAmount(),i,2);
-                            }
-//                            GiaoDien.taoDon.showTableProduct();
-                            JOptionPane.showMessageDialog(null, "Đã cập nhật số lượng!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                            products.clear();
                         }
                         break;
                     }
+                }
+                if (check){
+                    for (Product product : productList){
+                        for (int i=0; i<productList.size(); i++){
+                            if (Integer.parseInt(model.getValueAt(i,0).toString()) == product.getId()){
+                                model.setValueAt(product.getAmount(),i,2);
+                            }
+                            // cập nhật cột số lượng mua của sản phẩm
+                            if (Integer.parseInt(idDetailOrderTxt.getText()) == Integer.parseInt(model.getValueAt(i,0).toString())){
+                                model.setValueAt(Integer.parseInt(soLuongMuaTxt.getText()),i,4);
+                            }
+                        }
+                    }
+                    // Hiển thị số lượng và tổng tiền sau khi cập nhật trong giỏ hàng
+                    for (Product product : cart){
+                        if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
+                            product.setAmount(Integer.parseInt(soLuongMuaTxt.getText()));
+                            for (int i=0; i<productList.size(); i++){
+                                if (product.getId() == productList.get(i).getId()){
+                                    product.setPrice(product.getAmount() * productList.get(i).getPrice());
+                                }
+                            }
+                        }
+                    }
+                    showCart();
+                    JOptionPane.showMessageDialog(null, "Đã cập nhật!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    updateBtn.setEnabled(false);
                 }
             }
         });
@@ -270,22 +299,49 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         infoDetailOrderPanel.add(updateBtn);
 
         delBtn = new JButton("Xóa");
+        delBtn.setBackground(new Color(0x007AFF));
+        delBtn.setForeground(Color.white);
         delBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                for (Product product : cart){
+                // Cập nhật lại số lượng nguyên liệu sau khi xóa món hàng
+                for (Product product : productList){
                     if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
-                        for (int i=0; i<model.getRowCount(); i++){
-                            if (Integer.parseInt(model.getValueAt(i,0).toString()) == product.getId()){
-                                model.setValueAt(0,i,4);
-                            }
-                        }
-                        cart.remove(product);
-                        GiaoDien.taoDon.showTableProduct();
+                        FoodCalculation.returnMaterial(Integer.parseInt(soLuongMuaTxt.getText()),
+                                product.getId(),materialList,productList,recipeList,productService);
                         break;
                     }
                 }
+                // Cập nhật lại số lượng món ăn có thể bán
+                FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,
+                        false);
+
+                for (Product product : productList){
+                    for (int i=0; i<model.getRowCount(); i++){
+                        // hiển thị số lượng món ăn có thể bán sau khi cập nhật
+                        if (Integer.parseInt(model.getValueAt(i,0).toString())==product.getId()){
+                            model.setValueAt(product.getAmount(),i,2);
+                        }
+                        // hiển thị số lượng mua của món đã xóa thành 0
+                        if (Integer.parseInt(model.getValueAt(i,0).toString()) == Integer.parseInt(idDetailOrderTxt.getText())){
+                            model.setValueAt(0,i,4);
+                        }
+                    }
+                }
+                // Hiển thị món hàng đã xóa trong giỏ và cập nhật giá tiền tổng lại
+                for (Product product : cart){
+                    if (product.getId() == Integer.parseInt(idDetailOrderTxt.getText())){
+                        totalPriceOrderTxt.setText(String.valueOf(Integer.parseInt(totalPriceOrderTxt.getText())-Integer.parseInt(priceDetailOrderTxt.getText())));
+                        cart.remove(product);
+                        break;
+                    }
+                }
+                idDetailOrderTxt.setText("");
+                nameDetailOrderTxt.setText("");
+                priceDetailOrderTxt.setText("");
+                soLuongMuaTxt.setText("");
                 showCart();
                 JOptionPane.showMessageDialog(null, "Đã xóa!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                delBtn.setEnabled(false);
             }
         });
         delBtn.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -305,9 +361,8 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         selectItemPanel = new JPanel(new BorderLayout());
         switchPanel.add(selectItemPanel, "hello1");
 
-        model = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Số lượng còn lại", "Giá", "Số lượng mua"}, 0);
-
-        ordersSelectedTable = new JTable(model);
+        model = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "SL còn lại", "Giá", "SL mua"}, 0);
+        ordersSelectedTable = new MacOSStyleTable(model);
         ordersSelectedTable.setFont(new Font("Arial", Font.PLAIN, 14));
 
         ListSelectionModel listSelectionModel = ordersSelectedTable.getSelectionModel();
@@ -356,13 +411,15 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 
 
 
-        itemSelectedScrollPane = new JScrollPane(ordersSelectedTable);
+        itemSelectedScrollPane = new CustomScrollPane(ordersSelectedTable);
         itemSelectedScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
         itemSelectedScrollPane.setPreferredSize(new Dimension(800, 460));
         selectItemPanel.add(itemSelectedScrollPane, BorderLayout.WEST);
 
         backToDetailOrderTableBtn = new JButton("<<");
+        backToDetailOrderTableBtn.setBackground(new Color(0x007AFF));
+        backToDetailOrderTableBtn.setForeground(Color.white);
         itemSelectedScrollPane.setRowHeaderView(backToDetailOrderTableBtn);
         backToDetailOrderTableBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         backToDetailOrderTableBtn.setForeground(new Color(0, 0, 0));
@@ -440,6 +497,8 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         priceItemSelectedTxt.setColumns(10);
 
         selectProductBtn = new JButton("Chọn");
+        selectProductBtn.setBackground(new Color(0x007AFF));
+        selectProductBtn.setForeground(Color.white);
         selectProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         selectProductBtn.setBounds(95, 380, 90, 35);
         selectProductBtn.addActionListener(this);
@@ -503,6 +562,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         contentField.add(idStaffCreateOrderLabel);
 
         idStaffCreateOrderTxt = new JTextField();
+        idStaffCreateOrderTxt.setEditable(false);
         idStaffCreateOrderTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idStaffCreateOrderTxt.setColumns(10);
         idStaffCreateOrderTxt.setBounds(530, 573, 180, 30);
@@ -523,11 +583,15 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
 
         //Nút chuyển tiến trình
         btnField = new JPanel();
+        btnField.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         btnField.setPreferredSize(new Dimension(1080, 70));
         btnField.setLayout(null);
         this.add(btnField, BorderLayout.SOUTH);
 
         preBtn = new JButton("Quay lại");
+        
+        preBtn.setBackground(new Color(0x007AFF));
+        preBtn.setForeground(Color.white);
         preBtn.setFont(new Font("Arial", Font.BOLD, 17));
         preBtn.setBounds(70, 10, 100, 50);
         preBtn.addActionListener(new ActionListener() {
@@ -540,8 +604,8 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                         decide = JOptionPane.showConfirmDialog(null, "Một số dữ liệu vẫn chưa được lưu, bạn có muốn quay trở lại?", "Thông báo", JOptionPane.YES_NO_OPTION);
                     }
                     if(decide==0) {
-                        //JButton viewBtn = OrdersGUI.viewBtn;
-                        //viewBtn.setEnabled(false);
+                        JButton viewBtn = OrdersGUI.viewBtn;
+                        viewBtn.setEnabled(false);
                         GiaoDien.hoaDon.setVisible(true);
                         GiaoDien.taoDon.setVisible(false);
                         for (int i=0; i<productList.size(); i++){
@@ -570,6 +634,8 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
         btnField.add(preBtn);
 
         nextBtn = new JButton("Tiếp");
+        nextBtn.setBackground(new Color(0x007AFF));
+        nextBtn.setForeground(Color.white);
         nextBtn.setFont(new Font("Arial", Font.BOLD, 17));
         nextBtn.setBounds(910, 10, 100, 50);
         nextBtn.addMouseListener(this);
@@ -683,27 +749,28 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                         sqlDate);
                 if (check){
                     ordersList = orderService.displayOrders();
+                    productList = productService.getAllProduct();
                     int id = ordersList.get(ordersList.size()-1).getId();
+                    FoodCalculation.materialConsumption(id,cart,productList,recipeList,materialList,detailOrderService,materialService);
+                    materialList = materialService.getAllMaterial();
+                    showTableProduct();
+                    int i=0;
                     for (Product product : cart){
                         detailOrderService.addDetailOrder(
-                        		id,
+                                Integer.parseInt(model.getValueAt(i,0).toString()),
                                 product.getId(),
                                 product.getName(),
                                 product.getAmount(),
                                 product.getPrice());
+                        i++;
                     }
-                    productList = productService.getAllProduct();
-                    materialList = materialService.getAllMaterial();
-                    FoodCalculation.materialConsumption(id,cart,productList,recipeList,materialList,detailOrderService,materialService);
-                    GiaoDien.material.showTableMaterial();
-                    showTableProduct();
-                   
                     cart.clear();
                     JOptionPane.showMessageDialog(null, "Tạo đơn thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    ProductAndRecipeGUI.product.showTableProduct();
-                    GiaoDien.hoaDon.showBill();
+                    detailOrderList = detailOrderService.getAllDetailOrder();
+                    GiaoDien.material.showTableMaterial();
                     GiaoDien.hoaDon.setVisible(true);
                     GiaoDien.taoDon.setVisible(false);
+                    GiaoDien.hoaDon.showBill();
                     showCart();
                 }
                 else {
@@ -726,9 +793,6 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập số lượng", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 else if (Integer.parseInt(input) > (Integer) model.getValueAt(modelRow, 2)
-                        ||
-                        Integer.parseInt(model.getValueAt(modelRow, 4).toString())+ Integer.parseInt(input) >
-                                (Integer) model.getValueAt(modelRow, 2)
                         || productList.get(modelRow).getAmount() < Integer.parseInt(input)){
                     flag = false;
                     JOptionPane.showMessageDialog(null, "Số lượng không đủ!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -752,12 +816,15 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                 product.setAmount(Integer.parseInt(input));
                 cart.add(product);
             }
-            FoodCalculation.calculateSameRecipeFood(Integer.parseInt(input),
-                    productList.get(modelRow).getId(),productList,recipeList,materialList,productService);
             for (int i=0; i<productList.size(); i++){
                 if (i==modelRow){
                     model.setValueAt(Integer.parseInt(model.getValueAt(modelRow, 4).toString())+ Integer.parseInt(input),modelRow,4);
+                    break;
                 }
+            }
+            FoodCalculation.calculateSameRecipeFood(Integer.parseInt(input),
+                    productList.get(modelRow).getId(),productList,recipeList,materialList,productService);
+            for (int i=0; i<productList.size(); i++){
                 model.setValueAt(productList.get(i).getAmount(),i,2);
             }
             showCart();

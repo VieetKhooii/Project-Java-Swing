@@ -1,12 +1,9 @@
 package GUI;
 
-import model.Staff;
 import model.Supplier;
 import service.SupplierService;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -15,13 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
 
 public class SupplierGUI extends JPanel implements ActionListener{
 
@@ -82,7 +74,7 @@ public class SupplierGUI extends JPanel implements ActionListener{
         contentField.add(staffListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã nhà cung cấp", "Tên nhà cung cấp", "Địa chỉ", "Số điện thoại"}, 0);
-        supplierTable = new JTable(detailTableModel);
+        supplierTable = new MacOSStyleTable(detailTableModel);
         supplierTable.setFont(new Font("Arial", Font.PLAIN, 14));
         supplierTable.setDefaultRenderer(String.class, centerRenderer);
         supplierTable.setRowHeight(30);
@@ -113,26 +105,25 @@ public class SupplierGUI extends JPanel implements ActionListener{
         });        
 
         
-        supplierScrollPane = new JScrollPane(supplierTable);
+        supplierScrollPane = new CustomScrollPane(supplierTable);
         supplierScrollPane.setBounds(5, 5, 1070, 350);
         staffListPanel.add(supplierScrollPane);
 
         staffInfoPanel = new JPanel();
-        staffInfoPanel.setBackground(defaultColor);
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         staffInfoPanel.setBounds(0, 50, 600, 290);
         contentField.add(staffInfoPanel);
         staffInfoPanel.setLayout(null);
 
         lblNewLabel = new JLabel("Thông tin nhà cung cấp");
-        lblNewLabel.setForeground(new Color(255, 255, 255));
+        lblNewLabel.setForeground(SystemColor.desktop);
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setBounds(200, 0, 200, 40);
         staffInfoPanel.add(lblNewLabel);
 
         JLabel idSupplierLabel = new JLabel("Mã NCC");
-        idSupplierLabel.setForeground(new Color(255, 255, 255));
+        idSupplierLabel.setForeground(SystemColor.desktop);
         idSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         idSupplierLabel.setBounds(60, 50, 70, 30);
         staffInfoPanel.add(idSupplierLabel);
@@ -153,13 +144,13 @@ public class SupplierGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(nameSupplierTxt);
 
         JLabel nameSupplierLabel = new JLabel("Tên NCC");
-        nameSupplierLabel.setForeground(new Color(255, 255, 255));
+        nameSupplierLabel.setForeground(SystemColor.desktop);
         nameSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         nameSupplierLabel.setBounds(60, 110, 70, 30);
         staffInfoPanel.add(nameSupplierLabel);
 
         JLabel addressSupplierLabel = new JLabel("Địa chỉ");
-        addressSupplierLabel.setForeground(new Color(255, 255, 255));
+        addressSupplierLabel.setForeground(SystemColor.desktop);
         addressSupplierLabel.setFont(new Font("Arial", Font.BOLD, 13));
         addressSupplierLabel.setBounds(60, 170, 70, 30);
         staffInfoPanel.add(addressSupplierLabel);
@@ -172,7 +163,7 @@ public class SupplierGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(addressSupplierTxt);
 
         JLabel phoneNumbLabel = new JLabel("SĐT");
-        phoneNumbLabel.setForeground(new Color(255, 255, 255));
+        phoneNumbLabel.setForeground(SystemColor.desktop);
         phoneNumbLabel.setFont(new Font("Arial", Font.BOLD, 13));
         phoneNumbLabel.setBounds(60, 230, 70, 30);
         staffInfoPanel.add(phoneNumbLabel);
@@ -185,7 +176,6 @@ public class SupplierGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(phoneNumbTxt);
 
         addSupplierBtn = new JButton("Thêm");
-        addSupplierBtn.setBorder(null);
         addSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!idSupplierTxt.getText().equals("")){
@@ -204,13 +194,12 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        addSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
+        addSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         addSupplierBtn.setBounds(400, 50, 90, 35);
         staffInfoPanel.add(addSupplierBtn);
 
         //Clear Information
         clearInfoBtn = new JButton("Clear");
-        clearInfoBtn.setBorder(null);
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 supplierTable.clearSelection();
@@ -220,12 +209,11 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 addressSupplierTxt.setText(null);
             }
         });
-        clearInfoBtn.setFont(new Font("Arial", Font.BOLD, 13));
+        clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         clearInfoBtn.setBounds(400, 232, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
         fixSupplierBtn = new JButton("Cập nhật");
-        fixSupplierBtn.setBorder(null);
         fixSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idSupplierTxt.getText().equals("")){
@@ -245,12 +233,11 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        fixSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
+        fixSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         fixSupplierBtn.setBounds(400, 112, 90, 35);
         staffInfoPanel.add(fixSupplierBtn);
 
         delSupplierBtn = new JButton("Xóa");
-        delSupplierBtn.setBorder(null);
         delSupplierBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (idSupplierTxt.getText().equals("")){
@@ -268,19 +255,19 @@ public class SupplierGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        delSupplierBtn.setFont(new Font("Arial", Font.BOLD, 13));
+        delSupplierBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         delSupplierBtn.setBounds(400, 172, 90, 35);
         staffInfoPanel.add(delSupplierBtn);
 
-        JPanel bigNamePanel = new JPanel();
-        bigNamePanel.setBackground(defaultColor);
+        JPanel bigNamePanel = new JPanel();   
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("NHÀ CUNG CẤP");
-        supplierLabel.setForeground(new Color(255, 255, 255));
+        supplierLabel.setForeground(Color.white);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -288,7 +275,6 @@ public class SupplierGUI extends JPanel implements ActionListener{
 
         searchPanel = new JPanel();
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        searchPanel.setBackground(defaultColor);
         searchPanel.setBounds(600, 50, 480, 290);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
@@ -306,7 +292,7 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
-        lblSpXp.setForeground(new Color(255, 255, 255));
+        lblSpXp.setForeground(SystemColor.desktop);
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
         lblSpXp.setBounds(101, 145, 130, 40);
         searchPanel.add(lblSpXp);
@@ -318,14 +304,13 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
-        lblTmKim.setForeground(new Color(255, 255, 255));
+        lblTmKim.setForeground(SystemColor.desktop);
         lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
         lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
         lblTmKim.setBounds(184, 0, 120, 40);
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
-        searchButton.setBorder(null);
         searchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {  
         		showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
@@ -336,7 +321,6 @@ public class SupplierGUI extends JPanel implements ActionListener{
         searchPanel.add(searchButton);
         
         rmSearchButton = new JButton("Hủy");
-        rmSearchButton.setBorder(null);
         rmSearchButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchTxt.setText("");
@@ -347,11 +331,6 @@ public class SupplierGUI extends JPanel implements ActionListener{
         rmSearchButton.setFont(new Font("Arial", Font.PLAIN, 13));
         rmSearchButton.setBounds(259, 229, 100, 50);
         searchPanel.add(rmSearchButton);
-        
-        JLabel imageLabel = new JLabel("New label");
-        imageLabel.setIcon(new ImageIcon("C:\\Users\\Magaki\\Downloads\\Java Downloads\\5374796.png"));
-        imageLabel.setBounds(0, 0, 1080, 700);
-        contentField.add(imageLabel);
         
         //End
         showTableSupplier();

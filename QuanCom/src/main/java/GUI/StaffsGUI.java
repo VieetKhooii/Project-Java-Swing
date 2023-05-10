@@ -47,7 +47,10 @@ public class StaffsGUI extends JPanel implements ActionListener{
     List<Staff> staffList = staffService.getAllStaff();
     private JComboBox<String> searchCbB;
 	private JComboBox<String> sortCbB;
-	
+	Color defaultColor = new Color(0, 0, 0, 80);
+	private JPanel btnPanel;
+	String filePath;
+	private JButton browsePhoto;
     /**
      * Create the panel.
      */
@@ -70,13 +73,13 @@ public class StaffsGUI extends JPanel implements ActionListener{
 
         //Panel table nhan vien
         staffListPanel = new JPanel(null);
-        staffListPanel.setBackground(new Color(30, 144, 255));
+        staffListPanel.setBackground(defaultColor);
         staffListPanel.setBounds(0, 380, 1080, 320);
 
         contentField.add(staffListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã nhân viên", "Tên nhân viên", "Giới tính", "Ngày sinh", "Số điện thoại", "Địa chỉ"}, 0);
-        staffTable = new JTable(detailTableModel);
+        staffTable = new MacOSStyleTable(detailTableModel);
         staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
         staffTable.setDefaultRenderer(String.class, centerRenderer);
         staffTable.setRowHeight(30);
@@ -111,21 +114,30 @@ public class StaffsGUI extends JPanel implements ActionListener{
                         femaleRadioBtn.setSelected(true);
                         maleRadioBtn.setSelected(false);
                     }
+                    for(Staff i : staffList) {
+                    	if(i.getId() == Integer.parseInt(idStaffTxt.getText())) {
+                    		staffPhoto.setIcon(new ImageIcon(i.getImage()));
+                    		System.out.println(i.getImage());
+                    		break;
+                    	}                   	
+                    }
                 }
             }
         });
 
-        staffScrollPane = new JScrollPane(staffTable);
+        staffScrollPane = new CustomScrollPane(staffTable);         
         staffScrollPane.setBounds(5, 5, 1070, 310);
         staffListPanel.add(staffScrollPane);
 
         staffInfoPanel = new JPanel();
+        staffInfoPanel.setForeground(Color.YELLOW);
+        //staffInfoPanel.setBackground(defaultColor);
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         staffInfoPanel.setBounds(0, 50, 765, 330);
         contentField.add(staffInfoPanel);
         staffInfoPanel.setLayout(null);
 
-        staffPhoto = new JLabel("Ảnh");
+        staffPhoto = new JLabel("Ảnh");       
         staffPhoto.setBackground(new Color(255, 255, 255));
         staffPhoto.setHorizontalAlignment(SwingConstants.CENTER);
         staffPhoto.setBounds(40, 50, 140, 140);
@@ -133,35 +145,40 @@ public class StaffsGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(staffPhoto);
 
         lblNewLabel = new JLabel("Thông tin nhân viên");
+        lblNewLabel.setForeground(SystemColor.desktop);
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setBounds(284, -1, 200, 40);
         staffInfoPanel.add(lblNewLabel);
 
         JLabel idsStaffLabel = new JLabel("Mã NV");
+        idsStaffLabel.setForeground(SystemColor.desktop);
         idsStaffLabel.setFont(new Font("Arial", Font.BOLD, 13));
         idsStaffLabel.setBounds(219, 50, 70, 30);
         staffInfoPanel.add(idsStaffLabel);
 
         idStaffTxt = new JTextField();
+        idStaffTxt.setBackground(SystemColor.text);
         idStaffTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idStaffTxt.setColumns(10);
         idStaffTxt.setBounds(289, 50, 170, 30);
         idStaffTxt.setEditable(false);
         staffInfoPanel.add(idStaffTxt);
 
-        nameStaffTxt = new JTextField();
+        nameStaffTxt = new JTextField();        
         nameStaffTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameStaffTxt.setColumns(10);
         nameStaffTxt.setBounds(549, 50, 170, 30);
         staffInfoPanel.add(nameStaffTxt);
 
         JLabel nameStaffLabel = new JLabel("Tên NV");
+        nameStaffLabel.setForeground(SystemColor.desktop);
         nameStaffLabel.setFont(new Font("Arial", Font.BOLD, 13));
         nameStaffLabel.setBounds(479, 50, 70, 30);
         staffInfoPanel.add(nameStaffLabel);
 
         JLabel addressStaffLabel = new JLabel("Địa chỉ");
+        addressStaffLabel.setForeground(SystemColor.desktop);
         addressStaffLabel.setFont(new Font("Arial", Font.BOLD, 13));
         addressStaffLabel.setBounds(479, 150, 70, 30);
         staffInfoPanel.add(addressStaffLabel);
@@ -173,6 +190,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
         staffInfoPanel.add(addressStaffTxt);
 
         JLabel phoneNumbLabel = new JLabel("SĐT");
+        phoneNumbLabel.setForeground(SystemColor.desktop);
         phoneNumbLabel.setFont(new Font("Arial", Font.BOLD, 13));
         phoneNumbLabel.setBounds(219, 150, 70, 30);
         staffInfoPanel.add(phoneNumbLabel);
@@ -182,15 +200,39 @@ public class StaffsGUI extends JPanel implements ActionListener{
         phoneNumbTxt.setColumns(10);
         phoneNumbTxt.setBounds(289, 150, 170, 30);
         staffInfoPanel.add(phoneNumbTxt);
+        
+        btnPanel = new JPanel();
+        btnPanel.setBounds(219, 284, 354, 35);
+        staffInfoPanel.add(btnPanel);
+        btnPanel.setLayout(null);
 
+        browsePhoto = new JButton("Chọn");
+        browsePhoto.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JFileChooser fChooser = new JFileChooser();
+				int response = fChooser.showOpenDialog(null);
+				if(response == JFileChooser.APPROVE_OPTION) {
+					filePath = fChooser.getSelectedFile().getAbsolutePath();
+					staffPhoto.setIcon(new ImageIcon(filePath));
+				}
+			}
+        	
+        });
+        browsePhoto.setBounds(70, 200, 80, 30);
+        staffInfoPanel.add(browsePhoto);
+        
         addStaffBtn = new JButton("Thêm");
+        addStaffBtn.setBounds(0, 0, 90, 35);
+        btnPanel.add(addStaffBtn);
         addStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addStaffBtn.setBounds(111, 284, 90, 35);
-        addStaffBtn.setBounds(219, 284, 90, 35);
-        staffInfoPanel.add(addStaffBtn);
-
+        
         //Clear Information
         clearInfoBtn = new JButton("Clear");
+        clearInfoBtn.setBounds(264, 0, 90, 35);
+        btnPanel.add(clearInfoBtn);
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 staffTable.clearSelection();
@@ -203,12 +245,10 @@ public class StaffsGUI extends JPanel implements ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(375, 284, 90, 35);
-        clearInfoBtn.setBounds(483, 284, 90, 35);
-        staffInfoPanel.add(clearInfoBtn);
-
-
+        
         fixStaffBtn = new JButton("Cập nhật");
+        fixStaffBtn.setBounds(88, 0, 90, 35);
+        btnPanel.add(fixStaffBtn);
         fixStaffBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if (idStaffTxt.getText().equals("")){
@@ -232,7 +272,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
                                 addressStaffTxt.getText(),
                                 phoneNumbTxt.getText(),
                                 sqlDate,
-                                gender
+                                gender, filePath
                         );
                         showTableStaff();
                         JOptionPane.showMessageDialog(null, "Thay đổi thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -241,11 +281,10 @@ public class StaffsGUI extends JPanel implements ActionListener{
             }
         });
         fixStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixStaffBtn.setBounds(199, 284, 90, 35);
-        fixStaffBtn.setBounds(307, 284, 90, 35);
-        staffInfoPanel.add(fixStaffBtn);
-
+        
         delStaffBtn = new JButton("Xóa");
+        delStaffBtn.setBounds(175, 0, 90, 35);
+        btnPanel.add(delStaffBtn);
         delStaffBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //xoa o day
@@ -263,50 +302,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
                 }
             }
         });
-        delStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delStaffBtn.setBounds(286, 284, 90, 35);
-        delStaffBtn.setBounds(394, 284, 90, 35);
-        staffInfoPanel.add(delStaffBtn);
-
-        JButton browsePhoto = new JButton("Chọn");
-        browsePhoto.setBounds(70, 200, 80, 30);
-        staffInfoPanel.add(browsePhoto);
-
-        JLabel lblGiiTnh = new JLabel("Giới tính");
-        lblGiiTnh.setFont(new Font("Arial", Font.BOLD, 13));
-        lblGiiTnh.setBounds(219, 100, 70, 30);
-        staffInfoPanel.add(lblGiiTnh);
-
-        maleRadioBtn = new JRadioButton("Nam");
-        buttonGroup.add(maleRadioBtn);
-        maleRadioBtn.setBounds(289, 100, 60, 30);
-        staffInfoPanel.add(maleRadioBtn);
-
-        femaleRadioBtn = new JRadioButton("Nữ");
-        buttonGroup.add(femaleRadioBtn);
-        femaleRadioBtn.setBounds(349, 100, 60, 30);
-        staffInfoPanel.add(femaleRadioBtn);
-
-        JLabel staffDateLabel = new JLabel("Ngày sinh");
-        staffDateLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        staffDateLabel.setBounds(479, 100, 70, 30);
-        staffInfoPanel.add(staffDateLabel);
-
-        dateChooser.setBounds(549, 100, 170, 30);
-        staffInfoPanel.add(dateChooser);
-
-        JPanel bigNamePanel = new JPanel();
-        bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        bigNamePanel.setBounds(0, 0, 1080, 50);
-        contentField.add(bigNamePanel);
-        bigNamePanel.setLayout(null);
-
-        JLabel staffLabel = new JLabel("NHÂN VIÊN");
-        staffLabel.setBounds(240, 0, 600, 50);
-        bigNamePanel.add(staffLabel);
-        staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        staffLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-
+        delStaffBtn.setFont(new Font("Arial", Font.PLAIN, 13)); 
         //Function
         addStaffBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -332,14 +328,56 @@ public class StaffsGUI extends JPanel implements ActionListener{
                     		chuanHoa(addressStaffTxt.getText()),
                             phoneNumbTxt.getText(),
                             sqlDate,
-                            gender);
+                            gender, filePath);
                     showTableStaff();
                     JOptionPane.showMessageDialog(null, "Đã thêm nhân viên!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
 
+        
+
+        JLabel lblGiiTnh = new JLabel("Giới tính");
+        lblGiiTnh.setForeground(SystemColor.desktop);
+        lblGiiTnh.setFont(new Font("Arial", Font.BOLD, 13));
+        lblGiiTnh.setBounds(219, 100, 70, 30);
+        staffInfoPanel.add(lblGiiTnh);
+
+        maleRadioBtn = new JRadioButton("Nam");
+        buttonGroup.add(maleRadioBtn);
+        maleRadioBtn.setBounds(289, 100, 60, 30);
+        staffInfoPanel.add(maleRadioBtn);
+
+        femaleRadioBtn = new JRadioButton("Nữ");  
+        buttonGroup.add(femaleRadioBtn);
+        femaleRadioBtn.setBounds(349, 100, 60, 30);
+        staffInfoPanel.add(femaleRadioBtn);
+
+        JLabel staffDateLabel = new JLabel("Ngày sinh");
+        staffDateLabel.setForeground(SystemColor.desktop);
+        staffDateLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        staffDateLabel.setBounds(479, 100, 70, 30);
+        staffInfoPanel.add(staffDateLabel);
+
+        dateChooser.setBounds(549, 100, 170, 30);
+        staffInfoPanel.add(dateChooser);
+
+        JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
+        bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        bigNamePanel.setBounds(0, 0, 1080, 50);
+        contentField.add(bigNamePanel);
+        bigNamePanel.setLayout(null);
+
+        JLabel staffLabel = new JLabel("NHÂN VIÊN");
+        staffLabel.setForeground(Color.WHITE);
+        staffLabel.setBounds(240, 0, 600, 50);
+        bigNamePanel.add(staffLabel);
+        staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        staffLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+
         searchPanel = new JPanel();
+        //searchPanel.setBackground(defaultColor);
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         searchPanel.setBounds(766, 50, 314, 330);
         contentField.add(searchPanel);
@@ -358,6 +396,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
         searchPanel.add(searchTxt);
         
         JLabel lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setForeground(SystemColor.desktop);
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
         lblSpXp.setBounds(10, 134, 135, 40);
         searchPanel.add(lblSpXp);
@@ -385,6 +424,7 @@ public class StaffsGUI extends JPanel implements ActionListener{
         searchPanel.add(searchButton);
         
         JLabel lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim.setForeground(SystemColor.desktop);
         lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
         lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
         lblTmKim.setBounds(85, 0, 120, 40);

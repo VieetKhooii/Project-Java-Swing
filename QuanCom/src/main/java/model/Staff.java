@@ -62,8 +62,17 @@ public class Staff {
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
+    private String image;
 
-    public Staff() {
+    public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Staff() {
     }
 
     public Staff(int id, String name, String address, String phone,Date birthDate, String gender) {

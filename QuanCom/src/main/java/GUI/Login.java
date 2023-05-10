@@ -36,6 +36,7 @@ public class Login extends JFrame implements ActionListener{
     private UserService userService = new UserService();
     public static User userStatic = new User();
     List<User> userList = userService.getAllUsers();
+    static String idStaffLogin = "";
     public Login() {
         init();
     }
@@ -130,6 +131,7 @@ public class Login extends JFrame implements ActionListener{
                 for (User user1 : userList){
                     if (user.getText().equals(user1.getName()) && new String (pass.getPassword()).equals(user1.getPassword())){
                         userStatic.setRoleId(user1.getRoleId());
+                        idStaffLogin = String.valueOf(user1.getStaffId());
                         break;
                     }
                 }

@@ -27,11 +27,12 @@ public class UserRepository {
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
                 user.setRoleId(resultSet.getInt("role_id"));
+                user.setStaffId(resultSet.getInt("staff_id"));
                 list.add(user);
             }
         } catch (SQLException e) {
             System.out.println("Error while query get all users "+e.getMessage());
-        }
+        }       
         return list;
     }
 
@@ -57,18 +58,20 @@ public class UserRepository {
             String userName,
             String email,
             String password,
-            int roleId){
+            int roleId,
+            int staffId){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();
-        String query = "INSERT INTO users(username, password, email, role_id)\n" +
+        String query = "INSERT INTO users(username, password, email, role_id, staff_id)\n" +
                 "values\n" +
-                "(?,?,?,?)";
+                "(?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,password);
             preparedStatement.setString(3,email);
             preparedStatement.setInt(4,roleId);
+            preparedStatement.setInt(5,staffId);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while add user "+e.getMessage());
@@ -95,26 +98,27 @@ public class UserRepository {
             String userName,
             String email,
             String password,
-            int roleId){
+            int roleId,
+            int staffId){
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update users set username = ?, password = ?, " +
-                "email = ?, role_id = ? where user_id=?";
+                "email = ?, role_id = ?, staffId = ? where user_id=?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,password);
             preparedStatement.setString(3,email);
             preparedStatement.setInt(4,roleId);
-            preparedStatement.setInt(5,id);
+            preparedStatement.setInt(5,staffId);
+            preparedStatement.setInt(6,id);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while modify user "+e.getMessage());
         }
         return isSuccess;
     }
-    
-  //Search by option
+    //Search by option
     public List<User> searchByOption(String searchTxt, String optSearch, String optSort){
         List<User> searchList = new ArrayList<>();
         Connection connection = MySqlConfig.getConnection();
@@ -154,6 +158,7 @@ public class UserRepository {
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
                 user.setRoleId(resultSet.getInt("role_id"));
+                user.setStaffId(resultSet.getInt("staff_id"));
                 searchList.add(user);
             }
         } catch (SQLException e) {

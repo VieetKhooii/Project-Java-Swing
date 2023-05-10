@@ -23,9 +23,9 @@ public class ProductService {
         return repository.getAllProduct();
     }
 
-    public boolean addProduct(String name, int amount, String unit, int price, int cateId){
+    public boolean addProduct(String name, int amount, String unit, int price, int cateId, String image){
         ProductRepository repository = new ProductRepository();
-        return repository.addProduct(name, amount, unit, price, cateId) >= 1;
+        return repository.addProduct(name, amount, unit, price, cateId, image) >= 1;
     }
 
     public boolean deleteProduct(int id){
@@ -39,10 +39,11 @@ public class ProductService {
             String unit,
             int price,
             int cateId,
-            int productId
+            int productId,
+            String image
     ){
         ProductRepository repository = new ProductRepository();
-        return repository.modifyProduct(name, amount, unit, price, cateId, productId) >= 1;
+        return repository.modifyProduct(name, amount, unit, price, cateId, productId, image) >= 1;
     }
     
     //search list
