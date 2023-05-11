@@ -15,6 +15,7 @@ FROM chitiet_orders ct
 INNER JOIN orders o ON ct.order_id = ct.order_id 
 INNER JOIN staffs s ON o.staff_id = s.staff_id 
 GROUP BY s.staff_id, s.name;
+alter table users add foreign key (staff_id) references staffs(staff_id);
 
 SELECT COALESCE(SUM(ct.gia), 0) as total_price
 FROM staffs s 

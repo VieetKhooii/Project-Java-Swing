@@ -1,9 +1,10 @@
 package GUI;
 
-import enumm.UnitMaterial;
 import model.Material;
 import model.Product;
 import model.Recipe;
+import model.Staff;
+import enumm.UnitMaterial;
 import service.FoodCalculation;
 import service.MaterialService;
 import service.ProductService;
@@ -18,12 +19,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class MaterialGUI extends JPanel implements MouseListener, ActionListener{
+public class MaterialGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -40,8 +39,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
     private JTextField idMaterialTxt;
     private JTextField nameMaterialTxt;
     private JTextField priceMaterialTxt;
-    private JComboBox<String> unitMaterialCbB;
-    private JComboBox<String> categoryMaterialCbB;
+    private JComboBox<String> unitMaterialCbB = new JComboBox<>();
     private JPanel materialInfoPanel;
     private JComboBox<String> searchCbB;
     private JTextField searchTxt;
@@ -82,13 +80,13 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
 
         //Panel table nhan vien
         materialListPanel = new JPanel(null);
-        materialListPanel.setBackground(new Color(30, 144, 255));
+        materialListPanel.setBackground(new Color(0, 0, 0, 80));
         materialListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(materialListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã nguyên liệu", "Tên nguyên liệu", "Đơn vị", "Số lượng", "Giá"}, 0);
-        materialTable = new JTable(detailTableModel);
+        materialTable = new MacOSStyleTable(detailTableModel);
         materialTable.setFont(new Font("Arial", Font.PLAIN, 14));
         materialTable.setDefaultRenderer(String.class, centerRenderer);
         materialTable.setRowHeight(30);
@@ -111,12 +109,11 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
                 if (row >= 0){
                     idMaterialTxt.setText(detailTableModel.getValueAt(row, 0).toString());
                     nameMaterialTxt.setText(detailTableModel.getValueAt(row, 1).toString());
-//                    for(int i = 0; i < unitMaterialCbB.getItemCount(); i++) {
-//                        if(detailTableModel.getValueAt(row, 2).toString().equals(unitMaterialCbB.getItemAt(i).toString())) {
-//                            unitMaterialCbB.setSelectedIndex(i);
-//                            break;
-//                        }
-//                    }
+                    for(int i = 0; i < unitMaterialCbB.getItemCount(); i++) {
+                        if(detailTableModel.getValueAt(row, 2).toString().equals(unitMaterialCbB.getItemAt(i).toString())) {
+                            unitMaterialCbB.setSelectedIndex(i);
+                        }
+                    }
 
                     soluongMaterialTxt.setText(detailTableModel.getValueAt(row, 3).toString());
                     priceMaterialTxt.setText(detailTableModel.getValueAt(row, 4).toString());
@@ -124,7 +121,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
             }
         });
 
-        materialScrollPane = new JScrollPane(materialTable);
+        materialScrollPane = new CustomScrollPane(materialTable);
         materialScrollPane.setBounds(5, 5, 1070, 350);
         materialListPanel.add(materialScrollPane);
 
@@ -181,10 +178,12 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         unitMaterialCbB.setBounds(454, 101, 100, 30);
         materialInfoPanel.add(unitMaterialCbB);
 
+
         JLabel lblnVTnh = new JLabel("Đơn vị tính");
         lblnVTnh.setFont(new Font("Arial", Font.BOLD, 13));
         lblnVTnh.setBounds(334, 101, 70, 30);
         materialInfoPanel.add(lblnVTnh);
+
 
         JLabel soluongLb = new JLabel("Số lượng");
         soluongLb.setFont(new Font("Arial", Font.BOLD, 13));
@@ -195,6 +194,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         soluongMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         soluongMaterialTxt.setColumns(10);
         soluongMaterialTxt.setBounds(127, 151, 167, 30);
+        soluongMaterialTxt.setEnabled(false);
         materialInfoPanel.add(soluongMaterialTxt);
 
         addMaterialBtn = new JButton("Thêm");
@@ -203,25 +203,24 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
                 if (!idMaterialTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn nguyên liệu đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("") || soluongMaterialTxt.getText().equals("")) {
+
+                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
+                else if(!priceMaterialTxt.getText().matches("[0-9]{1,9}")) {
+                    JOptionPane.showMessageDialog(null, "Sai đầu vào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
                 else {
-                    String unit = "";
-                    for (Material material : materialList){
-                        if (unitMaterialCbB.getSelectedItem().equals(material.getName())){
-                            unit = material.getName();
-                            break;
-                        }
-                    }
-                    materialService.addMaterial(nameMaterialTxt.getText(),unit,Integer.parseInt(priceMaterialTxt.getText()),Integer.parseInt(soluongMaterialTxt.getText()));
+
+                    materialService.addMaterial(chuanHoa(nameMaterialTxt.getText()),unitMaterialCbB.getSelectedItem().toString(),
+                            Integer.parseInt(priceMaterialTxt.getText()),0);
                     showTableMaterial();
                     JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
         addMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addMaterialBtn.setBounds(162, 244, 90, 35);
+        addMaterialBtn.setBounds(127, 244, 90, 35);
         materialInfoPanel.add(addMaterialBtn);
 
         //Clear Information
@@ -237,7 +236,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(424, 244, 90, 35);
+        clearInfoBtn.setBounds(389, 244, 90, 35);
         materialInfoPanel.add(clearInfoBtn);
 
         fixMaterialBtn = new JButton("Cập nhật");
@@ -246,7 +245,7 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
                 if (idMaterialTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 nguyên liệu và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("") || soluongMaterialTxt.getText().equals("")) {
+                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
@@ -262,13 +261,13 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
                     FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
                     showTableMaterial();
                     GiaoDien.taoDon.showTableProduct();
-                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Đã sửa nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
         });
         fixMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixMaterialBtn.setBounds(250, 244, 90, 35);
+        fixMaterialBtn.setBounds(215, 244, 90, 35);
         materialInfoPanel.add(fixMaterialBtn);
 
         delMaterialBtn = new JButton("Xóa");
@@ -289,16 +288,18 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
             }
         });
         delMaterialBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delMaterialBtn.setBounds(337, 244, 90, 35);
+        delMaterialBtn.setBounds(302, 244, 90, 35);
         materialInfoPanel.add(delMaterialBtn);
 
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
+        bigNamePanel.setBackground(new Color(0x007AFF));
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("NGUYÊN LIỆU");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -312,25 +313,25 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
 
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nguyên liệu", "Tên nguyên liệu"}));
-        searchCbB.setBounds(130, 75, 101, 40);
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã", "Tên", "Số lượng"}));
+        searchCbB.setBounds(119, 76, 101, 40);
         searchPanel.add(searchCbB);
 
         searchTxt = new JTextField();
         searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         searchTxt.setColumns(10);
-        searchTxt.setBounds(241, 75, 149, 40);
+        searchTxt.setBounds(230, 76, 170, 40);
         searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(130, 135, 80, 40);
+        lblSpXp.setBounds(119, 136, 80, 40);
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã nguyên liệu", "Tên nguyên liệu"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã giảm dần", "Tên", "Giá tăng dần", "Giá giảm dần", "Số lượng tăng dần", "Số lượng giảm dần"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(241, 135, 149, 40);
+        sortCbB.setBounds(230, 136, 170, 40);
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
@@ -340,16 +341,33 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
+            }
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(192, 229, 100, 50);
+        searchButton.setBounds(142, 229, 100, 50);
         searchPanel.add(searchButton);
+
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                showTableMaterial();
+                sortCbB.setSelectedIndex(0);
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(241, 229, 100, 50);
+        searchPanel.add(rmSearchBtn);
         //End
         showTableMaterial();
 
 
     }
 
-    public void showTableMaterial(){
+    void showTableMaterial(){
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
@@ -361,58 +379,40 @@ public class MaterialGUI extends JPanel implements MouseListener, ActionListener
             });
         }
     }
-//    public void productAmountCal(){
-//        int min;
-//        int temp=0;
-//        for (Product product : productList){
-//            min=-1;
-//            temp=0;
-//            for (Recipe recipe : recipeList){
-//                if (product.getId() == recipe.getProductId()){
-//                    for (Material material : materialList){
-//                        if (material.getId() == recipe.getMaterialId()){
-//                            temp = material.getAmount()/recipe.getAmount();
-//                            break;
-//                        }
-//                    }
-//                    if (min==-1) min = temp;
-//                    else if (temp < min) min = temp;
-//                }
-//            }
-//            if (min==-1){
-//                product.setAmount(0);
-//            }
-//            else {
-//                product.setAmount(min);
-//            }
-//
-//            productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
-//                    product.getPrice(),product.getCategoryId(),product.getId());
-//        }
-//    }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
 
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Material> searchResultList = materialService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(Material material : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    material.getId(), material.getName(), material.getUnit(), material.getAmount(),
+                    material.getPrice(),
+            });
+        }
     }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
 
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+    public String chuanHoa(String message) {
+        message = message.toLowerCase();
+        char[] charArray = message.toCharArray();
+        boolean foundSpace = true;
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        message = String.valueOf(charArray);
+        return message;
     }
 }

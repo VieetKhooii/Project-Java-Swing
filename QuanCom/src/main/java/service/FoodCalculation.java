@@ -37,7 +37,7 @@ public class FoodCalculation {
             }
             if (database){
                 productService.modifyProduct(product.getName(),product.getAmount(),product.getUnit(),
-                        product.getPrice(),product.getCategoryId(),product.getId());
+                        product.getPrice(),product.getCategoryId(),product.getId(), product.getImage());
             }
 
         }

@@ -8,19 +8,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-import model.Functions;
 import model.Roles;
+import model.Staff;
 import model.User;
 import service.RoleService;
 import service.UserService;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class AccountGUI extends JPanel implements MouseListener, ActionListener{
+public class AccountGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -28,7 +26,7 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
     private static final long serialVersionUID = 1L;
     private JPanel contentField;
     private JPanel accListPanel;
-    private JTable staffTable;
+    private JTable UserTable;
     private DefaultTableModel detailTableModel;
     private JScrollPane accScrollPane;
     private DefaultTableCellRenderer centerRenderer;
@@ -38,21 +36,24 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
     private JTextField nameAccTxt;
     private JTextField passTxt;
     private JTextField emailTxt;
-    private JTextField textField;
-    private JButton searchButton;
-    private JPanel staffInfoPanel;
+    private JPanel UserInfoPanel;
     private JButton addAccBtn;
     private JButton clearInfoBtn;
     private JButton fixAccBtn;
     private JButton delAccBtn;
-    private final ButtonGroup buttonGroup = new ButtonGroup();
-    private JRadioButton blockedStatusRadioBtn;
-    private JRadioButton noneStatusRadioBtn;
-    private JComboBox<String> positioncbB = new JComboBox<>();
+    public JComboBox<String> positioncbB = new JComboBox<>();
+    private JLabel lblTmKim;
+    private JComboBox<String> searchCbB;
+    private JTextField searchTxt;
+    private JLabel lblSpXp;
+    private JComboBox<String> sortCbB;
     UserService userService = new UserService();
     RoleService roleService = new RoleService();
     List<User> userList = userService.getAllUsers();
     List<Roles> rolesList = roleService.getAllRoles();
+    private JButton rmSearchBtn;
+    private JButton searchButton;
+    private JTextField idStaffTxt;
     /**
      * Create the panel.
      */
@@ -75,33 +76,33 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
 
         //Panel table nhan vien
         accListPanel = new JPanel(null);
-        accListPanel.setBackground(new Color(30, 144, 255));
-        accListPanel.setBounds(0, 380, 1080, 290);
+        accListPanel.setBackground(new Color(0, 0,0, 80));
+        accListPanel.setBounds(0, 350, 1080, 320);
 
         contentField.add(accListPanel);
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập","Password", "Email", "Quyền"}, 0);
-        staffTable = new JTable(detailTableModel);
-        staffTable.setFont(new Font("Arial", Font.PLAIN, 14));
-        staffTable.setDefaultRenderer(String.class, centerRenderer);
-        staffTable.setRowHeight(30);
-        for(int i = 0; i < 5; i++) {
-            if(i == 1 || i == 4) {
-                staffTable.getColumnModel().getColumn(i).setPreferredWidth(150);
-                staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã tài khoản", "Tên đăng nhập","Mật khẩu", "Email", "Quyền", "Mã nhân viên"}, 0);
+        UserTable = new MacOSStyleTable(detailTableModel);
+        UserTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        UserTable.setDefaultRenderer(String.class, centerRenderer);
+        UserTable.setRowHeight(30);
+        for(int i = 0; i < 6; i++) {
+            if(i == 1 || i == 3) {
+                UserTable.getColumnModel().getColumn(i).setPreferredWidth(150);
+                UserTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
             else {
-                //staffTable.getColumnModel().getColumn(i).setPreferredWidth(125);
-                staffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+                //UserTable.getColumnModel().getColumn(i).setPreferredWidth(125);
+                UserTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
         }
 
-        ListSelectionModel listSelectionModel = staffTable.getSelectionModel();
+        ListSelectionModel listSelectionModel = UserTable.getSelectionModel();
         listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listSelectionModel.addListSelectionListener(new ListSelectionListener(){
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                int row = staffTable.getSelectedRow();
+                int row = UserTable.getSelectedRow();
                 if (row >= 0) {
                     idAccTxt.setText(detailTableModel.getValueAt(row, 0).toString());
                     nameAccTxt.setText(detailTableModel.getValueAt(row, 1).toString());
@@ -113,59 +114,60 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                             break;
                         }
                     }
+                    idStaffTxt.setText(detailTableModel.getValueAt(row, 5).toString());
                 }
             }
         });
 
-        accScrollPane = new JScrollPane(staffTable);
-        accScrollPane.setBounds(5, 5, 1070, 280);
+        accScrollPane = new CustomScrollPane(UserTable);
+        accScrollPane.setBounds(5, 5, 1070, 310);
         accListPanel.add(accScrollPane);
 
-        staffInfoPanel = new JPanel();
-        staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        staffInfoPanel.setBounds(0, 50, 800, 330);
-        contentField.add(staffInfoPanel);
-        staffInfoPanel.setLayout(null);
+        UserInfoPanel = new JPanel();
+        UserInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        UserInfoPanel.setBounds(0, 50, 690, 300);
+        contentField.add(UserInfoPanel);
+        UserInfoPanel.setLayout(null);
 
         lblNewLabel = new JLabel("Thông tin tài khoản");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel.setBounds(321, 0, 150, 40);
-        staffInfoPanel.add(lblNewLabel);
+        lblNewLabel.setBounds(274, 0, 150, 40);
+        UserInfoPanel.add(lblNewLabel);
 
         JLabel idAccLabel = new JLabel("Mã TK");
         idAccLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idAccLabel.setBounds(141, 90, 70, 30);
-        staffInfoPanel.add(idAccLabel);
+        idAccLabel.setBounds(79, 60, 70, 30);
+        UserInfoPanel.add(idAccLabel);
 
         idAccTxt = new JTextField();
         idAccTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idAccTxt.setColumns(10);
-        idAccTxt.setBounds(211, 90, 170, 30);
+        idAccTxt.setBounds(149, 60, 170, 30);
         idAccTxt.setEditable(false);
-        staffInfoPanel.add(idAccTxt);
+        UserInfoPanel.add(idAccTxt);
 
         nameAccTxt = new JTextField();
         nameAccTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameAccTxt.setColumns(10);
-        nameAccTxt.setBounds(471, 90, 170, 30);
-        staffInfoPanel.add(nameAccTxt);
+        nameAccTxt.setBounds(409, 60, 170, 30);
+        UserInfoPanel.add(nameAccTxt);
 
         JLabel nameAccLabel = new JLabel("Tên TK");
         nameAccLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameAccLabel.setBounds(401, 90, 70, 30);
-        staffInfoPanel.add(nameAccLabel);
+        nameAccLabel.setBounds(339, 60, 70, 30);
+        UserInfoPanel.add(nameAccLabel);
 
         JLabel passLabel = new JLabel("Mật khẩu");
         passLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        passLabel.setBounds(401, 140, 70, 30);
-        staffInfoPanel.add(passLabel);
+        passLabel.setBounds(339, 110, 70, 30);
+        UserInfoPanel.add(passLabel);
 
         passTxt = new JTextField();
         passTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         passTxt.setColumns(10);
-        passTxt.setBounds(471, 140, 170, 30);
-        staffInfoPanel.add(passTxt);
+        passTxt.setBounds(409, 110, 170, 30);
+        UserInfoPanel.add(passTxt);
 
         addAccBtn = new JButton("Thêm");
         addAccBtn.addActionListener(new ActionListener() {
@@ -173,8 +175,11 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                 if (!idAccTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn tài khoản đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameAccTxt.getText().equals("") || passTxt.getText().equals("")) {
+                else if(nameAccTxt.getText().equals("") || passTxt.getText().equals("") || emailTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else if(!emailTxt.getText().matches("^\\w+[a-z0-9]*@gmail.com$")) {
+                    JOptionPane.showMessageDialog(null, "Định dạng email sai (VD:username@gmail.com)!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     int roleId = 0;
@@ -184,21 +189,21 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                             break;
                         }
                     }
-                    userService.addUser(nameAccTxt.getText(), emailTxt.getText(), passTxt.getText(),roleId);
+                    userService.addUser(nameAccTxt.getText(), emailTxt.getText(), passTxt.getText(),roleId, Integer.parseInt(idStaffTxt.getText()));
                     showTableAcc();
                     JOptionPane.showMessageDialog(null, "Đã thêm tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
         addAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addAccBtn.setBounds(270, 280, 90, 35);
-        staffInfoPanel.add(addAccBtn);
+        addAccBtn.setBounds(160, 250, 90, 35);
+        UserInfoPanel.add(addAccBtn);
 
         //Clear Information
         clearInfoBtn = new JButton("Clear");
         clearInfoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                staffTable.clearSelection();
+                UserTable.clearSelection();
                 idAccTxt.setText(null);
                 nameAccTxt.setText(null);
                 emailTxt.setText(null);
@@ -207,8 +212,8 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(534, 280, 90, 35);
-        staffInfoPanel.add(clearInfoBtn);
+        clearInfoBtn.setBounds(424, 250, 90, 35);
+        UserInfoPanel.add(clearInfoBtn);
 
         fixAccBtn = new JButton("Cập nhật");
         fixAccBtn.addActionListener(new ActionListener() {
@@ -219,15 +224,18 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                 else if(nameAccTxt.getText().equals("") || passTxt.getText().equals("") || emailTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
+                else if(!emailTxt.getText().matches("^\\w+[a-z0-9]*@gmail.com$")) {
+                    JOptionPane.showMessageDialog(null, "Định dạng email sai (VD:username@gmail.com)!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
                 else {
                     int modifyIdOfRole=0;
-                        for (Roles role : rolesList){
-                            if (positioncbB.getSelectedItem().equals(role.getName())){
-                                modifyIdOfRole = role.getId();
-                                break;
-                            }
+                    for (Roles role : rolesList){
+                        if (positioncbB.getSelectedItem().equals(role.getName())){
+                            modifyIdOfRole = role.getId();
+                            break;
                         }
-                    userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole);
+                    }
+                    userService.modifyUser(Integer.parseInt(idAccTxt.getText()),nameAccTxt.getText(),emailTxt.getText(),passTxt.getText(),modifyIdOfRole, Integer.parseInt(idStaffTxt.getText()));
                     showTableAcc();
                     JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
@@ -235,8 +243,8 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         fixAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixAccBtn.setBounds(358, 280, 90, 35);
-        staffInfoPanel.add(fixAccBtn);
+        fixAccBtn.setBounds(248, 250, 90, 35);
+        UserInfoPanel.add(fixAccBtn);
 
         delAccBtn = new JButton("Xóa");
         delAccBtn.addActionListener(new ActionListener() {
@@ -257,76 +265,111 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         delAccBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delAccBtn.setBounds(445, 280, 90, 35);
-        staffInfoPanel.add(delAccBtn);
+        delAccBtn.setBounds(335, 250, 90, 35);
+        UserInfoPanel.add(delAccBtn);
 
-        JLabel lblGiiTnh = new JLabel("Trạng thái");
-        lblGiiTnh.setFont(new Font("Arial", Font.BOLD, 13));
-        lblGiiTnh.setBounds(141, 140, 70, 30);
-        staffInfoPanel.add(lblGiiTnh);
-
-        blockedStatusRadioBtn = new JRadioButton("Khóa");
-        buttonGroup.add(blockedStatusRadioBtn);
-        blockedStatusRadioBtn.setBounds(211, 140, 60, 30);
-        staffInfoPanel.add(blockedStatusRadioBtn);
-
-        noneStatusRadioBtn = new JRadioButton("None");
-        noneStatusRadioBtn.setSelected(true);
-        buttonGroup.add(noneStatusRadioBtn);
-        noneStatusRadioBtn.setBounds(271, 140, 60, 30);
-        staffInfoPanel.add(noneStatusRadioBtn);
-
-        JLabel staffDateLabel = new JLabel("Email");
-        staffDateLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        staffDateLabel.setBounds(141, 190, 70, 30);
-        staffInfoPanel.add(staffDateLabel);
+        JLabel UserDateLabel = new JLabel("Email");
+        UserDateLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        UserDateLabel.setBounds(79, 110, 70, 30);
+        UserInfoPanel.add(UserDateLabel);
 
         //positioncbB
-        showRoleChooser();
-
+        for (Roles roles : rolesList){
+            positioncbB.addItem(roles.getName());
+        }
+        positioncbB.setBounds(149, 161, 121, 30);
+        UserInfoPanel.add(positioncbB);
 
         JLabel lblChcV = new JLabel("Quyền");
         lblChcV.setFont(new Font("Arial", Font.BOLD, 13));
-        lblChcV.setBounds(401, 190, 70, 30);
-        staffInfoPanel.add(lblChcV);
+        lblChcV.setBounds(79, 161, 70, 30);
+        UserInfoPanel.add(lblChcV);
 
         emailTxt = new JTextField();
-        emailTxt.setBounds(211, 190, 170, 30);
-        staffInfoPanel.add(emailTxt);
+        emailTxt.setBounds(149, 110, 170, 30);
+        UserInfoPanel.add(emailTxt);
+
+        JLabel idStaffLb = new JLabel("Mã NV");
+        idStaffLb.setFont(new Font("Arial", Font.BOLD, 13));
+        idStaffLb.setBounds(339, 161, 70, 30);
+        UserInfoPanel.add(idStaffLb);
+
+        idStaffTxt = new JTextField();
+        idStaffTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        idStaffTxt.setColumns(10);
+        idStaffTxt.setBounds(409, 161, 170, 30);
+        UserInfoPanel.add(idStaffTxt);
 
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
-        JLabel staffLabel = new JLabel("TÀI KHOẢN");
-        staffLabel.setBounds(240, 0, 600, 50);
-        bigNamePanel.add(staffLabel);
-        staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        staffLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+        JLabel UserLabel = new JLabel("TÀI KHOẢN");
+        UserLabel.setForeground(SystemColor.text);
+        UserLabel.setBounds(240, 0, 600, 50);
+        bigNamePanel.add(UserLabel);
+        UserLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        UserLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 
+        ///Tìm kiếm
         searchPanel = new JPanel();
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        searchPanel.setBounds(800, 50, 280, 330);
+        searchPanel.setBounds(690, 50, 390, 300);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
 
-        JLabel lblTmKim = new JLabel("Tìm kiếm");
+        lblTmKim = new JLabel("Tìm kiếm");
         lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTmKim.setFont(new Font("Arial", Font.BOLD, 15));
-        lblTmKim.setBounds(80, 80, 120, 40);
+        lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTmKim.setBounds(136, 0, 120, 40);
         searchPanel.add(lblTmKim);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(55, 131, 170, 30);
-        searchPanel.add(textField);
+        searchCbB = new JComboBox<String>();
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã tài khoản", "Tên đăng nhập", "Quyền"}));
+        searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        searchCbB.setBounds(10, 64, 150, 40);
+        searchPanel.add(searchCbB);
+
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(189, 64, 191, 40);
+        searchPanel.add(searchTxt);
+
+        lblSpXp = new JLabel("Sắp xếp");
+        lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
+        lblSpXp.setBounds(10, 134, 150, 40);
+        searchPanel.add(lblSpXp);
+
+        sortCbB = new JComboBox<String>();
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã tài khoản giảm dần", "Tên đăng nhập", "Quyền"}));
+        sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
+        sortCbB.setBounds(189, 134, 191, 40);
+        searchPanel.add(sortCbB);
+
+        rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                showTableAcc();
+                sortCbB.setSelectedIndex(0);
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(189, 230, 100, 50);
+        searchPanel.add(rmSearchBtn);
 
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
+            }
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(90, 180, 100, 30);
+        searchButton.setBounds(90, 230, 100, 50);
         searchPanel.add(searchButton);
         //End
         showTableAcc();
@@ -348,42 +391,28 @@ public class AccountGUI extends JPanel implements MouseListener, ActionListener{
                 }
             }
             detailTableModel.addRow(new Object[] {
-                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName
+                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName, user.getStaffId()
             });
         }
     }
 
-    public void showRoleChooser(){
-        staffInfoPanel.remove(positioncbB);
-        positioncbB = new JComboBox<>();
-        rolesList = roleService.getAllRoles();
-        for (Roles roles : rolesList){
-            positioncbB.addItem(roles.getName());
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
         }
-        positioncbB.setBounds(471, 190, 90, 30);
-        staffInfoPanel.add(positioncbB);
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
+        List<User> searchResultList = userService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(User user : searchResultList) {
+            String roleName = "";
+            for (Roles roles : rolesList){
+                if (user.getRoleId() == roles.getId()){
+                    roleName = roles.getName();
+                    break;
+                }
+            }
+            detailTableModel.addRow(new Object[] {
+                    user.getId(), user.getName(), user.getPassword(), user.getEmail(), roleName, user.getStaffId()
+            });
+        }
     }
     @Override
     public void actionPerformed(ActionEvent e) {

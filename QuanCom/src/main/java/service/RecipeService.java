@@ -2,7 +2,6 @@ package service;
 
 import bus.RecipeRepo;
 import model.Recipe;
-
 import java.util.List;
 
 public class RecipeService {
@@ -25,5 +24,11 @@ public class RecipeService {
     public boolean modifyRecipe(int productId, int materialId, int amount, int oldProduct, int oldMaterial){
         RecipeRepo repo = new RecipeRepo();
         return repo.modifyRecipe(productId, materialId, amount, oldProduct, oldMaterial) >= 1;
+    }
+
+    //search list
+    public List<Recipe> getAllSearchResult(String searchTxt, String optSearch, String optSort){
+        RecipeRepo repo = new RecipeRepo();
+        return repo.searchByOption(searchTxt, optSearch, optSort);
     }
 }

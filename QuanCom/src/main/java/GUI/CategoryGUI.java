@@ -3,6 +3,7 @@ package GUI;
 import model.Category;
 import model.Product;
 import model.Roles;
+import model.Staff;
 import service.CategoryService;
 import service.ProductService;
 
@@ -20,7 +21,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class CategoryGUI extends JPanel implements MouseListener, ActionListener{
+public class CategoryGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -43,7 +44,7 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
     private JButton delCategoryBtn;
     private JButton clearInfoBtn;
     private JComboBox<String> searchCbB;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JLabel lblSpXp;
     private JComboBox<String> sortCbB;
     private JLabel lblTmKim;
@@ -60,7 +61,7 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
     }
     private void init() {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(1080, 700));
+        this.setPreferredSize(new Dimension(1080, 670));
 
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -74,13 +75,13 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
 
         //Panel table nhan vien
         categoryListPanel = new JPanel(null);
-        categoryListPanel.setBackground(new Color(30, 144, 255));
+        categoryListPanel.setBackground(new Color(0,0,0,80));
         categoryListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(categoryListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã loại", "Tên loại", "Mô tả"}, 0);
-        categoryTable = new JTable(detailTableModel);
+        categoryTable = new MacOSStyleTable(detailTableModel);
         categoryTable.setFont(new Font("Arial", Font.PLAIN, 14));
         categoryTable.setDefaultRenderer(String.class, centerRenderer);
         categoryTable.setRowHeight(30);
@@ -104,8 +105,8 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
         });
         detailTableModel.addRow(new Object[] {"12", "1", "24"});
 
-        categoryScrollPane = new JScrollPane(categoryTable);
-        categoryScrollPane.setBounds(5, 5, 1070, 350);
+        categoryScrollPane = new CustomScrollPane(categoryTable);
+        categoryScrollPane.setBounds(5, 5, 1070, 320);
         categoryListPanel.add(categoryScrollPane);
 
         categoryInfoPanel = new JPanel();
@@ -160,13 +161,19 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
                 if (!idCategoryTxt.getText().equalsIgnoreCase("")){
                     JOptionPane.showMessageDialog(null, "Không được chọn phân loại đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameCategoryTxt.getText().equals("") || descriptionTxt.getText().equals("")) {
+                else if(nameCategoryTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    categoryService.addCate(nameCategoryTxt.getText(),descriptionTxt.getText());
+                    categoryService.addCate(chuanHoa(nameCategoryTxt.getText()),descriptionTxt.getText());
                     showCate();
                     JOptionPane.showMessageDialog(null, "Đã thêm phân loại!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    ProductGUI productGUI = new ProductGUI();
+                    productGUI.categoryReload();
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(CategoryGUI.this);
+                    frame.revalidate();
+                    frame.repaint();
+
                 }
             }
         });
@@ -194,11 +201,11 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
                 if (idCategoryTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 phân loại và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameCategoryTxt.getText().equals("") || descriptionTxt.getText().equals("")) {
+                else if(nameCategoryTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    categoryService.cateModify(Integer.parseInt(idCategoryTxt.getText()),nameCategoryTxt.getText(),descriptionTxt.getText());
+                    categoryService.cateModify(Integer.parseInt(idCategoryTxt.getText()),chuanHoa(nameCategoryTxt.getText()),descriptionTxt.getText());
                     showCate();
                     JOptionPane.showMessageDialog(null, "Cập nhật thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -224,7 +231,7 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
                             }
                         }
                         ProductGUI productGUI = new ProductGUI();
-                        productGUI.showTableProduct();
+                        //productGUI.showTableProduct();
                         categoryService.cateDelete(Integer.parseInt(idCategoryTxt.getText()));
                         clearInfoBtn.doClick();
                         showCate();
@@ -238,12 +245,14 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
         categoryInfoPanel.add(delCategoryBtn);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("BẢNG PHÂN LOẠI");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -258,24 +267,24 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
         searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã loại", "Tên loại"}));
-        searchCbB.setBounds(130, 75, 101, 40);
+        searchCbB.setBounds(108, 76, 101, 40);
         searchPanel.add(searchCbB);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(241, 75, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(219, 76, 149, 40);
+        searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(130, 145, 80, 40);
+        lblSpXp.setBounds(108, 146, 80, 40);
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã loại", "Tên loại"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã loại giảm dần", "Tên loại"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(241, 145, 149, 40);
+        sortCbB.setBounds(219, 146, 149, 40);
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
@@ -285,9 +294,26 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
+            }
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(192, 229, 100, 50);
+        searchButton.setBounds(138, 229, 100, 50);
         searchPanel.add(searchButton);
+
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                showCate();
+                sortCbB.setSelectedIndex(0);
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(237, 229, 100, 50);
+        searchPanel.add(rmSearchBtn);
         //End
         showCate();
 
@@ -306,29 +332,39 @@ public class CategoryGUI extends JPanel implements MouseListener, ActionListener
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Category> searchResultList = categoryService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for(Category category : searchResultList) {
+            detailTableModel.addRow(new Object[] {
+                    category.getId(), category.getName(), category.getDescription()
+            });
+        }
+    }
 
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    public String chuanHoa(String message) {
+        message = message.toLowerCase();
+        char[] charArray = message.toCharArray();
+        boolean foundSpace = true;
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        message = String.valueOf(charArray);
+        return message;
     }
 }

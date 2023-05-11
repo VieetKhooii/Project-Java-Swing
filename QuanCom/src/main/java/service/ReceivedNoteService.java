@@ -27,6 +27,13 @@ public class ReceivedNoteService {
         return repo.getTotalPrice(id);
     }
 
+    //Search list
+    public List<ReceivedNote> getAllSearchResult(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+            ,java.util.Date dateFrome, java.util.Date dateTo ){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.searchByOption(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrome, dateTo);
+    }
+
     public int totalMaterialAmountOfStaff(int staffId){
         ReceivedNoteRepo repo = new ReceivedNoteRepo();
         return repo.totalMaterialAmountOfStaff(staffId);

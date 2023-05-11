@@ -2,7 +2,6 @@ package service;
 
 import bus.CategoryRepository;
 import model.Category;
-
 import java.util.List;
 
 public class CategoryService {
@@ -26,4 +25,12 @@ public class CategoryService {
         CategoryRepository repository = new CategoryRepository();
         return repository.modifyCate(id, name, description) >= 1;
     }
+
+
+    //search list
+    public List<Category> getAllSearchResult(String searchTxt, String optSearch, String optSort){
+        CategoryRepository repository = new CategoryRepository();
+        return repository.searchByOption(searchTxt, optSearch, optSort);
+    }
+
 }

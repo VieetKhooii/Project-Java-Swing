@@ -2,6 +2,7 @@ package bus;
 
 import config.MySqlConfig;
 import model.Roles;
+import model.Staff;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +27,7 @@ public class RoleRepository {
                 list.add(roles);
             }
         } catch (SQLException e) {
-            System.out.println("RoleRepository: Error while getting Roles in database");
+            System.out.println("Error while getting Roles in database");
         }
         return list;
     }
@@ -41,7 +42,7 @@ public class RoleRepository {
             preparedStatement.setString(2,description);
             isSuccess = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("RoleRepository: Error while add role "+e.getMessage());
+            System.out.println("Error while add role "+e.getMessage());
         }
         return isSuccess;
     }
@@ -55,7 +56,7 @@ public class RoleRepository {
             statement.setInt(1,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("RoleRepository: Error deleting role "+e.getMessage());
+            System.out.println("Error deleting role "+e.getMessage());
         }
         return isSuccess;
     }
@@ -71,10 +72,48 @@ public class RoleRepository {
             statement.setInt(3,id);
             isSuccess = statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("RoleRepository: Error modify role "+e.getMessage());
+            System.out.println("Error modify role "+e.getMessage());
         }
         return isSuccess;
     }
 
+    //Search by option
+    public List<Roles> searchByOption(String searchTxt, String optSearch, String optSort){
+        List<Roles> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã quyền")) {
+            searchString = "'%" + searchTxt.trim() + "%'";
+            searchColumn = "role_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Tên quyền")) {
+            searchString = "'%" + searchTxt.trim() + "%'";
+            searchColumn = "role_name";
+        }
+
+        String query = "select * from roles where " + searchColumn +" like " + searchString;
+        if(optSort.equalsIgnoreCase("Mã quyền giảm dần")) {
+            query = query + " order by role_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Tên quyền")){
+            query = query + " order by role_name asc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Roles roles = new Roles();
+                roles.setId(resultSet.getInt("role_id"));
+                roles.setName(resultSet.getString("role_name"));
+                roles.setDescription(resultSet.getString("description"));
+                searchList.add(roles);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }
+        return searchList;
+    }
 
 }

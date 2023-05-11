@@ -12,18 +12,25 @@ public class StaffService {
         return repository.getAllStaff();
     }
 
-    public boolean addStaff(String name, String address, String phone, Date birthDate, String gender){
+    public boolean addStaff(String name, String address, String phone, Date birthDate, String gender, String image){
         StaffRepository repository = new StaffRepository();
-        return repository.addStaff(name, address, phone, birthDate, gender) >= 1;
+        return repository.addStaff(name, address, phone, birthDate, gender, image) >= 1;
     }
 
-    public boolean modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender){
+    public boolean modifyStaff(int id, String name, String address, String phone, Date birthDate, String gender, String image){
         StaffRepository repository = new StaffRepository();
-        return repository.modifyStaff(id, name, address, phone, birthDate, gender) >= 1;
+        return repository.modifyStaff(id, name, address, phone, birthDate, gender, image) >= 1;
     }
 
     public boolean deleteStaff(int id){
         StaffRepository repository = new StaffRepository();
         return repository.deleteStaff(id) >= 1;
     }
+    //search list
+    public List<Staff> getAllSearchResult(String searchTxt, String optSearch, String optSort){
+        StaffRepository repository = new StaffRepository();
+        return repository.searchByOption(searchTxt, optSearch, optSort);
+    }
+
+
 }

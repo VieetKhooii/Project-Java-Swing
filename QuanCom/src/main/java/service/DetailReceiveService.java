@@ -20,4 +20,6 @@ public class DetailReceiveService {
         DetailReceivingRepo detail = new DetailReceivingRepo();
         return detail.deleteDetailReceivedNote(id) >= 1;
     }
+
+
 }

@@ -29,6 +29,12 @@ public class OrderService {
         OrderRepository orderRepository = new OrderRepository();
         return orderRepository.numberOfBillOfAStaff(staffId);
     }
+    //Search list
+    public List<Orders> getAllSearchResult(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+            ,java.util.Date dateFrome, java.util.Date dateTo ){
+        OrderRepository orderRepository = new OrderRepository();
+        return orderRepository.searchByOption(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrome, dateTo);
+    }
 
     public int productOfStaff(int staffId){
         OrderRepository orderRepository = new OrderRepository();

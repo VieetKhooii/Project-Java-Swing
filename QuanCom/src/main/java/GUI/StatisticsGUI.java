@@ -254,6 +254,7 @@ public class StatisticsGUI extends JPanel {
         totalRevenue.setBounds(10, 35, 200, 30);
         proceedsTxt.setBounds(130, 35, 200, 30);
         proceedsTxt.setText(String.valueOf(proceeds));
+        proceedsTxt.setEnabled(false);
         buttonPane.add(proceedsTxt);
         buttonPane.add(totalRevenue);
 
@@ -267,6 +268,7 @@ public class StatisticsGUI extends JPanel {
         totalSpending.setBounds(350, 35, 200, 30);
         totalSpendingTxt.setText(String.valueOf(spending));
         totalSpendingTxt.setBounds(470, 35, 200, 30);
+        totalSpendingTxt.setEnabled(false);
         buttonPane.add(totalSpendingTxt);
         buttonPane.add(totalSpending);
 

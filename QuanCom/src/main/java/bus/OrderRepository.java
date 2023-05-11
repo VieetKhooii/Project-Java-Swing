@@ -75,6 +75,71 @@ public class OrderRepository {
         return  isSuccess;
     }
 
+    // search list
+    public List<Orders> searchByOption(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+            , java.util.Date dateFrom, java.util.Date dateTo){
+        List<Orders> searchList = new ArrayList<>();
+        Connection connection = MySqlConfig.getConnection();
+        String searchString="";
+        String searchColumn = "";
+        if(optSearch.equalsIgnoreCase("Mã hóa đơn")) {
+            searchString = "'%" + searchTxt.trim() + "%'";
+            searchColumn = "order_id";
+        }
+        else if(optSearch.equalsIgnoreCase("Mã nhân viên")) {
+            searchString = "'%" + searchTxt.trim() + "%'";
+            searchColumn = "staff_id";
+        }
+        String query = "select * from orders where " + searchColumn +" like " + searchString;
+        if(!priceFrom.equals("") && !priceTo.equals("")) {
+            query = query + " and tonggia >= " + Integer.parseInt(priceFrom) + " and tonggia <="  + Integer.parseInt(priceTo);
+        }
+        if(dateFrom != null && dateTo != null) {
+            java.sql.Date sqlDateFrom = new Date(dateFrom.getTime());
+            java.sql.Date sqlDateTo = new Date(dateTo.getTime());
+            query = query + " and order_date between '" + sqlDateFrom + "' and '" + sqlDateTo + "'";
+        }
+        if(optSort.equalsIgnoreCase("Mã HĐ giảm dần")) {
+            query = query + " order by order_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NV tăng dần")){
+            query = query + " order by staff_id asc";
+        }
+        else if(optSort.equalsIgnoreCase("Mã NV giảm dần")){
+            query = query + " order by staff_id desc";
+        }
+        else if(optSort.equalsIgnoreCase("Mới nhất")){
+            query = query + " order by order_date desc";
+        }
+        else if(optSort.equalsIgnoreCase("Cũ nhất")){
+            query = query + " order by order_date asc";
+        }
+        else if(optSort.equalsIgnoreCase("Tổng giá tăng dần")){
+            query = query + " order by tonggia asc";
+        }
+        else if(optSort.equalsIgnoreCase("Tổng giá giảm dần")){
+            query = query + " order by tonggia desc";
+        }
+        System.out.println(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Orders orders = new Orders();
+                orders.setId(resultSet.getInt("order_id"));
+                orders.setStatus(resultSet.getString("order_status"));
+                orders.setOrderDate(resultSet.getDate("order_date"));
+                orders.setTotalPrice(resultSet.getInt("tonggia"));
+                orders.setUserId(resultSet.getInt("user_id"));
+                orders.setStaffId(resultSet.getInt("staff_id"));
+                searchList.add(orders);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while searching data");
+        }
+        return searchList;
+    }
+
     public int numberOfBillOfAStaff(int staffId){
         int isSuccess = 0;
         Connection connection = MySqlConfig.getConnection();

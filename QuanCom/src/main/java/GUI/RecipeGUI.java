@@ -1,6 +1,8 @@
 package GUI;
 
 import model.Recipe;
+import model.Roles;
+import model.Staff;
 import service.RecipeService;
 
 import javax.swing.*;
@@ -17,7 +19,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
+public class RecipeGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -40,12 +42,11 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
     private JButton delRecipeBtn;
     private JButton clearInfoBtn;
     private JComboBox<String> searchCbB;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JLabel lblSpXp;
     private JComboBox<String> sortCbB;
     private JLabel lblTmKim;
     private JButton searchButton;
-    private JTextField priceEveryMaterialTxt;
     private int oldProductId=0;
     private int oldMaterialId=0;
     RecipeService recipeService = new RecipeService();
@@ -59,7 +60,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
     }
     private void init() {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(1080, 700));
+        this.setPreferredSize(new Dimension(1080, 670));
 
         centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -73,17 +74,17 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
 
         //Panel table nhan vien
         staffListPanel = new JPanel(null);
-        staffListPanel.setBackground(new Color(30, 144, 255));
+        staffListPanel.setBackground(new Color(0,0,0,80));
         staffListPanel.setBounds(0, 340, 1080, 360);
 
         contentField.add(staffListPanel);
 
-        detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Mã nguyên liệu", "Số lượng", "Giá trị"}, 0);
-        recipeTable = new JTable(detailTableModel);
+        detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Mã nguyên liệu", "Số lượng"}, 0);
+        recipeTable = new MacOSStyleTable(detailTableModel);
         recipeTable.setFont(new Font("Arial", Font.PLAIN, 14));
         recipeTable.setDefaultRenderer(String.class, centerRenderer);
         recipeTable.setRowHeight(30);
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 3; i++) {
             recipeTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
@@ -109,8 +110,8 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         });
         detailTableModel.addRow(new Object[] {"12", "1", "24", 3000000});
 
-        recipeScrollPane = new JScrollPane(recipeTable);
-        recipeScrollPane.setBounds(5, 5, 1070, 350);
+        recipeScrollPane = new CustomScrollPane(recipeTable);
+        recipeScrollPane.setBounds(5, 5, 1070, 320);
         staffListPanel.add(recipeScrollPane);
 
         recipeInfoPanel = new JPanel();
@@ -119,43 +120,43 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         contentField.add(recipeInfoPanel);
         recipeInfoPanel.setLayout(null);
 
-        lblNewLabel = new JLabel("Thông tin nhà công thức");
+        lblNewLabel = new JLabel("Thông tin công thức");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 15));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setBounds(200, 0, 200, 40);
         recipeInfoPanel.add(lblNewLabel);
 
-        JLabel idProductLabel = new JLabel("Mã món");
+        JLabel idProductLabel = new JLabel("Mã món ăn");
         idProductLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idProductLabel.setBounds(60, 51, 70, 30);
+        idProductLabel.setBounds(127, 51, 123, 30);
         recipeInfoPanel.add(idProductLabel);
 
         idProductTxt = new JTextField();
         idProductTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idProductTxt.setColumns(10);
-        idProductTxt.setBounds(143, 51, 167, 30);
+        idProductTxt.setBounds(263, 51, 224, 30);
         recipeInfoPanel.add(idProductTxt);
 
         idMaterialTxt = new JTextField();
         idMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         idMaterialTxt.setColumns(10);
-        idMaterialTxt.setBounds(143, 111, 167, 30);
+        idMaterialTxt.setBounds(263, 111, 224, 30);
         recipeInfoPanel.add(idMaterialTxt);
 
-        JLabel idMaterialLabel = new JLabel("Mã N.liệu");
+        JLabel idMaterialLabel = new JLabel("Mã nguyên liệu");
         idMaterialLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        idMaterialLabel.setBounds(60, 111, 70, 30);
+        idMaterialLabel.setBounds(127, 111, 123, 30);
         recipeInfoPanel.add(idMaterialLabel);
 
-        JLabel soLuongRecipeLb = new JLabel("Số lượng");
+        JLabel soLuongRecipeLb = new JLabel("Số lượng ng.liệu");
         soLuongRecipeLb.setFont(new Font("Arial", Font.BOLD, 13));
-        soLuongRecipeLb.setBounds(60, 171, 70, 30);
+        soLuongRecipeLb.setBounds(127, 171, 123, 30);
         recipeInfoPanel.add(soLuongRecipeLb);
 
         soLuongTxt = new JTextField();
         soLuongTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         soLuongTxt.setColumns(10);
-        soLuongTxt.setBounds(143, 171, 167, 30);
+        soLuongTxt.setBounds(263, 171, 224, 30);
         recipeInfoPanel.add(soLuongTxt);
 
         addRecipeBtn = new JButton("Thêm");
@@ -177,7 +178,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         addRecipeBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addRecipeBtn.setBounds(400, 67, 90, 35);
+        addRecipeBtn.setBounds(127, 233, 90, 35);
         recipeInfoPanel.add(addRecipeBtn);
 
         //Clear Information
@@ -195,7 +196,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(400, 249, 90, 35);
+        clearInfoBtn.setBounds(397, 233, 90, 35);
         recipeInfoPanel.add(clearInfoBtn);
 
         fixRecipeBtn = new JButton("Cập nhật");
@@ -220,7 +221,7 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         fixRecipeBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixRecipeBtn.setBounds(400, 129, 90, 35);
+        fixRecipeBtn.setBounds(217, 233, 90, 35);
         recipeInfoPanel.add(fixRecipeBtn);
 
         delRecipeBtn = new JButton("Xóa");
@@ -244,27 +245,18 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         delRecipeBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delRecipeBtn.setBounds(400, 189, 90, 35);
+        delRecipeBtn.setBounds(307, 233, 90, 35);
         recipeInfoPanel.add(delRecipeBtn);
 
-        JLabel priceEveryMaterialLb = new JLabel("Giá trị");
-        priceEveryMaterialLb.setFont(new Font("Arial", Font.BOLD, 13));
-        priceEveryMaterialLb.setBounds(60, 230, 70, 30);
-        recipeInfoPanel.add(priceEveryMaterialLb);
-
-        priceEveryMaterialTxt = new JTextField();
-        priceEveryMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
-        priceEveryMaterialTxt.setColumns(10);
-        priceEveryMaterialTxt.setBounds(143, 230, 167, 30);
-        recipeInfoPanel.add(priceEveryMaterialTxt);
-
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel supplierLabel = new JLabel("BẢNG CÔNG THỨC");
+        supplierLabel.setForeground(SystemColor.text);
         supplierLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(supplierLabel);
         supplierLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -278,37 +270,55 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
 
         searchCbB = new JComboBox<String>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Mã nguyên liệu"}));
-        searchCbB.setBounds(130, 75, 101, 40);
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Mã ng.liệu"}));
+        searchCbB.setBounds(105, 75, 101, 40);
         searchPanel.add(searchCbB);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(241, 75, 149, 40);
-        searchPanel.add(textField);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(216, 75, 149, 40);
+        searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(130, 145, 80, 40);
+        lblSpXp.setBounds(105, 145, 80, 40);
         searchPanel.add(lblSpXp);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Mã nguyên liệu"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã món tăng dần", "Mã món giảm dần"
+                , "Mã ng.liệu tăng dần", "Mã ng.liệu giảm dần"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(241, 145, 149, 40);
+        sortCbB.setBounds(216, 145, 149, 40);
         searchPanel.add(sortCbB);
 
         lblTmKim = new JLabel("Tìm kiếm");
         lblTmKim.setHorizontalAlignment(SwingConstants.CENTER);
         lblTmKim.setFont(new Font("Arial", Font.BOLD, 16));
-        lblTmKim.setBounds(185, 11, 120, 40);
+        lblTmKim.setBounds(180, 11, 120, 40);
         searchPanel.add(lblTmKim);
 
         searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim());
+            }
+        });
         searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(192, 229, 100, 50);
+        searchButton.setBounds(141, 229, 100, 50);
         searchPanel.add(searchButton);
+
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                showAllRecipe();
+                sortCbB.setSelectedIndex(0);
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(240, 229, 100, 50);
+        searchPanel.add(rmSearchBtn);
         //End
         showAllRecipe();
 
@@ -327,27 +337,18 @@ public class RecipeGUI extends JPanel implements MouseListener, ActionListener{
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
+    private void showSearchResult(String searchTxt, String optSearch, String optSort) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<Recipe> searchResultList = recipeService.getAllSearchResult(searchTxt, optSearch, optSort);
+        for (Recipe recipe : searchResultList){
+            detailTableModel.addRow(new Object[] {
+                    recipe.getProductId(), recipe.getMaterialId(), recipe.getAmount()
+            });
+        }
+    }
 
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 

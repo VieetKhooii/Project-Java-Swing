@@ -1,8 +1,12 @@
 package GUI;
 
-import enumm.ProductUnit;
 import model.*;
-import service.*;
+import service.CategoryService;
+import service.FoodCalculation;
+import service.MaterialService;
+import service.ProductService;
+//import service.RecipeService;
+import service.RecipeService;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -10,14 +14,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import enumm.ProductUnit;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProductGUI extends JPanel implements MouseListener, ActionListener{
+public class ProductGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -33,23 +39,21 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
     private JLabel lblTmKim;
     private JComboBox<String> searchCbB;
     private JComboBox<String> categorySearchCbB;
-    private JTextField textField;
+    private JTextField searchTxt;
     private JLabel lblSpXp;
     private JComboBox<String> sortCbB;
-    private JButton searchButton;
     private JTextField idProductTxt;
     private JTextField priceProductTxt;
     private JTextField nameProductTxt;
     private JTextField soLuongProductTxt;
     private JComboBox<String> unitProductCbB;
-    private JComboBox<String> categoryProductCbB;
-    private JTextField priceFrom;
-    private JTextField PriceTo;
+    public JComboBox<String> categoryProductCbB;
     private JButton addProductBtn;
     private JButton fixProductBtn;
     private JButton delProductBtn;
     private JButton browsePhoto;
     private JButton clearInfoBtn;
+    private JPanel staffInfoPanel;
     ProductService productService = new ProductService();
     CategoryService categoryService = new CategoryService();
     MaterialService materialService = new MaterialService();
@@ -58,6 +62,8 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
     List<Category> categoryList = categoryService.getAllCate();
     List<Material> materialList = materialService.getAllMaterial();
     List<Recipe> recipeList = recipeService.getAllRecipe();
+    String filePath = "";
+    JLabel productPhoto;
     /**
      * Create the panel.
      */
@@ -80,13 +86,13 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
 
         //Panel table nhan vien
         productListPanel = new JPanel(null);
-        productListPanel.setBackground(new Color(30, 144, 255));
+        productListPanel.setBackground(new Color(0,0,0,80));
         productListPanel.setBounds(0, 380, 1080, 290);
 
         contentField.add(productListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã món", "Tên món", "Đơn vị tính", "Số lượng", "Giá", "Phân loại"}, 0);
-        productTable = new JTable(detailTableModel);
+        productTable = new MacOSStyleTable(detailTableModel);
         productTable.setFont(new Font("Arial", Font.PLAIN, 14));
         productTable.setDefaultRenderer(String.class, centerRenderer);
         productTable.setRowHeight(30);
@@ -124,20 +130,31 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                             break;
                         }
                     }
+                    for(Product i : productList) {
+                        if(i.getId() == Integer.parseInt(idProductTxt.getText())) {
+                            productPhoto.setIcon(new ImageIcon(i.getImage()));
+                            System.out.println(i.getImage());
+                            break;
+                        }
+                    }
                 }
             }
         });
-        productScrollPane = new JScrollPane(productTable);
+
+
+        productScrollPane = new CustomScrollPane(productTable);
         productScrollPane.setBounds(5, 5, 1070, 280);
         productListPanel.add(productScrollPane);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(0x007AFF));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("MÓN ĂN");
+        staffLabel.setForeground(SystemColor.text);
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -156,73 +173,78 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         searchPanel.add(lblTmKim);
 
         searchCbB = new JComboBox<String>();
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Tên món"}));
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã", "Tên", "Số lượng"}));
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
         searchCbB.setBounds(10, 64, 101, 30);
         searchPanel.add(searchCbB);
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setColumns(10);
-        textField.setBounds(121, 64, 149, 30);
-        searchPanel.add(textField);
-
-        searchButton = new JButton("OK");
-        searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(96, 289, 100, 30);
-        searchPanel.add(searchButton);
-
-        priceFrom = new JTextField();
-        priceFrom.setFont(new Font("Arial", Font.PLAIN, 13));
-        priceFrom.setColumns(10);
-        priceFrom.setBounds(121, 105, 149, 30);
-        searchPanel.add(priceFrom);
-
-        JLabel priceProduct = new JLabel("Giá ~");
-        priceProduct.setFont(new Font("Arial", Font.BOLD, 13));
-        priceProduct.setBounds(10, 131, 47, 30);
-        searchPanel.add(priceProduct);
-
-        PriceTo = new JTextField();
-        PriceTo.setFont(new Font("Arial", Font.PLAIN, 13));
-        PriceTo.setColumns(10);
-        PriceTo.setBounds(121, 146, 149, 30);
-        searchPanel.add(PriceTo);
+        searchTxt = new JTextField();
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setColumns(10);
+        searchTxt.setBounds(121, 64, 149, 30);
+        searchPanel.add(searchTxt);
 
         lblSpXp = new JLabel("Sắp xếp");
-        lblSpXp.setBounds(10, 238, 80, 30);
+        lblSpXp.setBounds(10, 163, 80, 30);
         searchPanel.add(lblSpXp);
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setBounds(121, 238, 149, 30);
+        sortCbB.setBounds(121, 163, 149, 30);
         searchPanel.add(sortCbB);
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Tên món", "Số lượng"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã giảm dần", "Tên", "Giá tăng dần", "Giá giảm dần", "Số lượng tăng dần", "Số lượng giảm dần"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
 
         JLabel lblPhnLoi_1 = new JLabel("Phân loại");
         lblPhnLoi_1.setFont(new Font("Arial", Font.BOLD, 13));
-        lblPhnLoi_1.setBounds(10, 190, 80, 30);
+        lblPhnLoi_1.setBounds(10, 115, 80, 30);
         searchPanel.add(lblPhnLoi_1);
 
         categorySearchCbB = new JComboBox<String>();
-        //categorySearchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã món", "Tên món"}));
+        categorySearchCbB.addItem("Tất cả");
+        for (Category category : categoryList){
+            categorySearchCbB.addItem(category.getName());
+        }
         categorySearchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        categorySearchCbB.setBounds(121, 190, 149, 30);
+        categorySearchCbB.setBounds(121, 115, 149, 30);
         searchPanel.add(categorySearchCbB);
+
+        JButton searchButton = new JButton("OK");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim()
+                        , categorySearchCbB.getSelectedItem().toString());
+            }
+        });
+        searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchButton.setBounds(40, 269, 100, 50);
+        searchPanel.add(searchButton);
+
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                sortCbB.setSelectedIndex(0);
+                categorySearchCbB.setSelectedIndex(0);
+                showTableProduct();
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(139, 269, 100, 50);
+        searchPanel.add(rmSearchBtn);
         // Thông tin món ăn
-        JPanel staffInfoPanel = new JPanel();
+        staffInfoPanel = new JPanel();
         staffInfoPanel.setLayout(null);
         staffInfoPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         staffInfoPanel.setBounds(0, 50, 800, 330);
         contentField.add(staffInfoPanel);
 
-        JLabel staffPhoto = new JLabel("Ảnh");
-        staffPhoto.setHorizontalAlignment(SwingConstants.CENTER);
-        staffPhoto.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        staffPhoto.setBackground(Color.WHITE);
-        staffPhoto.setBounds(41, 70, 140, 130);
-        staffInfoPanel.add(staffPhoto);
+        productPhoto = new JLabel("Ảnh");
+        productPhoto.setHorizontalAlignment(SwingConstants.CENTER);
+        productPhoto.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        productPhoto.setBackground(Color.WHITE);
+        productPhoto.setBounds(41, 70, 140, 140);
+        staffInfoPanel.add(productPhoto);
 
         JLabel lblThngTinMn = new JLabel("Thông tin món ăn");
         lblThngTinMn.setHorizontalAlignment(SwingConstants.CENTER);
@@ -239,25 +261,29 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                 else if(nameProductTxt.getText().equals("") || priceProductTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
+                else if(!priceProductTxt.getText().matches("[0-9]{1,9}")) {
+                    JOptionPane.showMessageDialog(null, "Sai đầu vào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
                 else {
                     int id=0;
                     for (Category category : categoryList){
-                        if (category.getName().equalsIgnoreCase((String) categoryProductCbB.getSelectedItem())){
+                        if (category.getName().equalsIgnoreCase(categoryProductCbB.getSelectedItem().toString())){
                             id = category.getId();
+                            //System.out.println(category.getName() + "Thêm");
                             break;
                         }
                     }
-                    productService.addProduct(nameProductTxt.getText(),
+                    productService.addProduct(chuanHoa(nameProductTxt.getText()),
                             0,(String) unitProductCbB.getSelectedItem(),
                             Integer.parseInt(priceProductTxt.getText()),
-                            id);
+                            id, filePath);
                     showTableProduct();
                     JOptionPane.showMessageDialog(null, "Đã thêm món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
         addProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        addProductBtn.setBounds(270, 280, 90, 35);
+        addProductBtn.setBounds(228, 284, 90, 35);
         staffInfoPanel.add(addProductBtn);
 
         //Clear Information
@@ -267,12 +293,12 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                 productTable.clearSelection();
                 idProductTxt.setText(null);
                 nameProductTxt.setText(null);
-                priceProduct.setText(null);
+                priceProductTxt.setText(null);
                 soLuongProductTxt.setText(null);
             }
         });
         clearInfoBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        clearInfoBtn.setBounds(534, 280, 90, 35);
+        clearInfoBtn.setBounds(492, 284, 90, 35);
         staffInfoPanel.add(clearInfoBtn);
 
         fixProductBtn = new JButton("Cập nhật");
@@ -281,8 +307,11 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                 if (idProductTxt.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Hãy chọn 1 món ăn và đảm bảo ID hiện lên khung", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if(nameProductTxt.getText().equals("") || priceProduct.getText().equals("")) {
+                else if(nameProductTxt.getText().equals("") || priceProductTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                else if(!priceProductTxt.getText().matches("[0-9]{1,9}")) {
+                    JOptionPane.showMessageDialog(null, "Sai đầu vào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     int id=0;
@@ -292,18 +321,18 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
                             break;
                         }
                     }
-                    productService.modifyProduct(nameProductTxt.getText(),
+                    productService.modifyProduct(chuanHoa(nameProductTxt.getText()),
                             Integer.parseInt(soLuongProductTxt.getText()),
                             (String) unitProductCbB.getSelectedItem(),Integer.parseInt(priceProductTxt.getText()),
-                            id,Integer.parseInt(idProductTxt.getText()));
+                            id,Integer.parseInt(idProductTxt.getText()), filePath);
                     showTableProduct();
-                    JOptionPane.showMessageDialog(null, "Đã sửa tài khoản!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Đã sửa thông tin món ăn!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
                 }
             }
         });
         fixProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        fixProductBtn.setBounds(358, 280, 90, 35);
+        fixProductBtn.setBounds(316, 284, 90, 35);
         staffInfoPanel.add(fixProductBtn);
 
         delProductBtn = new JButton("Xóa");
@@ -325,10 +354,24 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
             }
         });
         delProductBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        delProductBtn.setBounds(445, 280, 90, 35);
+        delProductBtn.setBounds(403, 284, 90, 35);
         staffInfoPanel.add(delProductBtn);
 
         browsePhoto = new JButton("Chọn");
+        browsePhoto.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                JFileChooser fChooser = new JFileChooser();
+                int response = fChooser.showOpenDialog(null);
+                if(response == JFileChooser.APPROVE_OPTION) {
+                    filePath = fChooser.getSelectedFile().getAbsolutePath();
+                    productPhoto.setIcon(new ImageIcon(filePath));
+                }
+            }
+
+        });
         browsePhoto.setBounds(71, 220, 80, 30);
         staffInfoPanel.add(browsePhoto);
 
@@ -364,7 +407,7 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         }
         unitProductCbB.setModel(new DefaultComboBoxModel<String>(unitList));
         unitProductCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        unitProductCbB.setBounds(660, 120, 100, 30);
+        unitProductCbB.setBounds(640, 120, 120, 30);
         staffInfoPanel.add(unitProductCbB);
 
         JLabel addressSupplierLabel = new JLabel("Giá");
@@ -389,7 +432,7 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
             categoryProductCbB.addItem(category.getName());
         }
         categoryProductCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        categoryProductCbB.setBounds(660, 170, 100, 30);
+        categoryProductCbB.setBounds(640, 170, 120, 30);
         staffInfoPanel.add(categoryProductCbB);
 
         JLabel idProductLabel = new JLabel("Mã món");
@@ -432,29 +475,64 @@ public class ProductGUI extends JPanel implements MouseListener, ActionListener{
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
 
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
 
+    private void showSearchResult(String searchTxt, String optSearch, String optSort, String optCate) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        String categoryName = "";
+        categoryList = categoryService.getAllCate();
+        List<Product> searchResultList = productService.getAllSearchResult(searchTxt, optSearch, optSort, optCate);
+        FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
+        for(Product product : searchResultList) {
+            for (Category category : categoryList){
+                if (category.getId() == product.getCategoryId()){
+                    categoryName = category.getName();
+                }
+            }
+            detailTableModel.addRow(new Object[] {
+                    product.getId(), product.getName(), product.getUnit(), product.getAmount(),
+                    product.getPrice(), categoryName
+            });
+        }
     }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
 
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+    public String chuanHoa(String message) {
+        message = message.toLowerCase();
+        char[] charArray = message.toCharArray();
+        boolean foundSpace = true;
+        for(int i = 0; i < charArray.length; i++) {
+            if(Character.isLetter(charArray[i])) {
+                if(foundSpace) {
+                    charArray[i] = Character.toUpperCase(charArray[i]);
+                    foundSpace = false;
+                }
+            }
+            else {
+                foundSpace = true;
+            }
+        }
+        message = String.valueOf(charArray);
+        return message;
+    }
+    public void categoryReload() {
+        categoryList = categoryService.getAllCate();
+//    	DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String [] {""});
+//    	categoryProductCbB.setModel(model);
+        String[] namecbb = new String[categoryList.size()];
+        for(int i = 0; i < categoryList.size(); i++) {
+            namecbb[i] = categoryList.get(i).getName();
+        }
+        categoryProductCbB.setModel(new javax.swing.DefaultComboBoxModel<>(namecbb));
+        for(int i = 0; i < categoryProductCbB.getItemCount(); i++) {
+            System.out.println(categoryProductCbB.getItemAt(i).toString());
+        }
+        categoryProductCbB.revalidate();
+        categoryProductCbB.repaint();
     }
 }

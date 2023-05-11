@@ -29,7 +29,7 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class ReceivingGUI extends JPanel implements MouseListener, ActionListener{
+public class ReceivingGUI extends JPanel implements ActionListener{
 
     /**
      *
@@ -55,6 +55,8 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
     private JComboBox<String> sortCbB;
     private JComboBox<String> searchCbB;
     private JLabel lblSpXp;
+    private JDateChooser dateFrom;
+    private JDateChooser dateTo;
     ReceivedNoteService receivedNoteService = new ReceivedNoteService();
     DetailReceiveService detailReceiveService = new DetailReceiveService();
     List<ReceivedNote> receivedNoteList = receivedNoteService.getAllReceiving();
@@ -64,6 +66,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
      * Create the panel.
      */
     public ReceivingGUI() {
+
         init();
     }
     private void init() {
@@ -82,18 +85,18 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 
         //Panel table nhan vien
         receivingListPanel = new JPanel(null);
-        receivingListPanel.setBackground(new Color(30, 144, 255));
+        receivingListPanel.setBackground(new Color(0, 0, 0, 80));
         receivingListPanel.setBounds(0, 50, 800, 650);
 
         contentField.add(receivingListPanel);
 
         detailTableModel = new DefaultTableModel(new Object[]{"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo", "Tổng tiền"}, 0);
-        receivingTable = new JTable(detailTableModel);
+        receivingTable = new MacOSStyleTable(detailTableModel);
         receivingTable.setFont(new Font("Arial", Font.PLAIN, 14));
         receivingTable.setDefaultRenderer(String.class, centerRenderer);
-        receivingTable.setRowHeight(30);
+        receivingTable.setRowHeight(40);
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 5; i++) {
             receivingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
@@ -126,25 +129,29 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
             }
         });
 
-        receivingScrollPane = new JScrollPane(receivingTable);
+        receivingScrollPane = new CustomScrollPane(receivingTable);
         receivingScrollPane.setBounds(5, 5, 790, 640);
         receivingListPanel.add(receivingScrollPane);
 
         JPanel bigNamePanel = new JPanel();
+        bigNamePanel.setBackground(new Color(255, 255, 255));
         bigNamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         bigNamePanel.setBounds(0, 0, 1080, 50);
         contentField.add(bigNamePanel);
         bigNamePanel.setLayout(null);
 
         JLabel staffLabel = new JLabel("DANH SÁCH PHIẾU NHẬP");
+        staffLabel.setForeground(new Color(0x007AFF));
+        staffLabel.setBackground(new Color(255, 255, 255));
         staffLabel.setBounds(240, 0, 600, 50);
         bigNamePanel.add(staffLabel);
         staffLabel.setHorizontalAlignment(SwingConstants.CENTER);
         staffLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 
         searchPanel = new JPanel();
+        searchPanel.setBackground(new Color(255, 255, 255));
         searchPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        searchPanel.setBounds(800, 50, 280, 330);
+        searchPanel.setBounds(800, 50, 280, 377);
         contentField.add(searchPanel);
         searchPanel.setLayout(null);
 
@@ -155,61 +162,115 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         searchPanel.add(lblTmKim);
 
         searchTxt = new JTextField();
-        searchTxt.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchTxt.setFont(new Font("Arial", Font.PLAIN, 16));
         searchTxt.setColumns(10);
-        searchTxt.setBounds(100, 70, 170, 40);
+        searchTxt.setBounds(100, 98, 170, 40);
         searchPanel.add(searchTxt);
-
-        searchButton = new JButton("OK");
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-        searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchButton.setBounds(100, 250, 100, 50);
-        searchPanel.add(searchButton);
 
         searchCbB = new JComboBox<>();
         searchCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo"}));
-        searchCbB.setBounds(10, 70, 80, 40);
+        searchCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp"}));
+        searchCbB.setBounds(10, 51, 260, 40);
         searchPanel.add(searchCbB);
 
         lblNewLabel = new JLabel("Tổng giá");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        lblNewLabel.setBounds(10, 125, 80, 40);
+        lblNewLabel.setBounds(10, 149, 80, 40);
         searchPanel.add(lblNewLabel);
 
         priceFrom = new JTextField();
         priceFrom.setFont(new Font("Arial", Font.PLAIN, 13));
         priceFrom.setColumns(10);
-        priceFrom.setBounds(100, 125, 80, 40);
+        priceFrom.setBounds(100, 149, 80, 40);
         searchPanel.add(priceFrom);
 
         priceTo = new JTextField();
         priceTo.setFont(new Font("Arial", Font.PLAIN, 13));
         priceTo.setColumns(10);
-        priceTo.setBounds(190, 125, 80, 40);
+        priceTo.setBounds(190, 149, 80, 40);
         searchPanel.add(priceTo);
 
         sortCbB = new JComboBox<String>();
-        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"Mã phiếu nhập", "Mã nhân viên", "Mã nhà cung cấp", "Ngày tạo", "Tổng giá"}));
+        sortCbB.setModel(new DefaultComboBoxModel<String>(new String[] {"None", "Mã PN giảm dần", "Mã NV tăng dần", "Mã NV giảm dần", "Mã NCC tăng dần"
+                , "Mã NCC giảm dần", "Mới nhất", "Cũ nhất", "Tổng giá tăng dần", "Tổng giá giảm dần"}));
         sortCbB.setFont(new Font("Arial", Font.BOLD, 13));
-        sortCbB.setBounds(100, 180, 145, 40);
+        sortCbB.setBounds(100, 250, 170, 40);
         searchPanel.add(sortCbB);
 
         lblSpXp = new JLabel("Sắp xếp");
         lblSpXp.setFont(new Font("Arial", Font.BOLD, 13));
-        lblSpXp.setBounds(10, 180, 80, 40);
+        lblSpXp.setBounds(10, 250, 80, 40);
         searchPanel.add(lblSpXp);
 
+        JLabel lblNhp = new JLabel("Nhập mã");
+        lblNhp.setFont(new Font("Arial", Font.BOLD, 13));
+        lblNhp.setBounds(10, 98, 80, 40);
+        searchPanel.add(lblNhp);
+
+        searchButton = new JButton("OK");
+        searchButton.setForeground(new Color(255, 255, 255));
+        searchButton.setBackground(new Color(0x007AFF));
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(priceFrom.getText().equals("") && priceTo.getText().equals("")) {
+                    showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim(),
+                            priceFrom.getText(), priceTo.getText(), dateFrom.getDate(), dateTo.getDate());
+                }
+                else {
+                    if(!priceFrom.getText().matches("[0-9]{1,9}") && !priceTo.getText().matches("[0-9]{1,9}")) {
+                        JOptionPane.showMessageDialog(null, "Sai tham số đầu vào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else {
+                        showSearchResult(searchTxt.getText(), searchCbB.getSelectedItem().toString().trim(), sortCbB.getSelectedItem().toString().trim(),
+                                priceFrom.getText(), priceTo.getText(), dateFrom.getDate(), dateTo.getDate());
+                    }
+                }
+
+            }
+        });
+        searchButton.setFont(new Font("Arial", Font.PLAIN, 13));
+        searchButton.setBounds(40, 316, 100, 50);
+        searchPanel.add(searchButton);
+
+        JButton rmSearchBtn = new JButton("Hủy");
+        rmSearchBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                searchTxt.setText("");
+                priceFrom.setText("");
+                priceTo.setText("");
+                showTableReceiving();
+                dateFrom.setDate(null);
+                dateTo.setDate(null);
+                sortCbB.setSelectedIndex(0);
+            }
+        });
+        rmSearchBtn.setFont(new Font("Arial", Font.PLAIN, 13));
+        rmSearchBtn.setBounds(140, 316, 100, 50);
+        searchPanel.add(rmSearchBtn);
+
+        JLabel dateLabel = new JLabel("Ngày");
+        dateLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        dateLabel.setBounds(10, 199, 80, 40);
+        searchPanel.add(dateLabel);
+
+        dateFrom = new JDateChooser();
+        dateFrom.setBounds(100, 200, 80, 40);
+        searchPanel.add(dateFrom);
+
+        dateTo = new JDateChooser();
+        dateTo.setBounds(190, 200, 80, 40);
+        searchPanel.add(dateTo);
+
         btnField = new JPanel();
+        btnField.setBackground(new Color(255, 255, 255));
         btnField.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        btnField.setBounds(800, 380, 280, 320);
+        btnField.setBounds(800, 427, 280, 270);
         contentField.add(btnField);
         btnField.setLayout(null);
 
         viewBtn = new JButton("Xem chi tiết");
+        viewBtn.setBackground(new Color(0x007AFF));
+        viewBtn.setForeground(Color.white);
         viewBtn.setEnabled(false);
         viewBtn.setBounds(80, 70, 120, 40);
         viewBtn.addActionListener(new ActionListener() {
@@ -224,6 +285,8 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         btnField.add(viewBtn);
 
         createBtn = new JButton("Tạo mới");
+        createBtn.setBackground(new Color(0x007AFF));
+        createBtn.setForeground(Color.white);
         createBtn.setBounds(80, 130, 120, 40);
         createBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -234,6 +297,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
                 GiaoDien.taoPhieu.resetComponent();
                 GiaoDien.taoPhieu.showTableReceiving();
                 GiaoDien.taoPhieu.showTempMaterial();
+                GiaoDien.taoPhieu.idStaffCreatePNTxt.setText(Login.idStaffLogin);
             }
         });
         btnField.add(createBtn);
@@ -243,6 +307,8 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
 //        btnField.add(updateBtn);
 
         delBtn = new JButton("Xóa");
+        delBtn.setBackground(new Color(0x007AFF));
+        delBtn.setForeground(Color.white);
         delBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int decide = JOptionPane.showConfirmDialog(null, "Xác nhận muốn xóa?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -276,37 +342,29 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
-        System.out.println("hi");
         receivedNoteList = receivedNoteService.getAllReceiving();
         for (ReceivedNote note : receivedNoteList){
-            note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
+            //note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
             detailTableModel.addRow(new Object[] {
                     note.getId(), note.getStaffId(), note.getSupplierId(), note.getDate(), note.getTotalPrice()
             });
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
+    private void showSearchResult(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
+            , java.util.Date dateFrom, java.util.Date dateTo) {
+        while (detailTableModel.getRowCount() != 0){
+            detailTableModel.removeRow(0);
+        }
+        List<ReceivedNote> searchResultList = receivedNoteService.getAllSearchResult(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrom, dateTo);
+        for (ReceivedNote note : searchResultList){
+            //note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));
+            detailTableModel.addRow(new Object[] {
+                    note.getId(), note.getStaffId(), note.getSupplierId(), note.getDate(), note.getTotalPrice()
+            });
+        }
+    }
 
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
 

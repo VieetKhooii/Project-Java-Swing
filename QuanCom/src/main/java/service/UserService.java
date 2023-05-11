@@ -1,9 +1,18 @@
 package service;
 
+import model.Roles;
+import model.Staff;
 import model.User;
+import bus.StaffRepository;
 import bus.UserRepository;
 
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserService {
 
@@ -20,13 +29,15 @@ public class UserService {
     public boolean addUser(String userName,
                            String email,
                            String password,
-                           int roleId){
+                           int roleId,
+                           int staffId){
         UserRepository userRepository = new UserRepository();
         return userRepository.addUser(
                 userName,
                 email,
                 password,
-                roleId) >= 1;
+                roleId,
+                staffId) >= 1;
     }
 
     public boolean deleteUser(int id){
@@ -39,7 +50,8 @@ public class UserService {
             String userName,
             String email,
             String password,
-            int roleId
+            int roleId,
+            int staffId
     ){
         UserRepository userRepository = new UserRepository();
         return  userRepository.modifyUser(
@@ -47,7 +59,14 @@ public class UserService {
                 userName,
                 email,
                 password,
-                roleId
+                roleId,
+                staffId
         ) >= 1;
+    }
+
+    //search list
+    public List<User> getAllSearchResult(String searchTxt, String optSearch, String optSort){
+        UserRepository userRepository = new UserRepository();
+        return userRepository.searchByOption(searchTxt, optSearch, optSort);
     }
 }
