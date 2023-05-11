@@ -38,7 +38,10 @@ CREATE TABLE users(
     role_id INT NOT NULL,
     foreign key(role_id) REFERENCES roles(role_id),
     PRIMARY KEY(user_id)
+    
 );
+alter table users add staff_id int;
+ALTER TABLE users ADD CONSTRAINT FOREIGN KEY (staff_id) REFERENCES staffs(staff_id);
 
 CREATE TABLE staffs(
 	staff_id INT NOT NULL auto_increment,
@@ -47,9 +50,9 @@ CREATE TABLE staffs(
     gender varchar(4),
     address nvarchar(50),
 	phonenumber varchar(50),
-	primary key(staff_id)
+	primary key(staff_id),
+    image varchar(100)
 );
-
 CREATE TABLE orders(
 	order_id INT NOT NULL auto_increment,
     order_status varchar(10) constraint check(order_status = 'Incomplete' or order_status = 'Complete'),
@@ -69,7 +72,8 @@ INSERT INTO functions(func_name) VALUES
 ('Nguyên liệu'),
 ('Tài khoản'),
 ('Nhân viên'),
-('Nhà cung cấp');
+('Nhà cung cấp'),
+('Thống kê');
 
 CREATE TABLE products(
 	product_id INT NOT NULL auto_increment,
@@ -78,6 +82,7 @@ CREATE TABLE products(
 	donvitinh varchar(15),
 	gia int,
     category_id int,
+	image varchar(100),
     PRIMARY KEY(product_id),
     FOREIGN KEY(category_id) REFERENCES category(cate_id)
 );
@@ -143,12 +148,35 @@ create table chitietcongthuc(
 );
 
 
-
-select * from staffs;
+use quancom;
+select * from staffs
+where phonenumber like '%043%'
+order by name asc;
 select * from roles;
 select * from functions;
 select * from role_func;
 select * from users;
 select * from supplier;
 select * from materials;
+select * from category;
+select * from phieuNhap where tonggia <= 20000 and tonggia >= 5000;
+select user_id, username, role_name from users as u join roles as r on u.role_id = r.role_id and u.username like '%ba%' order by r.role_name asc;
 
+select product_id, product_name, soluong, donvitinh, c.cate_id, cate_name from products as p join category as c on p.category_id=c.cate_id  and cate_name='cơm gà';
+
+select * from phieunhap where date between '2023-05-05' and '2023-05-08';
+
+select * from orders;
+select * from chitiet_orders;
+
+
+select * from products;
+select * from staffs;
+
+SELECT o.order_id,
+	o.order_date,
+	o.tonggia,
+	s.name
+FROM orders as o  
+join staffs as s
+ ON  s.staff_id=o.staff_id and o.order_id=10
