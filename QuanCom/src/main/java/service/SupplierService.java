@@ -29,6 +29,16 @@ public class SupplierService {
         return repository.modifySupplier(id, name, address) >= 1;
     }
 
+    public int totalMaterialOfASupplier(int supplierId){
+        SupplierRepository repository = new SupplierRepository();
+        return repository.totalMaterialOfASupplier(supplierId);
+    }
+
+    public int totalMaterialPriceOfASupplier(int supplierId){
+        SupplierRepository repository = new SupplierRepository();
+        return repository.totalMaterialPriceOfASupplier(supplierId);
+    }
+
     //Quick Sort
     public void quickSort(List<Supplier> arr, String sortBy) {
         quickSortHelper(arr, 0, arr.size() - 1, sortBy);

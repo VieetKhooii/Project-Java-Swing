@@ -1,6 +1,53 @@
 create database quancom;
 use quancom;
 
+select p.product_name, m.name, ct.soluong
+from products p join chitietcongthuc ct on p.product_id = ct.product_id
+	 join materials m on m.material_id = ct.material_id
+order by p.product_name;
+
+SELECT SUM(soluong), product_id
+FROM chitiet_orders 
+WHERE product_id = 1;
+
+SELECT s.staff_id, s.name, SUM(ct.soluong) as total_amount 
+FROM chitiet_orders ct 
+INNER JOIN orders o ON ct.order_id = ct.order_id 
+INNER JOIN staffs s ON o.staff_id = s.staff_id 
+GROUP BY s.staff_id, s.name;
+
+SELECT COALESCE(SUM(ct.gia), 0) as total_price
+FROM staffs s 
+LEFT JOIN orders o ON s.staff_id = o.staff_id 
+LEFT JOIN chitiet_orders ct ON o.order_id = ct.order_id 
+WHERE s.staff_id = 2
+GROUP BY s.staff_id, s.name;
+
+SELECT COALESCE(SUM(ct.gia), 0) as total_price
+FROM supplier s 
+LEFT JOIN phieuNhap pn ON s.sup_id = pn.sup_id
+LEFT JOIN chitietphieuNhap ct ON pn.phieu_id = ct.phieu_id 
+WHERE s.sup_id = 2
+GROUP BY s.staff_id, s.name;
+
+SELECT COALESCE(SUM(ct.soluong), 0) as total_amount
+FROM materials m 
+LEFT JOIN chitietphieuNhap ct ON m.material_id = ct.material_id
+WHERE m.material_id = 51;
+
+SELECT COALESCE(SUM(ct.gia), 0) as total_price
+FROM materials m 
+LEFT JOIN chitietphieuNhap ct ON m.material_id = ct.material_id
+WHERE m.material_id = 51;
+select * from chitietphieuNhap;
+SELECT s.staff_id, s.name, SUM(ct.soluong) as total_amount 
+FROM chitiet_orders ct 
+INNER JOIN orders o ON ct.order_id = ct.order_id 
+INNER JOIN staffs s ON o.staff_id = s.staff_id 
+GROUP BY s.staff_id, s.name;
+
+select count(*) as count from orders where staff_id = 4;
+select count(*) as count from phieuNhap where staff_id = 2;
 CREATE TABLE functions(
 	func_id INT NOT NULL,
 	func_name varchar(50),
@@ -63,6 +110,20 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
+select * from category;
+select * from materials;
+select * from roles;
+select * from role_func order by role_id asc;
+select * from functions;
+select * from users;
+select * from orders;
+select * from supplier;
+select * from staffs;
+select * from phieuNhap;
+select * from chitietphieuNhap;
+select * from products;
+select * from chitietcongthuc;
+select * from chitiet_orders;
 
 INSERT INTO functions(func_name) VALUES
 ('Đơn hàng'),

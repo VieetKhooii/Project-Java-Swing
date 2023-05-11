@@ -6,25 +6,25 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.SwingConstants;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
+
 import com.toedter.calendar.JDateChooser;
 import model.Material;
 import model.Product;
 import model.Staff;
+import model.Supplier;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import service.*;
 
 import java.awt.Canvas;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 // import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -50,6 +50,8 @@ public class StatisticsGUI extends JPanel {
     private JButton submtBtn;
     private JLabel filterIcon;
     private JLabel dateLabel;
+    private JTextField proceedsTxt;
+    private JTextField totalSpendingTxt;
     private DefaultTableCellRenderer centerRenderer;
     private JPanel buttonPane;
     private JButton exportBtnp;
@@ -57,6 +59,8 @@ public class StatisticsGUI extends JPanel {
     StaffService staffService = new StaffService();
     ProductService productService = new ProductService();
     MaterialService materialService = new MaterialService();
+    SupplierService supplierService = new SupplierService();
+    List<Supplier> supplierList = supplierService.getAllSupplier();
     List<Material> materialList = materialService.getAllMaterial();
     List<Staff> staffList = staffService.getAllStaff();
     List<Product> productList = productService.getAllProduct();
@@ -225,6 +229,7 @@ public class StatisticsGUI extends JPanel {
                     statisticTable.getTableHeader().getColumnModel().getColumn(2).setHeaderValue(" ");
                     statisticTable.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Số lượng ng.liệu");
                     statisticTable.getTableHeader().repaint();
+                    showSupplierStatistic();
                 }
             }
 
@@ -240,16 +245,65 @@ public class StatisticsGUI extends JPanel {
         this.add(buttonPane, BorderLayout.SOUTH);
 
         JLabel totalRevenue = new JLabel("Tổng doanh thu");
+        proceedsTxt = new JTextField();
+        int proceeds = 0;
+        for (Product product : productList){
+            proceeds += productService.totalPriceOfASoldProduct(product.getId());
+        }
         totalRevenue.setFont(new Font("Tahoma", Font.PLAIN, 15));
         totalRevenue.setBounds(10, 35, 200, 30);
+        proceedsTxt.setBounds(130, 35, 200, 30);
+        proceedsTxt.setText(String.valueOf(proceeds));
+        buttonPane.add(proceedsTxt);
         buttonPane.add(totalRevenue);
 
         JLabel totalSpending = new JLabel("Tổng chi tiêu");
+        totalSpendingTxt = new JTextField();
+        int spending = 0;
+        for (Material material : materialList){
+            spending += materialService.totalReceivePriceOfAMaterial(material.getId());
+        }
         totalSpending.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        totalSpending.setBounds(250, 35, 200, 30);
+        totalSpending.setBounds(350, 35, 200, 30);
+        totalSpendingTxt.setText(String.valueOf(spending));
+        totalSpendingTxt.setBounds(470, 35, 200, 30);
+        buttonPane.add(totalSpendingTxt);
         buttonPane.add(totalSpending);
 
         JButton excelBtn = new JButton("Xuất Excel");
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("Statistics");
+        excelBtn.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               if (model.getRowCount() != 0){
+                   boolean check = true;
+                   int rownum = 0;
+                   for (int i = 0; i < model.getRowCount(); i++) {
+                       HSSFRow row = sheet.createRow(rownum++);
+                       for (int j = 0; j < model.getColumnCount(); j++) {
+                           HSSFCell cell = row.createCell(j);
+                           cell.setCellValue(model.getValueAt(i, j).toString());
+                       }
+                   }
+                   try {
+                       FileOutputStream out = new FileOutputStream(new File("C:\\Users\\VieetKhooii\\Downloads\\Statistics.CSV"));
+                       workbook.write(out);
+                       out.close();
+                   } catch (IOException ex) {
+                       check=false;
+                       System.out.println("StatisticsGUI: Error importing excel");
+                       throw new RuntimeException(ex);
+                   }
+                   if (check){
+                       JOptionPane.showMessageDialog(null, "Xuất Excel thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                   }
+               }
+               else {
+                   JOptionPane.showMessageDialog(null, "Chọn đối tượng thống kê trước khi xuất Excel", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+               }
+           }
+            });
         excelBtn.setBounds(970, 30, 100, 40);
         buttonPane.add(excelBtn);
     }
@@ -312,6 +366,21 @@ public class StatisticsGUI extends JPanel {
     }
 
     // Material }
+
+    // Supplier {
+    private void showSupplierStatistic(){
+        while (model.getRowCount() != 0){
+            model.removeRow(0);
+        }
+        for (int i=0; i<supplierList.size(); i++){
+            int supplierId = supplierList.get(i).getId();
+            model.addRow(new Object[]{
+                    i+1, supplierId, "", supplierService.totalMaterialOfASupplier(supplierId),
+                    supplierService.totalMaterialPriceOfASupplier(supplierId)
+            });
+        }
+    }
+    // Supplier }
 
     public static void main(String[] args) {
         JFrame a = new JFrame();

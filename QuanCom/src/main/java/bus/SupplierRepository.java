@@ -76,4 +76,46 @@ public class SupplierRepository {
         }
         return isSuccess;
     }
+
+    public int totalMaterialOfASupplier(int supplierId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.soluong), 0) as total_amount\n" +
+                "FROM supplier s \n" +
+                "LEFT JOIN phieuNhap pn ON s.sup_id = pn.sup_id\n" +
+                "LEFT JOIN chitietphieuNhap ct ON pn.phieu_id = ct.phieu_id \n" +
+                "WHERE s.sup_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,supplierId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("SupplierRepository: Error while getting total material import from a supplier");
+        }
+        return isSuccess;
+    }
+
+    public int totalMaterialPriceOfASupplier(int supplierId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.gia), 0) as total_price\n" +
+                "FROM supplier s \n" +
+                "LEFT JOIN phieuNhap pn ON s.sup_id = pn.sup_id\n" +
+                "LEFT JOIN chitietphieuNhap ct ON pn.phieu_id = ct.phieu_id \n" +
+                "WHERE s.sup_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,supplierId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_price");
+            }
+        } catch (SQLException e) {
+            System.out.println("SupplierRepository: Error while getting total material price of a supplier");
+        }
+        return isSuccess;
+    }
 }
