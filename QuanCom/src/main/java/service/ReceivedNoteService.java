@@ -32,4 +32,18 @@ public class ReceivedNoteService {
     	ReceivedNoteRepo repo = new ReceivedNoteRepo();
         return repo.searchByOption(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrome, dateTo);
     }
+    public int totalMaterialAmountOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalMaterialAmountOfStaff(staffId);
+    }
+
+    public int totalReceiveNoteOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalReceiveNoteOfStaff(staffId);
+    }
+
+    public int totalMaterialPriceOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalMaterialPriceOfStaff(staffId);
+    }
 }

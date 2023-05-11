@@ -24,9 +24,9 @@ public class LeftMenu extends JPanel implements ActionListener{
     public List<Functions> funcNameList = roleFuncService.funcOfRole(user.getRoleId());
     public JButton[] funcBtn = new JButton[funcNameList.size()];
     int x = 0, y = 245;
-    int w = 200, h = 65;
+    int w = 200, h = 56;
     private JLabel userLb;
-    private JPanel nut;
+    static JPanel nut;
     static JButton dangXuat;
     public LeftMenu() {
 
@@ -37,12 +37,25 @@ public class LeftMenu extends JPanel implements ActionListener{
         this.setLayout(null);
         //Logo
         userLb = new JLabel();
-        userLb.setIcon(new ImageIcon("ImagesIcon/anh-meo-cute.jpg"));
+        userLb.setIcon(new ImageIcon(Login.staffImage));
+        userLb.setBorder(BorderFactory.createLineBorder(Color.black));
         userLb.setBounds(0, 0, 200, 200);
 
         nut = new JPanel(new GridLayout(1,2));
         nut.setBounds(0, 200, 200, 45);
         JButton home = new JButton("Trang chủ");
+        home.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				GiaoDien.cardLayout.show(GiaoDien.switchPanel, "home");
+				for(int i = 0; i < funcNameList.size(); i++) {
+					funcBtn[i].setEnabled(true);
+		        }
+			}
+        	
+        });
         home.setSize(100,45);
         dangXuat = new JButton("Đăng xuất");
         dangXuat.setSize(100,45);

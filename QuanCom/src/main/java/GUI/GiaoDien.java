@@ -29,6 +29,7 @@ public class GiaoDien extends JFrame {
     private JPanel mainContent;
     static CardLayout cardLayout;
     static JPanel switchPanel;
+    static JPanel home;
     static JPanel functionPanel1;
     static JPanel functionPanel2;
     static JPanel functionPanel3;
@@ -36,6 +37,7 @@ public class GiaoDien extends JFrame {
     static JPanel functionPanel5;
     static JPanel functionPanel6;
     static JPanel functionPanel7;
+    static JPanel functionPanel8;
     static OrdersGUI hoaDon;
     static DetailOrdersGUI taoDon;
     static ReceivingGUI phieuNhap;
@@ -45,6 +47,7 @@ public class GiaoDien extends JFrame {
     static AccountAndRoleGUI accounts;
     static MaterialGUI material;
     static ProductAndRecipeGUI product;
+    static StatisticsGUI stat;
     static JComboBox<String> unitMaterialBox = new JComboBox<String>();
 
     public GiaoDien() {
@@ -90,6 +93,15 @@ public class GiaoDien extends JFrame {
         switchPanel = new JPanel(cardLayout);
         switchPanel.setPreferredSize(new Dimension(1080, 700));
         mainContent.add(switchPanel);
+        //HOME
+        home = new JPanel(null);
+        home.setPreferredSize(new Dimension(1080, 700));
+        JLabel homeImage = new JLabel();
+        homeImage.setBounds(0, 0, 1080, 700);
+        homeImage.setIcon(new ImageIcon("ImagesIcon/5374796.png"));
+        home.add(homeImage);
+        home.setVisible(false);
+        switchPanel.add(home, "home");
         //Tạo đơn
         functionPanel1 = new JPanel(null);
         functionPanel1.setPreferredSize(new Dimension(1080, 700));
@@ -154,7 +166,13 @@ public class GiaoDien extends JFrame {
         supplier.setBounds(0, 0, 1080, 700);
         functionPanel7.add(supplier);
         switchPanel.add(functionPanel7, "func7");
-
+        //Thống kê
+        functionPanel8 = new JPanel(null);
+        functionPanel8.setPreferredSize(new Dimension(1080, 700));
+        stat = new StatisticsGUI();
+        stat.setBounds(0, 0, 1080, 700);
+        functionPanel8.add(stat);
+        switchPanel.add(functionPanel8, "func8");
 
         //---------------------------------------------------------------
         LeftMenu.dangXuat.addActionListener(new ActionListener() {

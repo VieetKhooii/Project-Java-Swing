@@ -55,6 +55,7 @@ public class RolesGUI extends JPanel implements ActionListener{
     private JCheckBox materialCB;
     private JCheckBox supplierCB;
     private JCheckBox staffCB;
+    private JCheckBox statisticCB;
     private JButton clearInfoBtn;
     private JTextField searchTxt;
     private JComboBox<String> searchCbB;
@@ -376,6 +377,12 @@ public class RolesGUI extends JPanel implements ActionListener{
         lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 13));
         lblNewLabel_2.setBounds(415, 51, 70, 20);
         staffInfoPanel.add(lblNewLabel_2);
+        
+        statisticCB = new JCheckBox("Thống kê");
+        statisticCB.setFont(new Font("Arial", Font.PLAIN, 12));
+        statisticCB.setBounds(565, 217, 110, 25);        
+        staffInfoPanel.add(statisticCB);
+        checkBoxList.add(statisticCB);
 
         JPanel bigNamePanel = new JPanel();
         bigNamePanel.setBackground(new Color(0x007AFF));

@@ -9,7 +9,15 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
+
+import config.MySqlConfig;
 import model.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 import service.*;
 
 import java.awt.event.ActionListener;
@@ -20,6 +28,7 @@ import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -772,6 +781,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
                     GiaoDien.taoDon.setVisible(false);
                     GiaoDien.hoaDon.showBill();
                     showCart();
+                    inHD(id);
                 }
                 else {
                     System.out.println("Error");
@@ -810,9 +820,9 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
             }
             if (check){
                 Product product = new Product();
-                product.setId((Integer) model.getValueAt(modelRow, 0));
-                product.setName((String) model.getValueAt(modelRow, 1));
-                product.setPrice((Integer) model.getValueAt(modelRow, 3) * Integer.parseInt(input));
+                product.setId(Integer.parseInt(model.getValueAt(modelRow, 0).toString()));
+                product.setName(model.getValueAt(modelRow, 1).toString());
+                product.setPrice(Integer.parseInt(model.getValueAt(modelRow, 3).toString())  * Integer.parseInt(input));
                 product.setAmount(Integer.parseInt(input));
                 cart.add(product);
             }
@@ -851,5 +861,20 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
             }
             // Thêm các trường hợp khác tương tự nếu cần thiết
         }
+    }
+    ///Hàm in hóa đơn
+    public void inHD(int orderID) {  	
+    	try {
+    		Hashtable<String, Object> map = new Hashtable<String, Object>();
+			JasperReport report = JasperCompileManager.compileReport("C:\\Users\\Magaki\\git\\Project-Java-Swing\\QuanCom\\src\\main\\java\\GUI\\InHoaDon.jrxml");
+			map.put("hoadon", orderID);
+			
+			JasperPrint p = JasperFillManager.fillReport(report, map, MySqlConfig.getConnection());
+			JasperViewer.viewReport(p, false);
+			
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

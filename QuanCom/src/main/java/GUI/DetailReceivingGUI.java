@@ -51,7 +51,6 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
     private DefaultTableCellRenderer centerRenderer;
     private JPanel infoDetailOrderPanel;
     private JButton addReceivingBtn;
-    private JButton updateReceivingBtn;
     private JButton delReceivingBtn;
     private JButton clearInfoBtn;
     private JButton checkBtn;
@@ -81,14 +80,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         this.setPreferredSize(new Dimension(1080, 700));
 
         centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-        
-        S = materialList.get(0).getId();
-        for(Material j : materialList) {
-			if(j.getId() > S) {
-				S = j.getId();
-			}
-		}
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );              
         //End
 
 
@@ -173,7 +165,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         nameMaterialTxt = new JTextField();
         nameMaterialTxt.setFont(new Font("Arial", Font.PLAIN, 13));
         nameMaterialTxt.setColumns(10);
-        nameMaterialTxt.setBounds(119, 163, 161, 30);
+        nameMaterialTxt.setBounds(119, 163, 201, 30);
         infoDetailOrderPanel.add(nameMaterialTxt);
 
         JLabel soLuongNhapLabel = new JLabel("Số lượng nhập");
@@ -216,29 +208,35 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         addReceivingBtn.setForeground(Color.white);
         addReceivingBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                if (!idMaterialTxt.getText().equals("")){
-//                    JOptionPane.showMessageDialog(null, "Không được chọn nguyên liệu đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-//                }
-                if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
+                if (!idMaterialTxt.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Không được chọn nguyên liệu đã có sẵn để thêm! Khi thêm id phải để trống", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else if(nameMaterialTxt.getText().equals("") || priceMaterialTxt.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Thông tin chưa đầy đủ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     Material material = new Material();
-                    material.setId(Integer.valueOf(idMaterialTxt.getText()));
-                    material.setName(nameMaterialTxt.getText());
-                    material.setPrice(Integer.parseInt(priceMaterialTxt.getText()));
-                    material.setAmount(Integer.parseInt(soLuongNhapTxt.getText()));
-                    material.setUnit((String) unitMaterialCbB.getSelectedItem());
-                    tempMaterialList.add(material);
-                    //tempId++;
-                    showTempMaterial();
-                    checkBtn.setEnabled(true);
-                    JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    ctPNTable.clearSelection();
-                    idMaterialTxt.setText(null);
-                    nameMaterialTxt.setText(null);
-                    soLuongNhapTxt.setText(null);
-                    priceMaterialTxt.setText(null);
+                    boolean check = false;
+                    for (Material material1 : materialList){
+                        if (nameMaterialTxt.getText().equalsIgnoreCase(material1.getName())){
+                            material.setId(material1.getId());
+                            check = true;
+                            break;
+                        }
+                    }
+                    if (check){
+                        material.setName(nameMaterialTxt.getText());
+                        material.setPrice(Integer.parseInt(priceMaterialTxt.getText()));
+                        material.setAmount(Integer.parseInt(soLuongNhapTxt.getText()));
+                        material.setUnit((String) unitMaterialCbB.getSelectedItem());
+                        tempMaterialList.add(material);
+                        tempId++;
+                        showTempMaterial();
+                        JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Thông tin nguyên liệu trong kho không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -296,23 +294,9 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         delReceivingBtn.setFont(new Font("Arial", Font.PLAIN, 13));
         delReceivingBtn.setBounds(208, 400, 90, 35);
         infoDetailOrderPanel.add(delReceivingBtn);
-        
-        checkBtn = new JButton("");
-        checkBtn.setIcon(new ImageIcon("C:\\Users\\Magaki\\Downloads\\Java Downloads\\arrow-right-circle-icon-512x512-2p1e2aaw.png"));
-        checkBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				checkMaterial(nameMaterialTxt.getText());
-			}
-        	
-        });
+               
         
         //checkMaterial
-        checkBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        checkBtn.setBounds(290, 163, 30, 30);
-        infoDetailOrderPanel.add(checkBtn);
 
         //End
 
@@ -496,32 +480,32 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         totalPricePNTxt.setText(String.valueOf(totalPrice));
     }
     
-    public void checkMaterial(String name) {
-    	boolean flag = false;
-    	for(Material i : materialList) {
-    		if(i.getName().equalsIgnoreCase(name)) {
-    			idMaterialTxt.setText(String.valueOf(i.getId()));
-    			System.out.println(i.getId());
-    			for(int j=0; j<unitMaterialCbB.getItemCount(); j++) {
-    				if(unitMaterialCbB.getItemAt(j).toString().equals(i.getUnit())) {
-    					unitMaterialCbB.setSelectedIndex(j);
-    				}
-    			}
-    			flag = true;  
-    			S = S + 1;	
-    			break;
-    		}
-    		else {
-    			idMaterialTxt.setText(null);
-    		}
-    	}    	
-    	if(!flag) {   					
-			S = S + 1;			
-			System.out.println(S);
-			idMaterialTxt.setText(String.valueOf(S));
-			checkBtn.setEnabled(flag);			
-    	}
-    }
+//    public void checkMaterial(String name) {
+//    	boolean flag = false;
+//    	for(Material i : materialList) {
+//    		if(i.getName().equalsIgnoreCase(name)) {
+//    			idMaterialTxt.setText(String.valueOf(i.getId()));
+//    			System.out.println(i.getId());
+//    			for(int j=0; j<unitMaterialCbB.getItemCount(); j++) {
+//    				if(unitMaterialCbB.getItemAt(j).toString().equals(i.getUnit())) {
+//    					unitMaterialCbB.setSelectedIndex(j);
+//    				}
+//    			}
+//    			flag = true;  
+//    			S = S + 1;	
+//    			break;
+//    		}
+//    		else {
+//    			idMaterialTxt.setText(null);
+//    		}
+//    	}    	
+//    	if(!flag) {   					
+//			S = S + 1;			
+//			System.out.println(S);
+//			idMaterialTxt.setText(String.valueOf(S));
+//			checkBtn.setEnabled(flag);			
+//    	}
+//    }
     
     @Override
     public void actionPerformed(ActionEvent e) {

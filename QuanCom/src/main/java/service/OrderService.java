@@ -34,4 +34,12 @@ public class OrderService {
     	OrderRepository orderRepository = new OrderRepository();
         return orderRepository.searchByOption(searchTxt, optSearch, optSort, priceFrom, priceTo, dateFrome, dateTo);
     }
+    public int productOfStaff(int staffId){
+        OrderRepository orderRepository = new OrderRepository();
+        return orderRepository.numberOfProductOfStaff(staffId);
+    }
+    public int totalPriceOfStaff(int staffId){
+        OrderRepository orderRepository = new OrderRepository();
+        return orderRepository.totalPriceOfStaff(staffId);
+    }
 }

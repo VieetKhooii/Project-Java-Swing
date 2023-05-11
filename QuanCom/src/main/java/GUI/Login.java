@@ -12,8 +12,12 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 import javax.swing.*;
+
+import model.Staff;
 import model.User;
 import org.jdesktop.swingx.prompt.PromptSupport;
+
+import service.StaffService;
 import service.UserService;
 
 public class Login extends JFrame implements ActionListener{
@@ -34,9 +38,12 @@ public class Login extends JFrame implements ActionListener{
     private JPanel windowBtn;
     private JPanel title;
     private UserService userService = new UserService();
+    private StaffService staffService = new StaffService();
     public static User userStatic = new User();
     List<User> userList = userService.getAllUsers();
+    List<Staff> staffList = staffService.getAllStaff();
     static String idStaffLogin = "";
+    static String staffImage = "";
     public Login() {
         init();
     }
@@ -132,9 +139,15 @@ public class Login extends JFrame implements ActionListener{
                     if (user.getText().equals(user1.getName()) && new String (pass.getPassword()).equals(user1.getPassword())){
                         userStatic.setRoleId(user1.getRoleId());
                         idStaffLogin = String.valueOf(user1.getStaffId());
+                        for(Staff i : staffList) {
+                        	if(user1.getStaffId() == i.getId()) {
+                        		staffImage = i.getImage();
+                        		break;
+                        	}
+                        }
                         break;
                     }
-                }
+                }                
                 if (check) {         
                     GiaoDien a = new GiaoDien();
                     a.setVisible(true);

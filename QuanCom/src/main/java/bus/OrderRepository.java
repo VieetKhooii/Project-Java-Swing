@@ -75,20 +75,6 @@ public class OrderRepository {
         return  isSuccess;
     }
 
-    public int numberOfBillOfAStaff(int staffId){
-        int isSuccess = 0;
-        Connection connection = MySqlConfig.getConnection();
-        String query = "select count(*) as count from orders where staff_id = ?;";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,staffId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            isSuccess = resultSet.getInt("count");
-        } catch (SQLException e) {
-            System.out.println("OrderRepository: Error while deleting order");
-        }
-        return isSuccess;
-    }
     // search list
     public List<Orders> searchByOption(String searchTxt, String optSearch, String optSort, String priceFrom, String priceTo
     		, java.util.Date dateFrom, java.util.Date dateTo){
@@ -152,5 +138,63 @@ public class OrderRepository {
             System.out.println("Error while searching data");
         }        
         return searchList;
+    }
+    public int numberOfBillOfAStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "select count(*) as count from orders where staff_id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("count");
+            }
+        } catch (SQLException e) {
+            System.out.println("OrderRepository: Error while getting amount of order");
+        }
+        return isSuccess;
+    }
+
+    public int numberOfProductOfStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.soluong), 0) as total_amount \n" +
+                "FROM staffs s \n" +
+                "LEFT JOIN orders o ON s.staff_id = o.staff_id \n" +
+                "LEFT JOIN chitiet_orders ct ON o.order_id = ct.order_id \n" +
+                "WHERE s.staff_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("OrderRepository: Error while getting amount of product of a staff");
+        }
+        return isSuccess;
+    }
+
+    public int totalPriceOfStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.gia), 0) as total_price \n" +
+                "FROM staffs s \n" +
+                "LEFT JOIN orders o ON s.staff_id = o.staff_id \n" +
+                "LEFT JOIN chitiet_orders ct ON o.order_id = ct.order_id \n" +
+                "WHERE s.staff_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_price");
+            }
+        } catch (SQLException e) {
+            System.out.println("OrderRepository: Error while getting total price of a staff");
+        }
+        return isSuccess;
     }
 }

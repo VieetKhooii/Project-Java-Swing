@@ -31,5 +31,14 @@ public class SupplierService {
     	 SupplierRepository supplierRepository = new SupplierRepository();
         return supplierRepository.searchByOption(searchTxt, optSearch, optSort);
     }
+    public int totalMaterialOfASupplier(int supplierId){
+        SupplierRepository repository = new SupplierRepository();
+        return repository.totalMaterialOfASupplier(supplierId);
+    }
+
+    public int totalMaterialPriceOfASupplier(int supplierId){
+        SupplierRepository repository = new SupplierRepository();
+        return repository.totalMaterialPriceOfASupplier(supplierId);
+    }
     
 }

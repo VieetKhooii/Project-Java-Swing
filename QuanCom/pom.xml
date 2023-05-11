@@ -83,7 +83,32 @@
   			<artifactId>flatlaf-intellij-themes</artifactId>
   			<version>3.1.1</version>
 		</dependency>
+		<dependency>
+    		<groupId>net.sf.jasperreports</groupId>
+    		<artifactId>jasperreports</artifactId>
+    		<version>6.20.1</version>
+		</dependency>
+		<dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.0.0</version>
+        </dependency>
     </dependencies>
-
+	<repositories>
+		<repository>
+			<id>jaspersoft-third-party</id>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+		</repository>
+		<repository>
+			<id>jr-ce-snapshots</id>
+			<name>JasperReports CE Snapshots</name>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-snapshots</url>
+		</repository>
+		<repository>
+			<id>jr-ce-releases</id>
+			<name>JasperReports CE Releases</name>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
+		</repository>		
+	</repositories>
 	
 </project>

@@ -51,5 +51,14 @@ public class ProductService {
     	ProductRepository repository = new ProductRepository();
         return repository.searchByOption(searchTxt, optSearch, optSort, optCate);
     }
+    public int totalProductSoldAmount(int productId){
+        ProductRepository repository = new ProductRepository();
+        return repository.totalProductSoldAmount(productId);
+    }
+
+    public int totalPriceOfASoldProduct(int productId){
+        ProductRepository repository = new ProductRepository();
+        return repository.totalPriceOfASoldProduct(productId);
+    }
     
 }

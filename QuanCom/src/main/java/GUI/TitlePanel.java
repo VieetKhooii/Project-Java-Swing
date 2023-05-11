@@ -87,7 +87,7 @@ public class TitlePanel extends JPanel{
 		}		
 
 		// Title
-        JLabel title = new JLabel("Quán cơm online");
+        JLabel title = new JLabel("Quán cơm YOU AND ME");
         title.setForeground(Color.WHITE);
         title.setBounds(5, 0, 250, 32);
         title.setFont(new Font("Arial", Font.BOLD, 14));

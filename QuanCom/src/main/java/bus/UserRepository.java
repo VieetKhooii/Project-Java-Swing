@@ -103,7 +103,7 @@ public class UserRepository {
         int isSuccess=0;
         Connection connection = MySqlConfig.getConnection();
         String query = "update users set username = ?, password = ?, " +
-                "email = ?, role_id = ?, staffId = ? where user_id=?";
+                "email = ?, role_id = ?, staff_id = ? where user_id=?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,userName);
