@@ -276,6 +276,7 @@ public class ReceivingGUI extends JPanel implements MouseListener, ActionListene
         while (detailTableModel.getRowCount() != 0){
             detailTableModel.removeRow(0);
         }
+        System.out.println("hi");
         receivedNoteList = receivedNoteService.getAllReceiving();
         for (ReceivedNote note : receivedNoteList){
             note.setTotalPrice(receivedNoteService.getTotalPrice(note.getId()));

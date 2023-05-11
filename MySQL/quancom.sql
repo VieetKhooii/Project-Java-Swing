@@ -1,12 +1,6 @@
 create database quancom;
 use quancom;
 
-select p.product_name, m.name, ct.soluong
-from products p join chitietcongthuc ct on p.product_id = ct.product_id
-	 join materials m on m.material_id = ct.material_id
-order by p.product_name;
-
-select count(*) as count from orders where staff_id = 2;
 CREATE TABLE functions(
 	func_id INT NOT NULL,
 	func_name varchar(50),
@@ -69,19 +63,6 @@ CREATE TABLE orders(
     FOREIGN KEY(user_id) REFERENCES users(user_id),
 	FOREIGN KEY(staff_id) REFERENCES staffs(staff_id)
 );
-select * from category;
-select * from materials;
-select * from roles;
-select * from role_func order by role_id asc;
-select * from functions;
-select * from users;
-select * from orders;
-select * from supplier;
-select * from staffs;
-select * from phieuNhap;
-select * from chitietphieuNhap;
-select * from products;
-select * from chitietcongthuc;
 
 INSERT INTO functions(func_name) VALUES
 ('Đơn hàng'),

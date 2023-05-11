@@ -97,4 +97,63 @@ public class ReceivedNoteRepo {
         }
         return totalPrice;
     }
+
+    public int totalMaterialAmountOfStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.soluong), 0) as total_amount\n" +
+                "FROM staffs s \n" +
+                "LEFT JOIN phieuNhap pn ON s.staff_id = pn.staff_id \n" +
+                "LEFT JOIN chitietphieuNhap ct ON pn.phieu_id = ct.phieu_id \n" +
+                "WHERE s.staff_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("ReceiNoteRepo: Error while getting total material amount of a staff");
+        }
+        return isSuccess;
+    }
+
+    public int totalReceiveNoteOfStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "select count(*) as count from phieuNhap where staff_id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("count");
+            }
+        } catch (SQLException e) {
+            System.out.println("ReceiNoteRepo: Error while getting amount of receive note of a staff");
+        }
+        return isSuccess;
+    }
+
+    public int totalMaterialPriceOfStaff(int staffId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.gia), 0) as total_price\n" +
+                "FROM staffs s \n" +
+                "LEFT JOIN phieuNhap pn ON s.staff_id = pn.staff_id \n" +
+                "LEFT JOIN chitietphieuNhap ct ON pn.phieu_id = ct.phieu_id \n" +
+                "WHERE s.staff_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,staffId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_price");
+            }
+        } catch (SQLException e) {
+            System.out.println("ReceiNoteRepo: Error while getting total material price of a staff");
+        }
+        return isSuccess;
+    }
 }

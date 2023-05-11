@@ -83,4 +83,46 @@ public class MaterialRepository {
         return isSuccess;
     }
 
+    public int totalMaterialReceived(int materialId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.soluong), 0) as total_amount\n" +
+                "FROM materials m \n" +
+                "LEFT JOIN chitietphieuNhap ct ON m.material_id = ct.material_id\n" +
+                "WHERE m.material_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,materialId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("MaterialRepository: Error while getting total receive amount of a material");
+        }
+        return isSuccess;
+    }
+
+    public int totalReceivePriceOfAMaterial(int materialId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.gia), 0) as total_price\n" +
+                "FROM materials m \n" +
+                "LEFT JOIN chitietphieuNhap ct ON m.material_id = ct.material_id\n" +
+                "WHERE m.material_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,materialId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_price");
+            }
+        } catch (SQLException e) {
+            System.out.println("MaterialRepository: Error while getting total receive price of a material");
+        }
+        return isSuccess;
+    }
+
+
+
 }

@@ -307,16 +307,27 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                 }
                 else {
                     Material material = new Material();
-                    material.setId(tempId);
-                    material.setName(nameMaterialTxt.getText());
-                    material.setPrice(Integer.parseInt(priceMaterialTxt.getText()));
-                    material.setAmount(Integer.parseInt(soLuongNhapTxt.getText()));
-                    material.setUnit((String) unitMaterialCbB.getSelectedItem());
-                    tempMaterialList.add(material);
-                    tempId++;
-                    showTempMaterial();
-
-                    JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    boolean check = false;
+                    for (Material material1 : materialList){
+                        if (nameMaterialTxt.getText().equalsIgnoreCase(material1.getName())){
+                            material.setId(material1.getId());
+                            check = true;
+                            break;
+                        }
+                    }
+                    if (check){
+                        material.setName(nameMaterialTxt.getText());
+                        material.setPrice(Integer.parseInt(priceMaterialTxt.getText()));
+                        material.setAmount(Integer.parseInt(soLuongNhapTxt.getText()));
+                        material.setUnit((String) unitMaterialCbB.getSelectedItem());
+                        tempMaterialList.add(material);
+                        tempId++;
+                        showTempMaterial();
+                        JOptionPane.showMessageDialog(null, "Đã thêm nguyên liệu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Thông tin nguyên liệu trong kho không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -443,7 +454,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                if(!tempMaterialList.isEmpty()) {
+                if(nextBtn.isEnabled() && !tempMaterialList.isEmpty()) {
                     int decide = JOptionPane.showConfirmDialog(null, "Mot so du lieu van chua duoc luu, ban co muon quay lai?", "Thông báo", JOptionPane.YES_NO_OPTION);
                     if(decide==0) {
                         JButton viewBtn = ReceivingGUI.viewBtn;
@@ -498,7 +509,7 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
             nextBtn.setEnabled(true);
         }
 
-//        detailList = detailReceiveService.getAll();
+        detailList = detailReceiveService.getAll();
 //        while (detailTableModel.getRowCount() != 0){
 //            detailTableModel.removeRow(0);
 //        }
@@ -580,35 +591,33 @@ public class DetailReceivingGUI extends JPanel implements MouseListener, ActionL
                         Integer.parseInt(totalPricePNTxt.getText()),
                         sqlDate);
                 if (checkIfSuccess){
+                    boolean check = true;
                     receivedNoteList = receivedNoteService.getAllReceiving();
                     int id = receivedNoteList.get(receivedNoteList.size()-1).getId();
                     for (Material material : tempMaterialList){
-                        boolean check = false;
-                        detailReceiveService.addDetailNote(material.getId(),id,material.getName(),
-                                material.getAmount(), material.getPrice());
                         for (Material storeMaterial : materialList){
-                            if (storeMaterial.getName().equalsIgnoreCase(material.getName())){
+                            if (storeMaterial.getId() == material.getId()){
                                 materialService.modifyMaterial(storeMaterial.getName(),
                                         storeMaterial.getUnit(),
                                         storeMaterial.getPrice()+material.getPrice(),
                                         storeMaterial.getAmount()+material.getAmount(),
                                         storeMaterial.getId());
-                                check = true;
+                                detailReceiveService.addDetailNote(storeMaterial.getId(),id,material.getName(),
+                                        material.getAmount(), material.getPrice());
+                                break;
                             }
-                        }
-                        if (!check){
-                            materialService.addMaterial(material.getName(),material.getUnit(),material.getPrice(),material.getAmount());
+
                         }
                     }
                     materialList = materialService.getAllMaterial();
                     FoodCalculation.productAmountCal(productList,recipeList,materialList,productService,true);
-                    GiaoDien.taoDon.showTableProduct();
-                    GiaoDien.phieuNhap.showTableReceiving();
-                    GiaoDien.material.showTableMaterial();
                     productGUI.showTableProduct();
                     nextBtn.setEnabled(false);
                     addReceivingBtn.setEnabled(false);
                     delReceivingBtn.setEnabled(false);
+                    GiaoDien.taoDon.showTableProduct();
+                    GiaoDien.phieuNhap.showTableReceiving();
+                    GiaoDien.material.showTableMaterial();
                     tempMaterialList.clear();
                     JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }

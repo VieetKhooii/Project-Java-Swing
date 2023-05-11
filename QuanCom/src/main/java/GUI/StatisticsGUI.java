@@ -19,9 +19,10 @@ import javax.swing.SwingConstants;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import com.toedter.calendar.JDateChooser;
+import model.Material;
+import model.Product;
 import model.Staff;
-import service.OrderService;
-import service.StaffService;
+import service.*;
 
 import java.awt.Canvas;
 import java.util.List;
@@ -54,7 +55,11 @@ public class StatisticsGUI extends JPanel {
     private JButton exportBtnp;
     OrderService orderService = new OrderService();
     StaffService staffService = new StaffService();
+    ProductService productService = new ProductService();
+    MaterialService materialService = new MaterialService();
+    List<Material> materialList = materialService.getAllMaterial();
     List<Staff> staffList = staffService.getAllStaff();
+    List<Product> productList = productService.getAllProduct();
 
 
     public StatisticsGUI() {
@@ -191,6 +196,7 @@ public class StatisticsGUI extends JPanel {
                     statisticTable.getTableHeader().getColumnModel().getColumn(2).setHeaderValue("Số lượng món bán được");
                     statisticTable.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Số lượng hóa đơn");
                     statisticTable.getTableHeader().repaint();
+                    showBillOfStaff();
 
                 }
                 else if(objectCbB.getSelectedItem().toString().equals("Nhân viên") && selectedCbB.getSelectedItem().toString().equals("Phiếu nhập")) {
@@ -198,18 +204,21 @@ public class StatisticsGUI extends JPanel {
                     statisticTable.getTableHeader().getColumnModel().getColumn(2).setHeaderValue("Số lượng ng.liệu nhập");
                     statisticTable.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Số lượng phiếu nhập");
                     statisticTable.getTableHeader().repaint();
+                    showMaterialAmountOfStaff();
                 }
                 else if(objectCbB.getSelectedItem().toString().equals("Món ăn") && selectedCbB.getSelectedItem().toString().equals("Bán ra")) {
                     statisticTable.getTableHeader().getColumnModel().getColumn(1).setHeaderValue("Mã món ăn");
                     statisticTable.getTableHeader().getColumnModel().getColumn(2).setHeaderValue(" ");
                     statisticTable.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Số lượng món");
                     statisticTable.getTableHeader().repaint();
+                    showProductStatistic();
                 }
                 else if(objectCbB.getSelectedItem().toString().equals("Nguyên liệu") && selectedCbB.getSelectedItem().toString().equals("Nhập vào")) {
                     statisticTable.getTableHeader().getColumnModel().getColumn(1).setHeaderValue("Mã nguyên liệu");
                     statisticTable.getTableHeader().getColumnModel().getColumn(2).setHeaderValue(" ");
                     statisticTable.getTableHeader().getColumnModel().getColumn(3).setHeaderValue("Số lượng ng.liệu");
                     statisticTable.getTableHeader().repaint();
+                    showMaterialStatistic();
                 }
                 else if(objectCbB.getSelectedItem().toString().equals("Nhà cung cấp") && selectedCbB.getSelectedItem().toString().equals("Ng.liệu nhập vào")) {
                     statisticTable.getTableHeader().getColumnModel().getColumn(1).setHeaderValue("Mã nhà cung cấp");
@@ -245,16 +254,64 @@ public class StatisticsGUI extends JPanel {
         buttonPane.add(excelBtn);
     }
 
+    // Staff {
     private void showBillOfStaff(){
         while (model.getRowCount() != 0){
             model.removeRow(0);
         }
-        for (int i=1; i<staffList.size(); i++){
+        for (int i=0; i<staffList.size(); i++){
+            int numberOfBills = orderService.billOfStaff(staffList.get(i).getId());
             model.addRow(new Object[]{
-
+                i+1,staffList.get(i).getId(), orderService.productOfStaff(staffList.get(i).getId()), numberOfBills, orderService.totalPriceOfStaff(staffList.get(i).getId())
             });
         }
     }
+
+    private void showMaterialAmountOfStaff(){
+        ReceivedNoteService receivedNoteService = new ReceivedNoteService();
+        while (model.getRowCount() != 0){
+            model.removeRow(0);
+        }
+        for (int i=0; i<staffList.size(); i++){
+            int staffId = staffList.get(i).getId();
+            model.addRow(new Object[]{
+                    i+1,staffList.get(i).getId(), receivedNoteService.totalMaterialAmountOfStaff(staffId),
+                    receivedNoteService.totalReceiveNoteOfStaff(staffId), receivedNoteService.totalMaterialPriceOfStaff(staffId)
+            });
+        }
+    }
+    // Staff }
+
+    // Product {
+
+    private void showProductStatistic(){
+        while (model.getRowCount() != 0){
+            model.removeRow(0);
+        }
+        for (int i=0; i<productList.size(); i++){
+            int productId = productList.get(i).getId();
+            model.addRow(new Object[]{
+                    i+1, productId, "", productService.totalProductSoldAmount(productId), productService.totalPriceOfASoldProduct(productId)
+            });
+        }
+    }
+    // Product }
+
+    // Material {
+
+    private void showMaterialStatistic(){
+        while (model.getRowCount() != 0){
+            model.removeRow(0);
+        }
+        for (int i=0; i<materialList.size(); i++){
+            int materialId = materialList.get(i).getId();
+            model.addRow(new Object[]{
+                    i+1, materialId, "", materialService.totalMaterialReceived(materialId), materialService.totalReceivePriceOfAMaterial(materialId)
+            });
+        }
+    }
+
+    // Material }
 
     public static void main(String[] args) {
         JFrame a = new JFrame();

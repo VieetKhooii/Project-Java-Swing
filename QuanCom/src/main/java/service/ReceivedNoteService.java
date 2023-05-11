@@ -26,4 +26,19 @@ public class ReceivedNoteService {
         ReceivedNoteRepo repo = new ReceivedNoteRepo();
         return repo.getTotalPrice(id);
     }
+
+    public int totalMaterialAmountOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalMaterialAmountOfStaff(staffId);
+    }
+
+    public int totalReceiveNoteOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalReceiveNoteOfStaff(staffId);
+    }
+
+    public int totalMaterialPriceOfStaff(int staffId){
+        ReceivedNoteRepo repo = new ReceivedNoteRepo();
+        return repo.totalMaterialPriceOfStaff(staffId);
+    }
 }

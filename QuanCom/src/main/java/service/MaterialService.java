@@ -25,4 +25,14 @@ public class MaterialService {
         MaterialRepository materialRepository = new MaterialRepository();
         return materialRepository.modifyMaterial(id, name, unit, price, amount) >= 1;
     }
+
+    public int totalMaterialReceived(int materialId){
+        MaterialRepository materialRepository = new MaterialRepository();
+        return  materialRepository.totalMaterialReceived(materialId);
+    }
+
+    public int totalReceivePriceOfAMaterial(int materialId){
+        MaterialRepository materialRepository = new MaterialRepository();
+        return  materialRepository.totalReceivePriceOfAMaterial(materialId);
+    }
 }

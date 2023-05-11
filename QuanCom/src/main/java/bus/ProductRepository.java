@@ -92,4 +92,44 @@ public class ProductRepository {
         }
         return isSuccess;
     }
+
+    public int totalProductSoldAmount(int productId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.soluong), 0) as total_amount\n" +
+                "FROM products p \n" +
+                "LEFT JOIN chitiet_orders ct ON p.product_id = ct.product_id\n" +
+                "WHERE p.product_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("ProductRepository: Error while getting total sold amount of a product");
+        }
+        return isSuccess;
+    }
+
+    public int totalPriceOfASoldProduct(int productId){
+        int isSuccess = 0;
+        Connection connection = MySqlConfig.getConnection();
+        String query = "SELECT COALESCE(SUM(ct.gia), 0) as total_price\n" +
+                "FROM products p \n" +
+                "LEFT JOIN chitiet_orders ct ON p.product_id = ct.product_id\n" +
+                "WHERE p.product_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                isSuccess = resultSet.getInt("total_price");
+            }
+        } catch (SQLException e) {
+            System.out.println("ProductRepository: Error while getting total sold price of a product");
+        }
+        return isSuccess;
+    }
 }
