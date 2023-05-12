@@ -116,7 +116,7 @@ public class ProductRepository {
         	searchString = "'%" + searchTxt.trim() + "%'";
         	searchColumn = "soluong";
         }
-        String query = "select p.product_id, p.product_name, p.soluong, p.donvitinh, p.gia,p.category_id, c.cate_name from products as p join category as c on p.category_id=c.cate_id and " 
+        String query = "select p.product_id, p.product_name, p.soluong, p.donvitinh, p.gia,p.category_id, c.cate_name, p.image from products as p join category as c on p.category_id=c.cate_id and " 
         + searchColumn +" like " + searchString;
         if(!optCate.equalsIgnoreCase("Tất cả")){
         	query = query + " and c.cate_name='" + optCate.trim() + "'";

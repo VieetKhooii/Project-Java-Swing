@@ -9,19 +9,30 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import com.toedter.calendar.JDateChooser;
+
+import config.MySqlConfig;
 import enumm.UnitMaterial;
 import model.Material;
 import model.ReceivedNote;
 import model.ReceivedNoteDetail;
 import model.User;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 import service.DetailReceiveService;
 import service.MaterialService;
 import service.ReceivedNoteService;
 
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Hashtable;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -53,7 +64,6 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
     private JButton addReceivingBtn;
     private JButton delReceivingBtn;
     private JButton clearInfoBtn;
-    private JButton checkBtn;
     private JComboBox<String> unitMaterialCbB = new JComboBox<>();
     Component[] components1;
     Component[] components2;
@@ -255,7 +265,6 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
                 nameMaterialTxt.setText(null);
                 soLuongNhapTxt.setText(null);
                 priceMaterialTxt.setText(null);
-                checkBtn.setEnabled(true);
 //                if(tempMaterialList.isEmpty()) {
 //                	S = S - 1;
 //                }
@@ -325,6 +334,8 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
         contentField.add(datePNLabel);
 
         datePNChooser = new JDateChooser();
+        Calendar crnt = Calendar.getInstance(); 
+        datePNChooser.setDate(crnt.getTime());
         datePNChooser.setBounds(160, 574, 178, 30);
         contentField.add(datePNChooser);
 
@@ -555,6 +566,7 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
                     JOptionPane.showMessageDialog(null, "Tạo phiếu nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     GiaoDien.phieuNhap.setVisible(true);
                     GiaoDien.taoPhieu.setVisible(false);
+                    inPN(id);
                 }
                 else {
                     JOptionPane.showMessageDialog(null, "Nhà cung cấp hoặc nhân viên không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -592,5 +604,19 @@ public class DetailReceivingGUI extends JPanel implements ActionListener{
             }
             // Thêm các trường hợp khác tương tự nếu cần thiết
         }
+    }
+    public void inPN(int phieuID) {  	
+    	try {
+    		Hashtable<String, Object> map = new Hashtable<String, Object>();
+			JasperReport report = JasperCompileManager.compileReport("C:\\Users\\admin\\git\\Project-Java-Swing\\QuanCom\\src\\main\\java\\GUI\\InPhieuNhap.jrxml");
+			map.put("phieunhap", phieuID);
+			
+			JasperPrint p = JasperFillManager.fillReport(report, map, MySqlConfig.getConnection());
+			JasperViewer.viewReport(p, false);
+			
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

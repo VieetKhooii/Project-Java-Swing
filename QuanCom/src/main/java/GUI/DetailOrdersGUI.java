@@ -866,7 +866,7 @@ public class DetailOrdersGUI extends JPanel implements MouseListener, ActionList
     public void inHD(int orderID) {  	
     	try {
     		Hashtable<String, Object> map = new Hashtable<String, Object>();
-			JasperReport report = JasperCompileManager.compileReport("C:\\Users\\Magaki\\git\\Project-Java-Swing\\QuanCom\\src\\main\\java\\GUI\\InHoaDon.jrxml");
+			JasperReport report = JasperCompileManager.compileReport("C:\\Users\\admin\\git\\Project-Java-Swing\\QuanCom\\src\\main\\java\\GUI\\InHoaDon.jrxml");
 			map.put("hoadon", orderID);
 			
 			JasperPrint p = JasperFillManager.fillReport(report, map, MySqlConfig.getConnection());
